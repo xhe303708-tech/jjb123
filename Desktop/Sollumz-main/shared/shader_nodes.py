@@ -12,7 +12,7 @@ class SzShaderNodeParameterDisplayType(IntEnum):
 
 class SzShaderNodeParameter(bpy.types.ShaderNode):
     bl_idname = "SOLLUMZ_NT_SHADER_Parameter"
-    bl_label = "Parameter"
+    bl_label = "参数"
 
     num_cols: bpy.props.IntProperty(default=0, min=1, max=4)
     num_rows: bpy.props.IntProperty(default=0, min=1)

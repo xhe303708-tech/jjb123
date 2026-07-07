@@ -13,7 +13,7 @@ class PresetPanel:
     load_operator: str = ""  # bl_idname of the load operator
     delete_operator: str = ""  # bl_idname of the delete operator
 
-    bl_label = "Presets"
+    bl_label = "预设"
     bl_options = {"INSTANCED"}  # popover, not auto-added to anywhere
 
     @classmethod
@@ -27,7 +27,7 @@ class PresetPanel:
         layout = self.layout
         category = self.category
         if category is None:
-            layout.label(text=f"{type(self).__name__} has no category configured", icon="ERROR")
+            layout.label(text=f"{type(self).__name__} 未配置类别", icon="ERROR")
             return
 
         wm = context.window_manager
@@ -51,7 +51,7 @@ class PresetPanel:
                     del_op.name = name
             layout.separator()
         else:
-            layout.label(text=f"No {category.label.lower()} presets yet.", icon="INFO")
+            layout.label(text=f"尚无 {category.label.lower()} 预设。", icon="INFO")
             layout.separator()
 
         row = layout.row()
@@ -65,7 +65,7 @@ class PresetPanel:
         path = store.user_preset_path(category)
         if path.exists():
             layout.separator()
-            layout.operator("wm.path_open", text="Open Presets File", icon="FILE").filepath = str(path)
+            layout.operator("wm.path_open", text="打开预设文件", icon="FILE").filepath = str(path)
 
         self.draw_extra(context)
 

@@ -100,9 +100,9 @@ def define_multiselect_collection(name: str, collection_kwargs: dict):
         selection_indices_propname = f"{name}_selection_indices_"
         on_active_index_update_from_ui_callback_name = f"on_{name}_active_index_update_from_ui"
         cls.__annotations__[collection_propname] = CollectionProperty(type=item_cls, **collection_kwargs)
-        cls.__annotations__[active_index_propname] = IntProperty(name="Active Index")
+        cls.__annotations__[active_index_propname] = IntProperty(name="当前索引")
         cls.__annotations__[active_index_for_ui_propname] = IntProperty(
-            name="Active Index",
+            name="当前索引",
             get=lambda s: getattr(s, active_index_propname),
             set=lambda s, v: _collection_getter(s)._on_active_index_update_from_ui(v),
         )
@@ -585,11 +585,11 @@ class MultiSelectOperatorBase:
 
 
 class MultiSelectOneOperator(MultiSelectOperatorBase):
-    bl_description = "Select item"
+    bl_description = "选择项"
 
-    index: IntProperty(name="Index")
-    extend: BoolProperty(name="Extend")
-    toggle: BoolProperty(name="Toggle")
+    index: IntProperty(name="索引")
+    extend: BoolProperty(name="扩展")
+    toggle: BoolProperty(name="切换")
 
     def execute(self, context):
         collection = self.get_collection(context)
@@ -615,7 +615,7 @@ class MultiSelectOneOperator(MultiSelectOperatorBase):
 
 
 class MultiSelectAllOperator(MultiSelectOperatorBase):
-    bl_description = "Select all items"
+    bl_description = "选择所有项"
 
     def execute(self, context):
         collection = self.get_collection(context)
@@ -625,7 +625,7 @@ class MultiSelectAllOperator(MultiSelectOperatorBase):
 
 
 class MultiSelectInvertOperator(MultiSelectOperatorBase):
-    bl_description = "Invert selected items"
+    bl_description = "反转已选项"
 
     def execute(self, context):
         collection = self.get_collection(context)
@@ -803,7 +803,7 @@ def _get_all_annotations(cls):
 
 
 class MultiSelectUIFlagsPanel:
-    bl_label = "Flags"
+    bl_label = "标记"
     bl_options = {"DEFAULT_CLOSED"}
 
     def get_flags_active(self, context) -> bpy_struct:
@@ -827,7 +827,7 @@ class MultiSelectUIFlagsPanel:
 
 
 class MultiSelectUITimeFlagsPanel(MultiSelectUIFlagsPanel):
-    bl_label = "Time Flags"
+    bl_label = "时间标记"
     select_operator = None
     clear_operator = None
 

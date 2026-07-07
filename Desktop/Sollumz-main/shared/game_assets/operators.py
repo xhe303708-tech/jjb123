@@ -44,7 +44,7 @@ def temporary_ui(layout):
     if _build_library_progress is not None:
         completed, total = _build_library_progress
         layout.progress(
-            text=f"Creating Asset Libraries ({completed}/{total})...",
+            text=f"正在创建资产库 ({completed}/{total})...",
             factor=completed / total if total > 0 else 0,
         )
     layout.operator(SOLLUMZ_OT_rebuild_game_asset_cache.bl_idname)
@@ -52,15 +52,14 @@ def temporary_ui(layout):
 
 class SOLLUMZ_OT_build_game_asset_library(Operator):
     bl_idname = "sollumz.build_game_asset_library"
-    bl_label = "Build Asset Library"
+    bl_label = "构建资产库"
     bl_description = (
-        "Import .ytyp game files from a directory and create .blend asset library files "
-        "in the configured Shared Assets directory"
+        "从目录中导入 .ytyp 游戏文件，并在配置的共享资产目录中创建 .blend 资产库文件"
     )
 
     directory: StringProperty(
-        name="Source Directory",
-        description="Directory containing .ytyp files and their assets",
+        name="源目录",
+        description="包含 .ytyp 文件及其资产的目录",
         subtype="DIR_PATH",
         options={"HIDDEN"},
     )
@@ -72,39 +71,39 @@ class SOLLUMZ_OT_build_game_asset_library(Operator):
     )
 
     output_directory: StringProperty(
-        name="Output Directory",
-        description="Directory where .blend libraries should be saved",
+        name="输出目录",
+        description="保存 .blend 库的目录",
         subtype="DIR_PATH",
         options={"HIDDEN", "SKIP_SAVE"},
     )
 
     output_directory_choice: EnumProperty(
-        name="Output Library",
-        description="Which directory to write the .blend libraries into",
+        name="输出库",
+        description="将 .blend 库写入哪个目录",
         items=_output_directory_choice_items,
         options={"SKIP_SAVE"},
     )
     new_output_directory_name: StringProperty(
-        name="Name",
-        description="Name of the new asset library",
+        name="名称",
+        description="新资产库的名称",
     )
     new_output_directory_path: StringProperty(
-        name="Path",
-        description="Path to a directory where to store the new asset library",
+        name="路径",
+        description="用于存储新资产库的目录路径",
     )
 
     pattern: StringProperty(
-        name="Pattern",
+        name="匹配模式",
         description=(
-            "Regular expression matched against .ytyp file names to filter which ones are imported. "
-            "Leave empty to import all"
+            "用于过滤导入的 .ytyp 文件名的正则表达式。"
+            "留空则导入全部"
         ),
     )
     num_subprocesses: IntProperty(
-        name="Subprocesses",
+        name="子进程数",
         description=(
-            "Number of Blender subprocesses to spawn for building libraries in parallel. "
-            "Each worker runs a separate Blender instance, so higher values build faster but use more memory and CPU"
+            "用于并行构建库的 Blender 子进程数。"
+            "每个工作进程运行独立的 Blender 实例，因此数值越高构建越快，但占用更多内存和 CPU"
         ),
         default=max(1, os.cpu_count() // 4),
         min=1,
@@ -114,8 +113,8 @@ class SOLLUMZ_OT_build_game_asset_library(Operator):
     @classmethod
     def poll(cls, context):
         if bpy.app.version < (4, 2, 0):
-            # Currently, we use Blender CLI commands to spawn the subprocess workers which were added in 4.2.
-            cls.poll_message_set("Cannot build library on this Blender version. Update to Blender 4.2 or newer.")
+            # 当前使用 Blender CLI 命令生成子进程工作器，该功能在 4.2 中加入
+            cls.poll_message_set("当前 Blender 版本无法构建库。请升级到 Blender 4.2 或更新版本。")
             return False
 
         return True
@@ -146,7 +145,7 @@ class SOLLUMZ_OT_build_game_asset_library(Operator):
                 try:
                     new_directory.mkdir(parents=True, exist_ok=True)
                 except FileExistsError:
-                    self.report({"ERROR"}, f"Expected a directory, not a file: {str(new_directory)}")
+                    self.report({"ERROR"}, f"期望为目录而非文件: {str(new_directory)}")
                     return {"CANCELLED"}
 
                 self.output_directory = self.new_output_directory_path
@@ -155,7 +154,7 @@ class SOLLUMZ_OT_build_game_asset_library(Operator):
                 )
             else:
                 if not prefs.shared_assets_directories:
-                    self.report({"ERROR"}, "No Shared Assets directory configured. Add one in Preferences > Sollumz.")
+                    self.report({"ERROR"}, "未配置共享资产目录。请在偏好设置 > Sollumz 中添加一个。")
                     return {"CANCELLED"}
 
                 configured_paths = [d.path for d in prefs.shared_assets_directories if d.path]
@@ -163,7 +162,7 @@ class SOLLUMZ_OT_build_game_asset_library(Operator):
                     if self.output_directory_choice and self.output_directory_choice in configured_paths:
                         self.output_directory = self.output_directory_choice
                     else:
-                        self.report({"WARNING"}, "No output library selected; using the first configured directory.")
+                        self.report({"WARNING"}, "未选择输出库，将使用第一个配置的目录。")
                         self.output_directory = configured_paths[0]
                 else:
                     self.output_directory = configured_paths[0]
@@ -204,8 +203,8 @@ def _timer_do_work(work_iter):
 
 class SOLLUMZ_OT_rebuild_game_asset_cache(Operator):
     bl_idname = "sollumz.rebuild_game_asset_cache"
-    bl_label = "Debug - Rebuild Asset Cache"
-    bl_description = "Rebuild the SQLite asset cache from existing .blend files in the Shared Assets directory"
+    bl_label = "调试 - 重建资产缓存"
+    bl_description = "从共享资产目录中现有的 .blend 文件重建 SQLite 资产缓存"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -216,7 +215,7 @@ class SOLLUMZ_OT_rebuild_game_asset_cache(Operator):
     def execute(self, context):
         prefs = get_addon_preferences(context)
         if not prefs.shared_assets_directories:
-            self.report({"ERROR"}, "No Shared Assets directory configured.")
+            self.report({"ERROR"}, "未配置共享资产目录。")
             return {"CANCELLED"}
 
         directories = []
@@ -225,14 +224,14 @@ class SOLLUMZ_OT_rebuild_game_asset_cache(Operator):
                 continue
             path = Path(bpy.path.abspath(d.path))
             if not path.is_dir():
-                self.report({"WARNING"}, f"Shared Assets directory does not exist, skipping: '{path}'")
+                self.report({"WARNING"}, f"共享资产目录不存在，跳过: '{path}'")
                 continue
             directories.append(path)
 
         if not directories:
-            self.report({"ERROR"}, "No valid Shared Assets directories found.")
+            self.report({"ERROR"}, "未找到有效的共享资产目录。")
             return {"CANCELLED"}
 
         build_library_cache(directories)
-        self.report({"INFO"}, f"Asset cache rebuilt at '{asset_cache_path()}'")
+        self.report({"INFO"}, f"资产缓存已在 '{asset_cache_path()}' 重建")
         return {"FINISHED"}

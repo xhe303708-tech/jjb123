@@ -6,7 +6,7 @@ from . import operators as ops
 
 
 class SOLLUMZ_PT_asset_library_panel(Panel):
-    bl_label = "Asset Library"
+    bl_label = "资产库"
     bl_idname = "SOLLUMZ_PT_asset_library_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
