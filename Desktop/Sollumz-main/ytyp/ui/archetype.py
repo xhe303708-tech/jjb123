@@ -11,7 +11,7 @@ from ..gta5.presets.archetype import SOLLUMZ_PT_archetype_presets
 
 
 class SOLLUMZ_PT_ARCHETYPE_TABS_PANEL(YtypToolChildPanel, TabbedPanelHelper, bpy.types.Panel):
-    bl_label = "Archetype"
+    bl_label = "架构"
     bl_idname = "SOLLUMZ_PT_ARCHETYPE_TABS_PANEL"
     bl_options = {"HIDE_HEADER"}
 
@@ -45,7 +45,7 @@ class ArchetypeChildPanel:
 
 
 class SOLLUMZ_PT_ARCHETYPE_PANEL(ArchetypeChildTabPanel, bpy.types.Panel):
-    bl_label = "Archetype"
+    bl_label = "架构"
     bl_idname = "SOLLUMZ_PT_ARCHETYPE_PANEL"
 
     icon = "SEQ_STRIP_META"
@@ -81,7 +81,7 @@ class SOLLUMZ_PT_ARCHETYPE_PANEL(ArchetypeChildTabPanel, bpy.types.Panel):
 
         row = layout.row()
         row.enabled = not ytyp.archetypes.has_multiple_selection
-        row.prop(active, "asset", text="Linked Object")
+        row.prop(active, "asset", text="链接对象")
 
 
 class SOLLUMZ_PT_ARCHETYPE_FLAGS_PANEL(ArchetypeChildTabPanel, MultiSelectUIFlagsPanel, bpy.types.Panel):
@@ -108,7 +108,7 @@ class SOLLUMZ_PT_ARCHETYPE_FLAGS_PANEL(ArchetypeChildTabPanel, MultiSelectUIFlag
 
 class SOLLUMZ_PT_TIME_FlAGS_PANEL(ArchetypeChildPanel, MultiSelectUITimeFlagsPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_TIME_FLAGS_PANEL"
-    bl_label = "Time Flags"
+    bl_label = "时间标记"
     select_operator = "sollumz.ytyp_time_flags_select_range"
     clear_operator = "sollumz.ytyp_time_flags_clear"
 

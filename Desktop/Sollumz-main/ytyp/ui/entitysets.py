@@ -27,7 +27,7 @@ class SOLLUMZ_UL_ENTITY_SETS_LIST(MultiSelectUIListMixin, bpy.types.UIList):
 
 class SOLLUMZ_PT_ENTITY_SETS_PANEL(MloChildTabPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_ENTITY_SETS_PANEL"
-    bl_label = "Entity Sets"
+    bl_label = "实体集"
 
     icon = "ASSET_MANAGER"
 
@@ -56,13 +56,13 @@ class SOLLUMZ_PT_ENTITY_SETS_PANEL(MloChildTabPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_entity_sets_list_context_menu(bpy.types.Menu):
-    bl_label = "Entity Sets Specials"
+    bl_label = "实体集特殊项"
     bl_idname = "SOLLUMZ_MT_entity_sets_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_entity_set.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_entity_set.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_entity_set.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_entity_set.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_ENTITY_SETS_LIST.last_filter_options.get("entity_sets_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)

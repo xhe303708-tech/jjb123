@@ -204,7 +204,7 @@ def main(argv: list[str]) -> int:
 
     parser = ArgumentParser(
         prog=os.path.basename(sys.argv[0]) + " --command " + CMD_ID,
-        description="Create asset library.",
+        description="创建资产库。",
     )
     parser.add_argument(
         "-d",

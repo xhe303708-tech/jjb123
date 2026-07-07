@@ -57,7 +57,7 @@ class SOLLUMZ_UL_ENTITIES_LIST(MultiSelectUIListMixin, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_MLO_ENTITY_LIST_PANEL(MloChildTabPanel, bpy.types.Panel):
-    bl_label = "Entities"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_MLO_ENTITY_LIST_PANEL"
 
     icon = "OUTLINER"
@@ -92,7 +92,7 @@ class SOLLUMZ_PT_MLO_ENTITY_LIST_PANEL(MloChildTabPanel, bpy.types.Panel):
         row = list_col.row()
         col = row.column()
         col_row = col.row()
-        col_row.label(text="Filter By", icon="FILTER")
+        col_row.label(text="筛选方式", icon="FILTER")
         col_row.prop(context.scene, "sollumz_entity_filter_type", text="")
 
         if filter_type == "room":
@@ -123,20 +123,20 @@ class SOLLUMZ_PT_MLO_ENTITY_LIST_PANEL(MloChildTabPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_entities_list_context_menu(bpy.types.Menu):
-    bl_label = "Entities Specials"
+    bl_label = "实体特殊项"
     bl_idname = "SOLLUMZ_MT_entities_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_entity.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_entity.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_entity.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_entity.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_ENTITIES_LIST.last_filter_options.get("entities_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
 
 
 class SOLLUMZ_PT_MLO_ENTITY_TAB_PANEL(TabbedPanelHelper, bpy.types.Panel):
-    bl_label = "Entities"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_MLO_ENTITY_TAB_PANEL"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -169,7 +169,7 @@ class MloEntityChildTabPanel(TabPanel):
 
 
 class SOLLUMZ_PT_MLO_ENTITY_PANEL(MloEntityChildTabPanel, bpy.types.Panel):
-    bl_label = "Entity"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_MLO_ENTITY_PANEL"
 
     icon = "OBJECT_DATA"
@@ -231,7 +231,7 @@ class SOLLUMZ_UL_ENTITY_EXTENSIONS_LIST(ExtensionsListHelper, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_ENTITY_EXTENSIONS_PANEL(MloEntityChildTabPanel, ExtensionsPanelHelper, bpy.types.Panel):
-    bl_label = "Entity Extensions"
+    bl_label = "实体扩展"
     bl_idname = "SOLLUMZ_PT_ENTITY_EXTENSIONS_PANEL"
 
     icon = "CON_TRACKTO"
@@ -258,7 +258,7 @@ class SOLLUMZ_PT_ENTITY_EXTENSIONS_PANEL(MloEntityChildTabPanel, ExtensionsPanel
 
 class SOLLUMZ_PT_ENTITY_FLAGS_PANEL(MloEntityChildTabPanel, MultiSelectUIFlagsPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_ENTITY_FLAGS_PANEL"
-    bl_label = "Entity Flags"
+    bl_label = "实体标记"
 
     icon = "BOOKMARKS"
 

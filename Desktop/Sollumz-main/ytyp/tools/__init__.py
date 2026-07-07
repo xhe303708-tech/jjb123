@@ -10,8 +10,8 @@ class ArchetypeExtensionTool(bpy.types.WorkSpaceTool):
     bl_context_mode = "OBJECT"
 
     bl_idname = "sollumz.archetype_extension"
-    bl_label = "Edit Archetype Extensions"
-    bl_description = "Edit extensions of the selected archetype"
+    bl_label = "编辑架构扩展"
+    bl_description = "编辑所选架构的扩展"
     bl_icon = ICON_GEOM_TOOL
 
     bl_widget = SOLLUMZ_GGT_archetype_extensions.bl_idname

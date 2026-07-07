@@ -81,7 +81,7 @@ class SOLLUMZ_UL_ARCHETYPE_EXTENSIONS_LIST(ExtensionsListHelper, bpy.types.UILis
 
 
 class SOLLUMZ_PT_ARCHETYPE_EXTENSIONS_PANEL(ArchetypeChildTabPanel, ExtensionsPanelHelper, bpy.types.Panel):
-    bl_label = "Extensions"
+    bl_label = "扩展"
     bl_idname = "SOLLUMZ_PT_ARCHETYPE_EXTENSIONS_PANEL"
 
     bl_order = 1

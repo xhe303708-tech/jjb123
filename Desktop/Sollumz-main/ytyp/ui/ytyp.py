@@ -16,7 +16,7 @@ class SOLLUMZ_UL_YTYP_LIST(BasicListHelper, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_YTYP_TOOL_PANEL(bpy.types.Panel):
-    bl_label = "Archetype Definition"
+    bl_label = "架构定义"
     bl_idname = "SOLLUMZ_PT_YTYP_TOOL_PANEL"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -40,7 +40,7 @@ class YtypToolChildPanel:
 
 
 class SOLLUMZ_PT_YTYP_LIST_PANEL(YtypToolChildPanel, bpy.types.Panel):
-    bl_label = "YTYPS"
+    bl_label = "YTYP"
     bl_idname = "SOLLUMZ_PT_YTYP_LIST_PANEL"
     bl_order = 0
 
@@ -73,7 +73,7 @@ class SOLLUMZ_UL_ARCHETYPE_LIST(MultiSelectUIListMixin, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_ARCHETYPE_LIST_PANEL(YtypToolChildPanel, bpy.types.Panel):
-    bl_label = "Archetypes"
+    bl_label = "架构"
     bl_idname = "SOLLUMZ_PT_ARCHETYPE_LIST_PANEL"
     bl_order = 1
 
@@ -101,13 +101,13 @@ class SOLLUMZ_PT_ARCHETYPE_LIST_PANEL(YtypToolChildPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_archetype_list_context_menu(bpy.types.Menu):
-    bl_label = "Archetypes Specials"
+    bl_label = "架构特殊项"
     bl_idname = "SOLLUMZ_MT_archetype_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_ytyp_select_all_archetypes.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_ytyp_select_invert_archetypes.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_ytyp_select_all_archetypes.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_ytyp_select_invert_archetypes.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_ARCHETYPE_LIST.last_filter_options.get("archetypes_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)

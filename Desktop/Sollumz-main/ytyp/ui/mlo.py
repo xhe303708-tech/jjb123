@@ -50,7 +50,7 @@ class SOLLUMZ_UL_ROOM_LIST(MultiSelectUIListMixin, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_ROOM_PANEL(MloChildTabPanel, bpy.types.Panel):
-    bl_label = "Rooms"
+    bl_label = "房间"
     bl_idname = "SOLLUMZ_PT_ROOM_PANEL"
 
     icon = "CUBE"
@@ -88,7 +88,7 @@ class SOLLUMZ_PT_ROOM_PANEL(MloChildTabPanel, bpy.types.Panel):
             row = layout.row()
             row.alert = True
             row.label(
-                text="Gizmo will not appear when no object is linked.")
+                text="未链接对象时，操控器不会显示。")
 
         if len(selected_archetype.rooms) == 0:
             return
@@ -113,13 +113,13 @@ class SOLLUMZ_PT_ROOM_PANEL(MloChildTabPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_rooms_list_context_menu(bpy.types.Menu):
-    bl_label = "Rooms Specials"
+    bl_label = "房间特殊项"
     bl_idname = "SOLLUMZ_MT_rooms_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_room.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_room.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_room.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_room.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_ROOM_LIST.last_filter_options.get("rooms_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -127,7 +127,7 @@ class SOLLUMZ_MT_rooms_list_context_menu(bpy.types.Menu):
 
 class SOLLUMZ_PT_ROOM_FLAGS_PANEL(MultiSelectUIFlagsPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_ROOM_FLAGS_PANEL"
-    bl_label = "Room Flags"
+    bl_label = "房间标记"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_parent_id = SOLLUMZ_PT_ROOM_PANEL.bl_idname
@@ -170,7 +170,7 @@ class SOLLUMZ_UL_PORTAL_LIST(MultiSelectUIListMixin, bpy.types.UIList):
 
 
 class SOLLUMZ_PT_PORTAL_PANEL(MloChildTabPanel, bpy.types.Panel):
-    bl_label = "Portals"
+    bl_label = "Portal"
     bl_idname = "SOLLUMZ_PT_PORTAL_PANEL"
 
     icon = "OUTLINER_OB_LIGHTPROBE"
@@ -199,7 +199,7 @@ class SOLLUMZ_PT_PORTAL_PANEL(MloChildTabPanel, bpy.types.Panel):
 
         row = list_col.row()
         row.operator("sollumz.createportalfromselection",
-                     text="Create From Vertices", icon="GROUP_VERTEX")
+                     text="从顶点创建", icon="GROUP_VERTEX")
         row.prop(context.scene, "sollumz_add_portal_room_from",
                  icon="CUBE", text="")
 
@@ -212,9 +212,9 @@ class SOLLUMZ_PT_PORTAL_PANEL(MloChildTabPanel, bpy.types.Panel):
 
         row = list_col.row(align=True)
         row.operator("sollumz.updateportalfromselection",
-                     text="Update From Vertices", icon="GROUP_VERTEX")
+                     text="从顶点更新", icon="GROUP_VERTEX")
         row.operator("sollumz.flipportal",
-                     text="Flip Direction", icon="LOOP_FORWARDS")
+                     text="翻转方向", icon="LOOP_FORWARDS")
 
         row = layout.row()
         row.use_property_split = False
@@ -223,7 +223,7 @@ class SOLLUMZ_PT_PORTAL_PANEL(MloChildTabPanel, bpy.types.Panel):
         if not selected_archetype.asset and context.scene.show_portal_gizmo:
             row = layout.row()
             row.alert = True
-            row.label(text="Gizmo will not appear when no object is linked.")
+            row.label(text="未链接对象时，操控器不会显示。")
 
         if len(selected_archetype.portals) == 0:
             return
@@ -261,13 +261,13 @@ class SOLLUMZ_PT_PORTAL_PANEL(MloChildTabPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_portals_list_context_menu(bpy.types.Menu):
-    bl_label = "Portals Specials"
+    bl_label = "Portal 特殊项"
     bl_idname = "SOLLUMZ_MT_portals_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_portal.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_portal.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_portal.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_portal.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_PORTAL_LIST.last_filter_options.get("portals_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -275,7 +275,7 @@ class SOLLUMZ_MT_portals_list_context_menu(bpy.types.Menu):
 
 class SOLLUMZ_PT_PORTAL_FLAGS_PANEL(MultiSelectUIFlagsPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_PORTAL_FLAGS_PANEL"
-    bl_label = "Portal Flags"
+    bl_label = "Portal 标记"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_parent_id = SOLLUMZ_PT_PORTAL_PANEL.bl_idname
@@ -307,7 +307,7 @@ class SOLLUMZ_UL_TIMECYCLE_MODIFIER_LIST(MultiSelectUIListMixin, bpy.types.UILis
 
 
 class SOLLUMZ_PT_TIMECYCLE_MODIFIER_PANEL(MloChildTabPanel, bpy.types.Panel):
-    bl_label = "Timecycle Modifiers"
+    bl_label = "时间周期修改器"
     bl_idname = "SOLLUMZ_PT_TIMECYCLE_MODIFIER_PANEL"
 
     icon = "MOD_TIME"
@@ -342,7 +342,7 @@ class SOLLUMZ_PT_TIMECYCLE_MODIFIER_PANEL(MloChildTabPanel, bpy.types.Panel):
         if not selected_archetype.asset and context.scene.show_mlo_tcm_gizmo:
             row = layout.row()
             row.alert = True
-            row.label(text="Gizmo will not appear when no object is linked.")
+            row.label(text="未链接对象时，操控器不会显示。")
 
         if len(selected_archetype.timecycle_modifiers) == 0:
             return
@@ -367,13 +367,13 @@ class SOLLUMZ_PT_TIMECYCLE_MODIFIER_PANEL(MloChildTabPanel, bpy.types.Panel):
 
 
 class SOLLUMZ_MT_timecycle_modifiers_list_context_menu(bpy.types.Menu):
-    bl_label = "Timecycle Modifiers Specials"
+    bl_label = "时间周期修改器特殊项"
     bl_idname = "SOLLUMZ_MT_timecycle_modifiers_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_tcm.bl_idname, text="Select All")
-        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_tcm.bl_idname, text="Invert")
+        op0 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_all_mlo_tcm.bl_idname, text="全选")
+        op1 = layout.operator(ytyp_ops.SOLLUMZ_OT_archetype_select_invert_mlo_tcm.bl_idname, text="反转")
         if (filter_opts := SOLLUMZ_UL_TIMECYCLE_MODIFIER_LIST.last_filter_options.get("timecycle_modifiers_tool_panel", None)):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -381,7 +381,7 @@ class SOLLUMZ_MT_timecycle_modifiers_list_context_menu(bpy.types.Menu):
 
 class SOLLUMZ_PT_MLO_FLAGS_PANEL(MloChildTabPanel, MultiSelectUIFlagsPanel, bpy.types.Panel):
     bl_idname = "SOLLUMZ_PT_MLO_FLAGS_PANEL"
-    bl_label = "MLO Flags"
+    bl_label = "MLO 标记"
 
     icon = "BOOKMARKS"
 
