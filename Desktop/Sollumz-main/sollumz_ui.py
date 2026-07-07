@@ -1,0 +1,850 @@
+import bpy
+from bl_ui.space_statusbar import STATUSBAR_HT_header
+from typing import Optional
+
+from .ydr.operators.materials import SOLLUMZ_OT_convert_active_material_to_selected, SOLLUMZ_OT_auto_convert_current_material
+from .sollumz_preferences import get_addon_preferences, get_export_settings, get_import_settings, SollumzImportSettings, SollumzExportSettings
+from .sollumz_operators import SOLLUMZ_OT_copy_location, SOLLUMZ_OT_copy_rotation, SOLLUMZ_OT_paste_location, SOLLUMZ_OT_paste_rotation
+from .sollumz_properties import (
+    SollumType,
+    MaterialType,
+    SOLLUMZ_UI_NAMES,
+)
+from .sollumz_helper import find_sollumz_parent
+from .lods import (
+    LODLevel,
+    SOLLUMZ_OT_set_lod_level,
+    SOLLUMZ_OT_hide_object,
+    SOLLUMZ_OT_HIDE_COLLISIONS,
+    SOLLUMZ_OT_HIDE_SHATTERMAPS,
+    SOLLUMZ_OT_SHOW_COLLISIONS,
+    SOLLUMZ_OT_SHOW_SHATTERMAPS
+)
+from .icons import icon_manager
+from .meta import DEV_MODE
+
+
+def draw_list_with_add_remove(layout: bpy.types.UILayout, add_operator: str, remove_operator: str, *temp_list_args, **temp_list_kwargs):
+    """Draw a UIList with an add and remove button on the right column. Returns the left column."""
+    row = layout.row()
+    list_col = row.column()
+    list_col.template_list(*temp_list_args, **temp_list_kwargs)
+    side_col = row.column()
+    if add_operator or remove_operator:
+        col = side_col.column(align=True)
+        if add_operator:
+            col.operator(add_operator, text="", icon="ADD")
+        if remove_operator:
+            col.operator(remove_operator, text="", icon="REMOVE")
+
+    return list_col, side_col
+
+
+class BasicListHelper:
+    """Provides functionality for drawing simple lists where each item has a name and icon"""
+    name_prop: str = "name"
+    item_icon: str = "NONE"
+    name_editable: bool = True
+
+    def draw_item(
+        self, context, layout, data, item, icon, active_data, active_propname, index
+    ):
+        icon = self.get_item_icon(item)
+        match icon:
+            case str():
+                icon_str, icon_value = icon, 0
+            case int():
+                icon_str, icon_value = "NONE", icon
+            case _:
+                raise ValueError(f"Invalid item icon. Only str or int supported, got '{icon}'")
+
+        if self.name_editable:
+            layout.prop(item, self.name_prop, text="", emboss=False, icon=icon_str, icon_value=icon_value)
+        else:
+            layout.label(text=getattr(item, self.name_prop), icon=icon_str, icon_value=icon_value)
+
+    def get_item_icon(self, item) -> str | int:
+        return self.item_icon
+
+
+class FilterListHelper:
+    order_by_name_key = "name"
+
+    def filter_items(self, context, data, propname):
+        helper = bpy.types.UI_UL_list
+        items = getattr(data, propname)
+
+        if self.use_filter_sort_alpha:
+            ordered = helper.sort_items_by_name(items, self.order_by_name_key)
+        else:
+            ordered = []
+
+        if self.use_filter_sort_reverse:
+            ordered = list(reversed(ordered))
+
+        # Filtered by self.filter_item
+        filtered = [self.bitflag_filter_item] * len(items)
+
+        for i, item in enumerate(items):
+            if self.filter_item(item) and self._filter_item_name(item):
+                continue
+
+            filtered[i] &= ~self.bitflag_filter_item
+
+        return filtered, ordered
+
+    def _filter_item_name(self, item):
+        try:
+            name = getattr(item, self.order_by_name_key)
+        except AttributeError:
+            raise AttributeError(
+                f"Invalid order_by_name_key for {self.__class__.__name__}! This should be the 'name' attribute for the list item.")
+
+        return not self.filter_name or self.filter_name.lower() in name.lower()
+
+    def filter_item(self, context):
+        return True
+
+
+class SollumzFileSettingsPanel:
+    bl_space_type = "FILE_BROWSER"
+    bl_region_type = "TOOL_PROPS"
+    bl_label = ""
+    bl_parent_id = "FILE_PT_operator"
+
+    operator_id = None
+
+    @classmethod
+    def poll(cls, context):
+        sfile = context.space_data
+        operator = sfile.active_operator
+
+        return operator.bl_idname in cls.operator_id
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+
+        self.draw_settings(layout, self.get_settings(context))
+
+    def get_settings(self, context: bpy.types.Context) -> bpy.types.ID:
+        ...
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: bpy.types.ID):
+        ...
+
+
+class SollumzImportSettingsPanel(SollumzFileSettingsPanel):
+    operator_id = {"SOLLUMZ_OT_import_assets_legacy", "SOLLUMZ_OT_import_assets"}
+
+    def get_settings(self, context: bpy.types.Context):
+        return get_import_settings(context)
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        ...
+
+
+class SollumzExportSettingsPanel(SollumzFileSettingsPanel):
+    operator_id = {"SOLLUMZ_OT_export_assets_legacy", "SOLLUMZ_OT_export_assets"}
+
+    def get_settings(self, context: bpy.types.Context):
+        return get_export_settings(context)
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        ...
+
+
+class SOLLUMZ_PT_import_asset(bpy.types.Panel, SollumzImportSettingsPanel):
+    bl_label = "导入资产"
+    bl_order = 0
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.prop(settings, "import_as_asset")
+
+
+class SOLLUMZ_PT_import_textures(bpy.types.Panel, SollumzImportSettingsPanel):
+    bl_label = "贴图"
+    bl_order = 1
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        col = layout.column(align=True)
+        col.prop(settings, "textures_mode", text="模式")
+        if settings.textures_mode == "CUSTOM_DIR":
+            split = col.split(factor=0.4)
+            split.column()
+            split.column().prop(bpy.context.window_manager, "sz_ui_import_textures_extract_custom_directory_wrapper", text="")
+
+    @classmethod
+    def register(cls):
+        def _get(self) -> str:
+            return get_import_settings().textures_extract_custom_directory
+        def _set(self, value: str):
+            get_import_settings().textures_extract_custom_directory = value
+
+        # 不带 subtype=DIR_PATH 的包装器，避免显示"打开目录浏览器"按钮。我们已经在文件对话框中，
+        # 此时报告错误说无法打开另一个对话框。该包装似乎是隐藏该按钮的唯一办法。
+        kw = SollumzImportSettings.__bases__[0].__annotations__["textures_extract_custom_directory"].keywords
+        bpy.types.WindowManager.sz_ui_import_textures_extract_custom_directory_wrapper = bpy.props.StringProperty(
+            name=kw["name"],
+            description=kw["description"],
+            get=_get, set=_set,
+        )
+
+    @classmethod
+    def unregister(cls):
+        del bpy.types.WindowManager.sz_ui_import_textures_extract_custom_directory_wrapper
+
+
+class SOLLUMZ_PT_import_fragment(bpy.types.Panel, SollumzImportSettingsPanel):
+    bl_label = "碎片"
+    bl_order = 2
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.prop(settings, "split_by_group")
+        layout.prop(settings, "frag_import_vehicle_windows")
+
+
+class SOLLUMZ_PT_import_ydd(bpy.types.Panel, SollumzImportSettingsPanel):
+    bl_label = "可绘制字典"
+    bl_order = 3
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        col = layout.column(align=True)
+        col.row(align=True).prop(settings, "dwd_import_external_skeleton", expand=True)
+
+        if settings.dwd_import_external_skeleton == "SAVED":
+            prefs = get_addon_preferences(bpy.context)
+            if prefs.external_skeleton_paths:
+                col.prop_search(
+                    settings, "dwd_import_external_skeleton_saved_path",
+                    prefs, "external_skeleton_paths",
+                    text=" ", icon="ARMATURE_DATA",
+                )
+            else:
+                split = col.split(factor=0.4)
+                row = split.row()
+                row = split.row()
+                row.alert = True
+                row.label(text="偏好设置中没有已保存的外部骨骼。", icon="ERROR")
+
+
+
+class _SollumzImportYtypPanel(SollumzImportSettingsPanel):
+    bl_label = "架构定义"
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.prop(settings, "ytyp_mlo_instance_entities")
+
+
+class SOLLUMZ_PT_import_ytyp_generic(bpy.types.Panel, _SollumzImportYtypPanel):
+    """用于"导出 RAGE 资产"按钮的 YTYP 导入设置面板。"""
+    bl_order = 4
+
+
+class SOLLUMZ_PT_import_ytyp_concrete(bpy.types.Panel, _SollumzImportYtypPanel):
+    """用于"导入 YTYP"按钮的 YTYP 导入设置面板。
+    与通用面板相同但不带标题。
+    """
+    operator_id = {"SOLLUMZ_OT_importytyp", "SOLLUMZ_OT_import_ytyp_io"}
+    bl_options = {"HIDE_HEADER"}
+    bl_order = 0
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.use_property_split = False
+        super().draw_settings(layout, settings)
+
+class _SollumzImportYmapPanel(SollumzImportSettingsPanel):
+    bl_label = "地图"
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.prop(settings, "ymap_instance_entities")
+
+
+class SOLLUMZ_PT_import_ymap_generic(bpy.types.Panel, _SollumzImportYmapPanel):
+    """用于"导出 RAGE 资产"按钮的 YMAP 导入设置面板。"""
+    bl_order = 5
+
+
+class SOLLUMZ_PT_import_ymap_concrete(bpy.types.Panel, _SollumzImportYmapPanel):
+    """用于"导入 YMAP"按钮的 YMAP 导入设置面板。
+    与通用面板相同但不带标题。
+    """
+    operator_id = {"SOLLUMZ_OT_import_ymap", "SOLLUMZ_OT_import_ymap_from_directory"}
+    bl_options = {"HIDE_HEADER"}
+    bl_order = 0
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzImportSettings):
+        layout.use_property_split = False
+        super().draw_settings(layout, settings)
+
+
+class SOLLUMZ_PT_export_include(bpy.types.Panel, SollumzExportSettingsPanel):
+    bl_label = "包含"
+    bl_order = 0
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        row = layout.row(heading="限制为")
+        row.prop(settings, "limit_to_selected", text="已选中的对象")
+
+
+class SOLLUMZ_PT_export_drawable(bpy.types.Panel, SollumzExportSettingsPanel):
+    bl_label = "可绘制体"
+    bl_order = 1
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        layout.prop(settings, "apply_transforms")
+        layout.prop(settings, "mesh_domain", expand=True)
+
+
+# 暂时为空
+# class SOLLUMZ_PT_export_fragment(bpy.types.Panel, SollumzExportSettingsPanel):
+#     bl_label = "碎片"
+#     bl_order = 2
+#
+#     def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+#         pass
+
+
+# 暂时为空
+# class SOLLUMZ_PT_export_collision(bpy.types.Panel, SollumzExportSettingsPanel):
+#     bl_label = "碰撞"
+#     bl_order = 3
+#
+#     def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+#         pass
+
+
+class SOLLUMZ_PT_export_ydd(bpy.types.Panel, SollumzExportSettingsPanel):
+    bl_label = "可绘制字典"
+    bl_order = 4
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        layout.prop(settings, "exclude_skeleton")
+
+
+class _SollumzExportYtypPanel(SollumzExportSettingsPanel):
+    bl_label = "架构定义"
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        layout.enabled = self.is_enabled(settings)
+        layout.prop(settings, "export_ytyps_include", text="包含", expand=True)
+        if settings.export_ytyps_include == "SELECTED":
+            from .ytyp.ui.ytyp import SOLLUMZ_UL_YTYP_LIST
+
+            layout.template_list(
+                SOLLUMZ_UL_YTYP_LIST.bl_idname,
+                "",
+                bpy.context.scene, "ytyps",
+                bpy.context.scene, "ytyp_index",
+                rows=3
+            )
+
+        layout.separator()
+        layout.prop(settings, "apply_transforms")
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return True
+
+
+class SOLLUMZ_PT_export_ytyp_generic(bpy.types.Panel, _SollumzExportYtypPanel):
+    """用于"导出 RAGE 资产"按钮的 YTYP 导出设置面板。"""
+    bl_order = 6
+
+    def draw_header(self, context):
+        settings = self.get_settings(context)
+        self.layout.prop(settings, "export_ytyps", text="")
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return settings.export_ytyps
+
+
+class SOLLUMZ_PT_export_ytyp_concrete(bpy.types.Panel, _SollumzExportYtypPanel):
+    """用于"导出 YTYP"按钮的 YTYP 导出设置面板。
+    与通用面板相同但不带标题。
+    """
+    operator_id = {"SOLLUMZ_OT_export_ytyp_io"}
+    bl_options = {"HIDE_HEADER"}
+    bl_order = 0
+
+
+class _SollumzExportYmapPanel(SollumzExportSettingsPanel):
+    bl_label = "地图"
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        layout.enabled = self.is_enabled(settings)
+        layout.prop(settings, "export_ymaps_include", text="包含", expand=True)
+        if settings.export_ymaps_include == "SELECTED":
+            from .shared.multiselection import multiselect_ui_draw_list
+            from .ymap_next.properties.map import get_maps
+            from .ymap_next.ui.map import SOLLUMZ_UL_maps_group_list, SOLLUMZ_MT_maps_group_list_context_menu
+
+            if maps := get_maps(bpy.context):
+                multiselect_ui_draw_list(
+                    layout,
+                    maps.groups,
+                    "",
+                    "",
+                    SOLLUMZ_UL_maps_group_list,
+                    SOLLUMZ_MT_maps_group_list_context_menu,
+                    "tool_panel",
+                )
+
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return True
+
+
+class SOLLUMZ_PT_export_ymap_generic(bpy.types.Panel, _SollumzExportYmapPanel):
+    """用于"导出 RAGE 资产"按钮的 YMAP 导出设置面板。"""
+    bl_order = 7
+
+    def draw_header(self, context):
+        settings = self.get_settings(context)
+        self.layout.prop(settings, "export_ymaps", text="")
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return settings.export_ymaps
+
+
+class SOLLUMZ_PT_export_ymap_concrete(bpy.types.Panel, _SollumzExportYmapPanel):
+    """用于"导出 YMAP"按钮的 YMAP 导出设置面板。
+    与通用面板相同但不带标题。
+    """
+    operator_id = {"SOLLUMZ_OT_export_ymap"}
+    bl_options = {"HIDE_HEADER"}
+    bl_order = 0
+
+
+class _SollumzExportYtdPanel(SollumzExportSettingsPanel):
+    bl_label = "贴图字典"
+
+    def draw_settings(self, layout: bpy.types.UILayout, settings: SollumzExportSettings):
+        layout.enabled = self.is_enabled(settings)
+        layout.prop(settings, "export_ytds_include", text="包含", expand=True)
+        if settings.export_ytds_include == "SELECTED":
+            from .shared.multiselection import multiselect_ui_draw_list
+            from .ytd.ui import SOLLUMZ_UL_txd_list, SOLLUMZ_MT_txd_list_context_menu
+
+            multiselect_ui_draw_list(
+                layout,
+                bpy.context.scene.sz_txds.texture_dictionaries,
+                "",
+                "",
+                SOLLUMZ_UL_txd_list,
+                SOLLUMZ_MT_txd_list_context_menu,
+                "tool_panel",
+            )
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return True
+
+
+class SOLLUMZ_PT_export_ytd_generic(bpy.types.Panel, _SollumzExportYtdPanel):
+    """用于"导出 RAGE 资产"按钮的 YTD 导出设置面板。"""
+    bl_order = 8
+
+    def draw_header(self, context):
+        settings = self.get_settings(context)
+        self.layout.prop(settings, "export_ytds", text="")
+
+    def is_enabled(self, settings: SollumzExportSettings):
+        return settings.export_ytds
+
+
+class SOLLUMZ_PT_export_ytd_concrete(bpy.types.Panel, _SollumzExportYtdPanel):
+    """用于"导出 YTD"按钮的 YTD 导出设置面板。
+    与通用面板相同但不带标题。
+    """
+    operator_id = {"SOLLUMZ_OT_export_ytd"}
+    bl_options = {"HIDE_HEADER"}
+    bl_order = 0
+
+
+class SOLLUMZ_PT_TOOL_PANEL(bpy.types.Panel):
+    bl_label = "常规"
+    bl_idname = "SOLLUMZ_PT_TOOL_PANEL"
+    bl_category = "Sollumz 工具"
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_order = 0
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="MODIFIER_DATA")
+
+    def draw(self, context):
+        layout = self.layout
+
+        import_op, export_op = (
+            ("sollumz.import_assets_legacy", "sollumz.export_assets_legacy")
+            if get_addon_preferences(context).legacy_import_export
+            else ("sollumz.import_assets", "sollumz.export_assets")
+        )
+
+        row = layout.row()
+        row.operator(import_op, icon="IMPORT")
+        op = row.operator(export_op, icon="EXPORT")
+        if context.scene.sollumz_export_path != "":
+            op.directory = context.scene.sollumz_export_path
+            op.direct_export = True
+
+        if DEV_MODE:
+            layout.operator("sollumz.dev_test_export_assets")
+
+
+class GeneralToolChildPanel:
+    bl_space_type = "VIEW_3D"
+    bl_region_type = "UI"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_parent_id = SOLLUMZ_PT_TOOL_PANEL.bl_idname
+    bl_category = SOLLUMZ_PT_TOOL_PANEL.bl_category
+
+
+class SOLLUMZ_PT_VIEW_PANEL(GeneralToolChildPanel, bpy.types.Panel):
+    bl_label = "视图"
+    bl_idname = "SOLLUMZ_PT_VIEW_PANEL"
+    bl_options = set()
+    bl_order = 0
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="RESTRICT_VIEW_OFF")
+
+    def draw(self, context):
+        layout = self.layout
+
+        grid = layout.grid_flow(align=True, row_major=True)
+        grid.scale_x = 0.7
+        if context.scene.sollumz_show_collisions:
+            grid.operator(SOLLUMZ_OT_HIDE_COLLISIONS.bl_idname)
+        else:
+            grid.operator(SOLLUMZ_OT_SHOW_COLLISIONS.bl_idname)
+
+        if context.scene.sollumz_show_shattermaps:
+            grid.operator(SOLLUMZ_OT_HIDE_SHATTERMAPS.bl_idname)
+        else:
+            grid.operator(SOLLUMZ_OT_SHOW_SHATTERMAPS.bl_idname)
+
+        layout.separator()
+
+        layout.label(text="细节级别")
+
+        active_obj = context.view_layer.objects.active
+        active_lod_level = self._get_object_active_lod_level(active_obj)
+
+        grid = layout.grid_flow(align=True, row_major=True)
+        grid.enabled = active_obj is not None and context.view_layer.objects.active.mode == "OBJECT"
+        grid.scale_x = 0.7
+        for lod_level in LODLevel:
+            grid.operator(
+                SOLLUMZ_OT_set_lod_level.bl_idname,
+                text=SOLLUMZ_UI_NAMES[lod_level],
+                depress=active_lod_level == lod_level
+            ).lod_level = lod_level
+        grid.operator(SOLLUMZ_OT_hide_object.bl_idname, depress=active_lod_level == "hidden")
+
+    def _get_object_active_lod_level(self, obj: Optional[bpy.types.Object]) -> Optional[str]:
+        if obj is None:
+            return None
+
+        parent_obj = find_sollumz_parent(obj)
+        if parent_obj is None:
+            return None
+
+        active_lod_level = None
+        if parent_obj.hide_get():
+            active_lod_level = "hidden"
+        else:
+            for child in parent_obj.children_recursive:
+                if child.type == "MESH" and child.sollum_type == SollumType.DRAWABLE_MODEL:
+                    # 简单采用我们找到的第一个模型的 LOD 级别。如果用户手动逐个修改模型的 LOD
+                    # 而不是使用工具面板的按钮，可能不准确，但通常应该够用。
+                    active_lod_level = child.sz_lods.active_lod_level
+                    break
+
+        return active_lod_level
+
+
+class SOLLUMZ_PT_OBJ_YMAP_LOCATION(GeneralToolChildPanel, bpy.types.Panel):
+    bl_label = "对象位置与旋转工具"
+    bl_idname = "SOLLUMZ_PT_OBJ_YMAP_LOCATION"
+    bl_order = 3
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="OBJECT_ORIGIN")
+
+    def draw(self, context):
+        layout = self.layout
+        selected_objects = bpy.context.selected_objects
+
+        if not selected_objects:
+            layout.label(text="未选择任何对象")
+            return
+
+        for obj in selected_objects:
+            loc = obj.location
+            rot = obj.matrix_world.to_quaternion()
+
+            box = layout.box()
+            row = box.row(align=True)
+            row.prop(obj, "name", text="", emboss=False)
+
+            row.operator(SOLLUMZ_OT_copy_location.bl_idname, text="", icon='COPYDOWN') \
+               .location = "{:.6f}, {:.6f}, {:.6f}".format(loc[0], loc[1], loc[2])
+
+            row.operator(SOLLUMZ_OT_copy_rotation.bl_idname, text="", icon='COPYDOWN') \
+               .rotation = "{:.6f}, {:.6f}, {:.6f}, {:.6f}".format(rot.x, rot.y, rot.z, rot.w)
+
+            row.operator(SOLLUMZ_OT_paste_location.bl_idname, text="", icon='PASTEDOWN')
+
+            row.operator(SOLLUMZ_OT_paste_rotation.bl_idname, text="", icon='PASTEDOWN')
+
+
+class SOLLUMZ_PT_VERTEX_TOOL_PANEL(GeneralToolChildPanel, bpy.types.Panel):
+    bl_label = "顶点绘制器"
+    bl_idname = "SOLLUMZ_PT_VERTEX_TOOL_PANEL"
+    bl_order = 1
+
+    @classmethod
+    def poll(self, context):
+        preferences = get_addon_preferences(bpy.context)
+        show_panel = preferences.show_vertex_painter
+        return show_panel
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="BRUSH_DATA")
+
+    def draw(self, context):
+        layout = self.layout
+
+        row = layout.row()
+        row.prop(context.scene, "vert_paint_color1", text="")
+        row.operator(
+            "sollumz.paint_vertices").color = context.scene.vert_paint_color1
+
+        row2 = layout.row()
+        row2.prop(context.scene, "vert_paint_color2", text="")
+        row2.operator(
+            "sollumz.paint_vertices").color = context.scene.vert_paint_color2
+
+        row3 = layout.row()
+        row3.prop(context.scene, "vert_paint_color3", text="")
+        row3.operator(
+            "sollumz.paint_vertices").color = context.scene.vert_paint_color3
+
+        preferences = get_addon_preferences(bpy.context)
+        extra = preferences.extra_color_swatches
+        if extra:
+            row4 = layout.row()
+            row4.prop(context.scene, "vert_paint_color4", text="")
+            row4.operator(
+                "sollumz.paint_vertices").color = context.scene.vert_paint_color4
+
+            row5 = layout.row()
+            row5.prop(context.scene, "vert_paint_color5", text="")
+            row5.operator(
+                "sollumz.paint_vertices").color = context.scene.vert_paint_color5
+
+            row6 = layout.row()
+            row6.prop(context.scene, "vert_paint_color6", text="")
+            row6.operator(
+                "sollumz.paint_vertices").color = context.scene.vert_paint_color6
+
+
+class SOLLUMZ_PT_SET_SOLLUM_TYPE_PANEL(GeneralToolChildPanel, bpy.types.Panel):
+    bl_label = "设置 Sollum 类型"
+    bl_idname = "SOLLUMZ_PT_SET_SOLLUM_TYPE_PANEL"
+    bl_order = 2
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="MESH_MONKEY")
+
+    def draw(self, context):
+        layout = self.layout
+        row = layout.row()
+        row.operator("sollumz.setsollumtype")
+        row.prop(context.scene, "all_sollum_type", text="")
+
+
+class SOLLUMZ_PT_EXPORT_PATH_PANEL(GeneralToolChildPanel, bpy.types.Panel):
+    bl_label = "导出路径"
+    bl_idname = "SOLLUMZ_PT_EXPORT_PATH_PANEL"
+    bl_order = 4
+
+    def draw_header(self, context):
+        self.layout.label(text="", icon="FILEBROWSER")
+
+    def draw(self, context):
+        self.layout.prop(context.scene, "sollumz_export_path", text="")
+
+
+class SOLLUMZ_PT_OBJECT_PANEL(bpy.types.Panel):
+    bl_label = "Sollumz"
+    bl_idname = "SOLLUMZ_PT_MAIN_PANEL"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "object"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def draw_header(self, context):
+        icon_manager.icon_label("sollumz_icon", self)
+
+    def draw(self, context):
+        layout = self.layout
+        layout.use_property_split = True
+
+        obj = context.active_object
+        row = layout.row()
+        row.prop(obj, "sollum_type")
+
+        if not obj or obj.sollum_type == SollumType.NONE:
+            layout.label(
+                text="场景中未选择 Sollumz 对象。", icon="ERROR")
+
+
+class SOLLUMZ_PT_ENTITY_PANEL(bpy.types.Panel):
+    bl_label = "实体定义"
+    bl_idname = "SOLLUMZ_PT_ENTITY_PANEL"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "object"
+    bl_options = {"DEFAULT_CLOSED"}
+    bl_parent_id = SOLLUMZ_PT_OBJECT_PANEL.bl_idname
+    bl_order = 1
+
+    @classmethod
+    def poll(cls, context):
+        aobj = context.active_object
+        return aobj is not None and aobj.sollum_type == SollumType.DRAWABLE
+
+    def draw(self, context):
+        layout = self.layout
+        grid = layout.grid_flow(columns=2, even_columns=True, even_rows=True)
+        grid.use_property_split = True
+        aobj = context.active_object
+        grid.prop(aobj.entity_properties, "flags")
+        grid.prop(aobj.entity_properties, "guid")
+        grid.prop(aobj.entity_properties, "parent_index")
+        grid.prop(aobj.entity_properties, "lod_dist")
+        grid.prop(aobj.entity_properties, "child_lod_dist")
+        grid.prop(aobj.entity_properties, "num_children")
+        grid.prop(aobj.entity_properties, "ambient_occlusion_multiplier")
+        grid.prop(aobj.entity_properties, "artificial_ambient_occlusion")
+        grid.prop(aobj.entity_properties, "tint_value")
+        grid.prop(aobj.entity_properties, "lod_level")
+        grid.prop(aobj.entity_properties, "priority_level")
+
+
+class SOLLUMZ_PT_MAT_PANEL(bpy.types.Panel):
+    bl_label = "Sollumz"
+    bl_idname = "SOLLUMZ_PT_MAT_PANEL"
+    bl_space_type = "PROPERTIES"
+    bl_region_type = "WINDOW"
+    bl_context = "material"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    @classmethod
+    def poll(cls, context):
+        obj = context.active_object
+
+        return obj is not None and obj.active_material is not None
+
+    def draw_header(self, context):
+        icon_manager.icon_label("sollumz_icon", self)
+
+    def draw_header_preset(self, context):
+        from .ydr.gta5.presets.shader import SHADER_PRESET_CATEGORY, SOLLUMZ_PT_shader_presets
+        from .ybn.gta5.presets.collision_material import COLLISION_MATERIAL_PRESET_CATEGORY, SOLLUMZ_PT_collision_material_presets
+        if SHADER_PRESET_CATEGORY.poll(context)[0]:
+            SOLLUMZ_PT_shader_presets.draw_panel_header(self.layout)
+        elif COLLISION_MATERIAL_PRESET_CATEGORY.poll(context)[0]:
+            SOLLUMZ_PT_collision_material_presets.draw_panel_header(self.layout)
+
+    def draw(self, context):
+        layout = self.layout
+
+        aobj = context.active_object
+        mat = aobj.active_material
+
+        if not mat or mat.sollum_type == MaterialType.NONE:
+            layout.label(text="该材质不是 Sollumz 材质。", icon="ERROR")
+
+            box = layout.box()
+
+            from .ydr.ui import SOLLUMZ_UL_SHADER_MATERIALS_LIST
+
+            wm = context.window_manager
+
+            box.template_list(
+                SOLLUMZ_UL_SHADER_MATERIALS_LIST.bl_idname, "",
+                wm, "sz_shader_materials", wm, "sz_shader_material_index",
+            )
+
+            row = box.row()
+            row.operator(SOLLUMZ_OT_convert_active_material_to_selected.bl_idname,
+                         text="转换为已选择对象", icon="FILE_REFRESH")
+            row.operator(SOLLUMZ_OT_auto_convert_current_material.bl_idname, text="自动转换", icon="FILE_REFRESH")
+
+            return
+
+
+class FlagsPanel:
+    bl_label = "标记"
+    bl_options = {"DEFAULT_CLOSED"}
+
+    def get_flags(self, context):
+        raise NotImplementedError(
+            f"无法显示标记。'{self.__class__.__name__}.get_flags()' 方法未定义。")
+
+    def draw(self, context):
+        data_block = self.get_flags(context)
+        self.layout.prop(data_block, "total")
+        self.layout.separator()
+        grid = self.layout.grid_flow(columns=2)
+        for index, prop_name in enumerate(data_block.get_flag_names()):
+            if index > data_block.size - 1:
+                break
+            grid.prop(data_block, prop_name)
+
+
+class TimeFlagsPanel(FlagsPanel):
+    bl_label = "时间标记"
+    select_operator = None
+    clear_operator = None
+
+    def draw(self, context):
+        super().draw(context)
+        if self.select_operator is None or self.clear_operator is None:
+            raise NotImplementedError(
+                f"必须为 {self.__class__.__name__} 定义 'select_operator' 和 'clear_operator'！")
+        flags = self.get_flags(context)
+        row = self.layout.row()
+        row.operator(self.select_operator)
+        row.prop(flags, "time_flags_start", text="从")
+        row.prop(flags, "time_flags_end", text="至")
+        row = self.layout.row()
+        row.operator(self.clear_operator)
+
+
+def statusbar_draw_sollumz_version(header, context):
+    from .meta import sollumz_version
+    layout = header.layout.row(align=True)
+    layout.label(text=sollumz_version(), icon_value=icon_manager.get_icon("sollumz_icon"))
+
+
+def statusbar_register_draw():
+    STATUSBAR_HT_header.append(statusbar_draw_sollumz_version)
+
+
+def statusbar_unregister_draw():
+    STATUSBAR_HT_header.remove(statusbar_draw_sollumz_version)
+
+
+def register():
+    statusbar_unregister_draw()
+    if get_addon_preferences().show_version_in_statusbar:
+        statusbar_register_draw()
+
+
+def unregister():
+    statusbar_unregister_draw()

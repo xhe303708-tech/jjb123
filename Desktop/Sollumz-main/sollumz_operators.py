@@ -1,0 +1,1187 @@
+import traceback
+import os
+import bpy
+from bpy.types import (
+    Context,
+    Object,
+    PropertyGroup,
+    Operator,
+)
+from bpy.props import (
+    BoolProperty,
+    PointerProperty,
+)
+import time
+import re
+from pathlib import Path
+from typing import Literal
+from mathutils import Quaternion
+from .sollumz_helper import SOLLUMZ_OT_base, find_sollumz_parent
+from .sollumz_properties import SollumType, SOLLUMZ_UI_NAMES, TimeFlagsMixin
+from .sollumz_preferences import get_addon_preferences, get_import_settings, get_export_settings, ImportSettingsBase, ExportSettingsBase
+from szio.gta5.cwxml import (
+    YDR,
+    YDD,
+    YFT,
+    YBN,
+    YNV,
+    YCD,
+    YTYP,
+    YMAP,
+)
+from .ydr.ydrimport import import_ydr
+from .ydr.ydrexport import export_ydr
+from .ydd.yddimport import import_ydd
+from .ydd.yddexport import export_ydd
+from .yft.yftimport import import_yft
+from .yft.yftexport import export_yft
+from .ybn.ybnimport import import_ybn
+from .ybn.ybnexport import export_ybn
+from .ynv.ynvimport import import_ynv
+from .ycd.ycdimport import import_ycd
+from .ycd.ycdexport import export_ycd
+from .ymap.ymapimport import import_ymap as deprecated_import_ymap
+from .ymap.ymapexport import export_ymap as deprecated_export_ymap
+from .ytyp.ytypimport import import_ytyp
+from .tools.blenderhelper import remove_number_suffix
+from .meta import DEV_MODE
+from .dependencies import IS_SZIO_NATIVE_AVAILABLE, PYMATERIA_REQUIRED_MSG
+from .iecontext import (
+    export_context_scope,
+    ExportContext,
+    ExportBundle,
+    import_context_scope,
+    ImportContext,
+)
+
+from . import logger
+
+
+class TimedOperator:
+    @property
+    def time_elapsed(self) -> float:
+        """获取自执行以来经过的时间"""
+        return round(time.time() - self._start, 3)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._start: float = 0.0
+
+    def execute(self, context: Context):
+        self._start = time.time()
+        return self.execute_timed(context)
+
+    def execute_timed(self, context: Context):
+        ...
+
+
+class SOLLUMZ_OT_import_assets_legacy(TimedOperator, Operator):
+    """导入 CodeWalker 导出的 XML 文件"""
+    bl_idname = "sollumz.import_assets_legacy"
+    bl_label = "导入 CodeWalker XML"
+    bl_options = {"UNDO"}
+
+    directory: bpy.props.StringProperty(subtype="DIR_PATH", options={"HIDDEN", "SKIP_SAVE"})
+    files: bpy.props.CollectionProperty(
+        name="文件路径",
+        type=bpy.types.OperatorFileListElement,
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    filter_glob: bpy.props.StringProperty(
+        default="".join(f"*{filetype.file_extension};" for filetype in (YDR, YDD, YFT, YBN, YNV, YCD, YMAP, YTYP)),
+        options={"HIDDEN", "SKIP_SAVE"},
+        maxlen=255,
+    )
+
+    def draw(self, context):
+        pass
+
+    def execute_timed(self, context):
+        with logger.use_operator_logger(self):
+            if not self.directory or len(self.files) == 0 or self.files[0].name == "":
+                logger.info("未选择任何文件进行导入！")
+                return {"CANCELLED"}
+
+            self.directory = bpy.path.abspath(self.directory)
+
+            filenames = [f.name for f in self.files]
+            filenames, ytyp_filenames = self._separate_ytyp_filenames(filenames)
+            filenames = self._dedupe_hi_yft_filenames(filenames)
+
+            for filename in filenames:
+                filepath = os.path.join(self.directory, filename)
+
+                try:
+
+                    if YDR.file_extension in filepath:
+                        import_ydr(filepath)
+                    elif YDD.file_extension in filepath:
+                        import_ydd(filepath)
+                    elif YFT.file_extension in filepath:
+                        import_yft(filepath)
+                    elif YBN.file_extension in filepath:
+                        import_ybn(filepath)
+                    elif YNV.file_extension in filepath:
+                        import_ynv(filepath)
+                    elif YCD.file_extension in filepath:
+                        import_ycd(filepath)
+                    elif YMAP.file_extension in filepath:
+                        deprecated_import_ymap(filepath)
+                    else:
+                        continue
+
+                    logger.info(f"已成功导入 '{filepath}'")
+                except:
+                    logger.error(f"导入出错: {filepath} \n {traceback.format_exc()}")
+                    return {"CANCELLED"}
+
+            # 在所有资产之后导入 .ytyp，确保架构与对象之间正确链接（如果它们一起导入）
+            for filename in ytyp_filenames:
+                filepath = os.path.join(self.directory, filename)
+                try:
+                    import_ytyp(filepath)
+                    logger.info(f"已成功导入 '{filepath}'")
+                except:
+                    logger.error(f"导入出错: {filepath} \n {traceback.format_exc()}")
+                    return {"CANCELLED"}
+
+            logger.info(f"在 {self.time_elapsed} 秒内导入完成")
+            return {"FINISHED"}
+
+    def invoke(self, context, event):
+        if self.directory and len(self.files) > 0 and self.files[0].name != "":
+            # 已存在文件列表，不打开导入窗口直接执行。
+            # 由下方的 FileHandler（或手动调用操作符，但目前未使用）触发。
+            return self.execute(context)
+
+        context.window_manager.fileselect_add(self)
+        return {"RUNNING_MODAL"}
+
+    def _dedupe_hi_yft_filenames(self, filenames: list[str]) -> list[str]:
+        """如果用户同时选择了非 _hi 的 .yft.xml 和其对应的 _hi.yft.xml，则移除 _hi.yft.xml 以避免重复导入同一模型。
+        """
+        return [f for f in filenames if not f.endswith("_hi.yft.xml") or f"{f[:-11]}.yft.xml" not in filenames]
+
+    def _separate_ytyp_filenames(self, filenames: list[str]) -> tuple[list[str], list[str]]:
+        """将文件名列表分为两个列表：所有资产的列表与仅 .ytyp 的列表。"""
+        asset_filenames, ytyp_filenames = [], []
+        for f in filenames:
+            dest = ytyp_filenames if f.endswith(YTYP.file_extension) else asset_filenames
+            dest.append(f)
+        return asset_filenames, ytyp_filenames
+
+
+
+class ImportAssetsOperatorImpl(ImportSettingsBase, TimedOperator):
+    """导入 RAGE 资产文件"""
+    directory: bpy.props.StringProperty(subtype="DIR_PATH", options={"HIDDEN", "SKIP_SAVE"})
+    files: bpy.props.CollectionProperty(
+        name="文件路径",
+        type=bpy.types.OperatorFileListElement,
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    filter_glob: bpy.props.StringProperty(
+        default="".join(f"*{ext};" for ext in (
+            ".ybn", ".ydr", ".ydd", ".yft", ".ytyp", ".ytd",
+            ".ybn.xml", ".ydr.xml", ".ydd.xml", ".yft.xml", ".ytyp.xml", ".ytd.xml", ".ymap.xml", ".ycd.xml", ".ynv.xml"
+        )),
+        options={"HIDDEN", "SKIP_SAVE"},
+        maxlen=255,
+    )
+
+    # 这些供使用这些操作符的脚本自定义设置并避免干扰用户偏好。
+    use_custom_settings: BoolProperty(
+        name="使用自定义设置",
+        description="使用本操作符中定义的设置，而不是用户偏好",
+        default=False,
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    def draw(self, context):
+        pass
+
+    def execute_timed(self, context):
+        with logger.use_operator_logger(self):
+            if not self.directory or len(self.files) == 0 or self.files[0].name == "":
+                logger.info("未选择任何文件进行导入！")
+                return {"CANCELLED"}
+
+            print(f"{self.directory=}")
+            self.directory = bpy.path.abspath(self.directory)
+
+            filenames = [f.name for f in self.files]
+            filenames, ytd_filenames = self._separate_ytd_filenames(filenames)
+            filenames, ytyp_filenames = self._separate_ytyp_filenames(filenames)
+            filenames, ymap_filenames = self._separate_ymap_filenames(filenames)
+            filenames = self._dedupe_hi_yft_filenames(filenames)
+
+            from pathlib import Path
+            from szio import VPath
+            from szio.gta5 import try_load_asset, AssetType, AssetWithDependencies
+            from .ybn.ybnimport_io import import_ybn as import_ybn_asset
+            from .ydr.ydrimport_io import import_ydr as import_ydr_asset
+            from .ydd.yddimport_io import import_ydd as import_ydd_asset, find_ydd_external_dependencies
+            from .yft.yftimport_io import import_yft as import_yft_asset, find_yft_external_dependencies
+            from .ytyp.ytypimport_io import import_ytyp as import_ytyp_asset
+            from .ytd.ytdimport import import_ytd as import_ytd_asset
+            from .ymap_next.ymapimport import import_ymap as import_ymap_asset, begin_import_ymap_group, end_import_ymap_group
+
+            prefs_import_settings = self if self.use_custom_settings else get_import_settings()
+            import_settings = prefs_import_settings.to_import_context_settings()
+
+            directory = Path(self.directory)
+
+            def _import_asset_legacy(filename: str) -> bool:
+                filepath = directory / filename
+                if filename.endswith(YCD.file_extension):
+                    import_ycd(str(filepath))
+                elif filename.endswith(YNV.file_extension):
+                    import_ynv(str(filepath))
+                elif filepath.suffix in {".ycd", ".ynv"}:
+                    logger.warning(
+                        f"二进制资源格式 '{filepath.suffix}' 暂不支持。"
+                        f"请先使用 CodeWalker 将其导出为 XML。"
+                    )
+                else:
+                    return False
+
+                return True
+
+            def _import_asset(filename: str) -> bool:
+                filepath = directory / filename
+
+                try:
+                    if _import_asset_legacy(str(filepath)):
+                        return True
+
+                    if (load_result := try_load_asset(VPath(filepath), return_target=True)) is None:
+                        if not IS_SZIO_NATIVE_AVAILABLE and filepath.suffix in {".ybn", ".ydr", ".ydd", ".yft", ".ytyp", ".ytd", ".ymap"}:
+                            logger.warning(f"无法导入 '{filepath}'。{PYMATERIA_REQUIRED_MSG}")
+                        else:
+                            logger.warning(f"无法导入 '{filepath}'。不支持的文件格式。")
+                        return False
+
+                    asset, asset_target = load_result
+
+                    name = filepath.name
+                    i = name.find('.')
+                    if 0 < i < len(name) - 1:
+                        name = name[:i]
+
+                    # Search asset external dependencies
+                    with import_context_scope(ImportContext(name, asset_target, directory, import_settings)):
+                        match asset.ASSET_TYPE:
+                            case AssetType.DRAWABLE_DICTIONARY:
+                                asset_with_deps = find_ydd_external_dependencies(asset, name)
+                            case AssetType.FRAGMENT:
+                                asset_with_deps = find_yft_external_dependencies(asset, name)
+                            case _:
+                                asset_with_deps = AssetWithDependencies(name, asset, {})
+
+                        if asset_with_deps is not None:
+                            # find dependencies can potentially change the main asset we are
+                            # exporting, e.g. _hi to non-hi .yft
+                            asset = asset_with_deps.main_asset
+                            name = asset_with_deps.name
+
+                    if asset_with_deps is None:
+                        # Failed to find required dependencies, finder functions should have logged the error already
+                        return False
+
+                    # Import asset into Blender
+                    with import_context_scope(ImportContext(name, asset_target, directory, import_settings)):
+                        match asset.ASSET_TYPE:
+                            case AssetType.BOUND:
+                                import_ybn_asset(asset, name)
+                            case AssetType.DRAWABLE:
+                                import_ydr_asset(asset, name)
+                            case AssetType.DRAWABLE_DICTIONARY:
+                                import_ydd_asset(asset_with_deps, name)
+                            case AssetType.FRAGMENT:
+                                import_yft_asset(asset_with_deps, name)
+                            case AssetType.MAP_TYPES:
+                                import_ytyp_asset(asset, name)
+                            case AssetType.TEXTURE_DICTIONARY:
+                                import_ytd_asset(asset, name)
+                            case AssetType.MAP_DATA:
+                                import_ymap_asset(asset, name)
+                            case _:
+                                assert False, f"不支持的资产类型 '{asset.ASSET_TYPE}'"
+
+                    logger.info(f"已成功导入 '{filepath}'")
+                    return True
+                except:
+                    logger.error(f"导入出错: {filepath} \n {traceback.format_exc()}")
+                    return False
+
+            # Import the .ytds before all the assets to ensure that their images are used
+            for filename in ytd_filenames:
+                _import_asset(filename)
+
+            for filename in filenames:
+                _import_asset(filename)
+
+            # Import the .ytyps and .ymaps after all the assets to ensure that the archetypes get linked to their object
+            # in case they are imported together
+            for filename in ytyp_filenames:
+                _import_asset(filename)
+
+            begin_import_ymap_group()
+            for filename in ymap_filenames:
+                _import_asset(filename)
+            end_import_ymap_group()
+
+            logger.info(f"在 {self.time_elapsed} 秒内导入完成")
+            return {"FINISHED"}
+
+    def invoke(self, context, event):
+        if self.directory and len(self.files) > 0 and self.files[0].name != "":
+            # Already have a list of files, don't open the import window and do the import directly.
+            # Invoked by the FileHandler below (or a manual operator call, but we don't currently do that).
+            return self.execute(context)
+
+        context.window_manager.fileselect_add(self)
+        return {"RUNNING_MODAL"}
+
+    def _dedupe_hi_yft_filenames(self, filenames: list[str]) -> list[str]:
+        """If the user selected both a non-hi .yft[.xml] and its _hi.yft[.xml], remove the _hi.yft[.xml] one to prevent
+        importing the same model twice.
+        """
+        return [
+            f for f in filenames
+            if (
+                (not f.endswith("_hi.yft.xml") or (f"{f[:-11]}.yft.xml" not in filenames and f"{f[:-11]}.yft" not in filenames)) and
+                (not f.endswith("_hi.yft") or (
+                    f"{f[:-7]}.yft.xml" not in filenames and f"{f[:-7]}.yft" not in filenames))
+            )
+        ]
+
+    def _separate_filenames_with_extension(self, ext: str, filenames: list[str]) -> tuple[list[str], list[str]]:
+        """Separate the filenames list into two lists, one with all the assets and another one only with the specified extension."""
+        other_filenames, filenames_with_ext = [], []
+        ext_xml = f"{ext}.xml"
+        for f in filenames:
+            dest = filenames_with_ext if f.endswith(ext) or f.endswith(ext_xml) else other_filenames
+            dest.append(f)
+        return other_filenames, filenames_with_ext
+
+    def _separate_ytd_filenames(self, filenames: list[str]) -> tuple[list[str], list[str]]:
+        """Separate the filenames list into two lists, one with all the assets and another one only with .ytds."""
+        return self._separate_filenames_with_extension(".ytd", filenames)
+
+    def _separate_ytyp_filenames(self, filenames: list[str]) -> tuple[list[str], list[str]]:
+        """Separate the filenames list into two lists, one with all the assets and another one only with .ytyps."""
+        return self._separate_filenames_with_extension(".ytyp", filenames)
+
+    def _separate_ymap_filenames(self, filenames: list[str]) -> tuple[list[str], list[str]]:
+        """Separate the filenames list into two lists, one with all the assets and another one only with .ymaps."""
+        return self._separate_filenames_with_extension(".ymap", filenames)
+
+
+class SOLLUMZ_OT_import_assets(ImportAssetsOperatorImpl, Operator):
+    """导入 RAGE 资产文件"""
+    bl_idname = "sollumz.import_assets"
+    bl_label = "导入 RAGE 资产"
+    bl_options = {"UNDO"}
+
+
+if bpy.app.version >= (4, 1, 0):
+    class SOLLUMZ_FH_import(bpy.types.FileHandler):
+        bl_idname = "SOLLUMZ_FH_import"
+        bl_label = "RAGE 资产导入文件处理器"
+        bl_import_operator = SOLLUMZ_OT_import_assets.bl_idname
+        # 支持多种扩展名，但不支持像 .yft.xml 这样的多段扩展名。`.xml` 应该没问题，
+        # 因为操作符会检查扩展名，但范围略广。
+        bl_file_extensions = ".ybn;.ydr;.ydd;.yft;.ytyp;.ytd;.ymap;.xml;"
+
+        @classmethod
+        def poll_drop(cls, context):
+            a = context.area
+            return a is not None and not get_addon_preferences(context).legacy_import_export and (a.type == "VIEW_3D" or a.type == "OUTLINER")
+
+    class SOLLUMZ_FH_import_legacy(bpy.types.FileHandler):
+        bl_idname = "SOLLUMZ_FH_import_legacy"
+        bl_label = "CodeWalker XML 导入文件处理器"
+        bl_import_operator = SOLLUMZ_OT_import_assets_legacy.bl_idname
+        bl_file_extensions = ".xml"
+
+        @classmethod
+        def poll_drop(cls, context):
+            a = context.area
+            return a is not None and get_addon_preferences(context).legacy_import_export and (a.type == "VIEW_3D" or a.type == "OUTLINER")
+
+
+def _collect_objects_for_export(context, limit_to_selected: bool) -> list[Object]:
+
+    objs = context.scene.objects
+
+    if limit_to_selected:
+        objs = context.view_layer.objects.selected
+
+    return _get_only_parent_objs(objs)
+
+
+def _get_only_parent_objs(objs: list[Object]) -> list[Object]:
+    parent_objs = set()
+    objs = set(objs)
+
+    for obj in objs:
+        parent_obj = find_sollumz_parent(obj)
+
+        if parent_obj is None or parent_obj in parent_objs:
+            continue
+
+        parent_objs.add(parent_obj)
+
+    return list(parent_objs)
+
+
+class SOLLUMZ_OT_export_assets_legacy(TimedOperator, Operator):
+    """导出 CodeWalker XML 文件"""
+    bl_idname = "sollumz.export_assets_legacy"
+    bl_label = "导出 CodeWalker XML"
+
+    filter_glob: bpy.props.StringProperty(
+        default=f"*{YDR.file_extension};*{YDD.file_extension};*{YFT.file_extension};*{YBN.file_extension};*{YCD.file_extension};*{YMAP.file_extension};",
+        options={"HIDDEN", "SKIP_SAVE"},
+        maxlen=255,
+    )
+
+    directory: bpy.props.StringProperty(
+        name="输出目录",
+        description="选择导出输出目录",
+        subtype="DIR_PATH",
+        options={"HIDDEN"}
+    )
+
+    direct_export: bpy.props.BoolProperty(
+        name="直接导出",
+        description="直接导出至输出目录而不打开目录选择对话框",
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    def draw(self, context):
+        pass
+
+    def invoke(self, context, event):
+        if self.direct_export:
+            return self.execute(context)
+        else:
+            context.window_manager.fileselect_add(self)
+            return {"RUNNING_MODAL"}
+
+    def execute_timed(self, context: Context):
+        with logger.use_operator_logger(self) as op_log:
+            logger.info("开始导出...")
+            export_settings = get_export_settings()
+            objs = _collect_objects_for_export(context, export_settings.limit_to_selected)
+
+            self.directory = bpy.path.abspath(self.directory)
+
+            if not objs:
+                if export_settings.limit_to_selected:
+                    logger.info("未选中任何 Sollumz 对象进行导出！")
+                else:
+                    logger.info("场景中没有可导出的 Sollumz 对象！")
+                return {"CANCELLED"}
+
+            any_warnings_or_errors = False
+            for obj in objs:
+                op_log.clear_log_counts()
+                filepath = None
+                try:
+                    success = False
+                    if obj.sollum_type == SollumType.DRAWABLE:
+                        filepath = self.get_filepath(obj, YDR.file_extension)
+                        success = export_ydr(obj, filepath)
+                    elif obj.sollum_type == SollumType.DRAWABLE_DICTIONARY:
+                        filepath = self.get_filepath(obj, YDD.file_extension)
+                        success = export_ydd(obj, filepath)
+                    elif obj.sollum_type == SollumType.FRAGMENT:
+                        filepath = self.get_filepath(obj, YFT.file_extension)
+                        success = export_yft(obj, filepath)
+                    elif obj.sollum_type == SollumType.CLIP_DICTIONARY:
+                        filepath = self.get_filepath(obj, YCD.file_extension)
+                        success = export_ycd(obj, filepath)
+                    elif obj.sollum_type == SollumType.BOUND_COMPOSITE:
+                        filepath = self.get_filepath(obj, YBN.file_extension)
+                        success = export_ybn(obj, filepath)
+                    elif obj.sollum_type == SollumType.DEPRECATED__YMAP:
+                        filepath = self.get_filepath(obj, YMAP.file_extension)
+                        success = deprecated_export_ymap(obj, filepath)
+                    else:
+                        continue
+
+                    if success:
+                        if op_log.has_warnings_or_errors:
+                            logger.info(
+                                f"已导出 '{filepath}' 但包含警告或错误！请检查信息日志了解详情。")
+                            any_warnings_or_errors = True
+                        else:
+                            logger.info(f"已成功导出 '{filepath}'")
+                    else:
+                        if op_log.has_warnings_or_errors:
+                            logger.info(
+                                f"导出 '{obj.name}' 失败，发现错误！请检查信息日志了解详情。")
+                            any_warnings_or_errors = True
+                except:
+                    logger.error(f"导出出错: {filepath or obj.name} \n {traceback.format_exc()}")
+                    any_warnings_or_errors = True
+                    return {"CANCELLED"}
+
+            logger.info(f"在 {self.time_elapsed} 秒内导出完成")
+            if any_warnings_or_errors and bpy.ops.screen.info_log_show.poll():
+                bpy.ops.screen.info_log_show()
+            return {"FINISHED"}
+
+    def get_filepath(self, obj: Object, extension: str):
+        name = remove_number_suffix(obj.name.lower())
+
+        return os.path.join(self.directory, name + extension)
+
+
+class ExportAssetsOperatorImpl(ExportSettingsBase, TimedOperator):
+    """导出 RAGE 资产文件"""
+
+    sz_export_types = {"OBJECT", "YTYP", "YMAP", "YTD"}
+    """本操作符要处理的导出类型。"""
+
+    directory: bpy.props.StringProperty(
+        name="输出目录",
+        description="选择导出输出目录",
+        subtype="DIR_PATH",
+        options={"HIDDEN"}
+    )
+
+    direct_export: bpy.props.BoolProperty(
+        name="直接导出",
+        description="直接导出至输出目录而不打开目录选择对话框",
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    # 这些供使用这些操作符的脚本自定义设置并避免干扰用户偏好。
+    use_custom_settings: BoolProperty(
+        name="使用自定义设置",
+        description="使用本操作符中定义的设置，而不是用户偏好",
+        default=False,
+        options={"HIDDEN", "SKIP_SAVE"}
+    )
+
+    def draw(self, context):
+        prefs = get_addon_preferences(context)
+        if prefs.legacy_import_export:
+            return
+
+        export_prefs = prefs.export_settings
+        from szio.gta5 import AssetFormat, is_provider_available
+        row = self.layout.row(align=False)
+        col = row.column(align=True, heading="格式")
+        for f in ("NATIVE", "CWXML"):
+            if is_provider_available(AssetFormat[f]):
+                col.prop_enum(export_prefs, "target_formats", f)
+
+        col = row.column(align=True, heading="版本")
+        for f in ("GEN8", "GEN9"):
+            col.prop_enum(export_prefs, "target_versions", f)
+
+    def invoke(self, context, event):
+        if self.direct_export:
+            return self.execute(context)
+        else:
+            context.window_manager.fileselect_add(self)
+            return {"RUNNING_MODAL"}
+
+    def execute_timed(self, context: Context):
+        with logger.use_operator_logger(self) as op_log:
+            logger.info("开始导出...")
+            prefs_export_settings = self if self.use_custom_settings else get_export_settings()
+            if "OBJECT" in self.sz_export_types:
+                objs = _collect_objects_for_export(context, prefs_export_settings.limit_to_selected)
+            else:
+                objs = []
+
+            if "YTYP" in self.sz_export_types:
+                export_ytyps = (
+                    # only consider prefs in the generic export operator, the concrete one for YTYPs always exports them
+                    (self.sz_export_types == {"YTYP"} or prefs_export_settings.export_ytyps) and
+                    context.scene.ytyps
+                )
+            else:
+                export_ytyps = False
+
+            if "YMAP" in self.sz_export_types:
+                from .ymap_next.properties.map import get_maps
+                export_ymaps = (
+                    # only consider prefs in the generic export operator, the concrete one for YMAPs always exports them
+                    (self.sz_export_types == {"YMAP"} or prefs_export_settings.export_ymaps) and
+                    (maps := get_maps(context)) and maps.groups
+                )
+            else:
+                export_ymaps = False
+
+            if "YTD" in self.sz_export_types:
+                export_ytds = (
+                    # only consider prefs in the generic export operator, the concrete one for YTDs always exports them
+                    (self.sz_export_types == {"YTD"} or prefs_export_settings.export_ytds) and
+                    context.scene.sz_txds.texture_dictionaries
+                )
+            else:
+                export_ytds = False
+
+            self.directory = bpy.path.abspath(self.directory)
+
+            if not objs and not export_ytyps and not export_ymaps and not export_ytds:
+                if prefs_export_settings.limit_to_selected:
+                    logger.info("未选中任何 Sollumz 对象进行导出！")
+                else:
+                    logger.info("场景中没有可导出的 Sollumz 对象！")
+                return {"CANCELLED"}
+
+
+            export_settings = prefs_export_settings.to_export_context_settings()
+            if not export_settings.targets:
+                from szio.gta5 import AssetFormat, AssetVersion, AssetTarget
+                export_settings.targets = (AssetTarget(AssetFormat.CWXML, AssetVersion.GEN8),)
+                logger.warning(
+                    "未找到导出目标。请在导出设置中同时选择格式与版本。"
+                    "默认使用 CW XML / Gen 8。"
+                )
+
+            directory = Path(self.directory)
+            any_warnings_or_errors = False
+
+            if objs:
+                any_warnings_or_errors = self._export_objects(objs, directory, export_settings, op_log) or any_warnings_or_errors
+
+            if export_ytyps:
+                ytyps = self._collect_ytyps_for_export(context, prefs_export_settings.export_ytyps_include)
+                any_warnings_or_errors = self._export_ytyps(context, ytyps, directory, export_settings, op_log) or any_warnings_or_errors
+
+            if export_ymaps:
+                ymaps = self._collect_ymaps_for_export(context, prefs_export_settings.export_ymaps_include)
+                any_warnings_or_errors = self._export_ymaps(context, ymaps, directory, export_settings, op_log) or any_warnings_or_errors
+
+            if export_ytds:
+                ytds = self._collect_ytds_for_export(context, prefs_export_settings.export_ytds_include)
+                any_warnings_or_errors = self._export_ytds(context, ytds, directory, export_settings, op_log) or any_warnings_or_errors
+
+            logger.info(f"在 {self.time_elapsed} 秒内导出完成")
+            if any_warnings_or_errors and bpy.ops.screen.info_log_show.poll():
+                bpy.ops.screen.info_log_show()
+            return {"FINISHED"}
+
+    def _export_objects(self, objs: list[Object], directory: Path, export_settings, op_log) -> bool:
+        from .ybn.ybnexport_io import export_ybn as export_ybn_asset
+        from .ydr.ydrexport_io import export_ydr as export_ydr_asset
+        from .ydd.yddexport_io import export_ydd as export_ydd_asset
+        from .yft.yftexport_io import export_yft as export_yft_asset
+
+        any_warnings_or_errors = False
+
+        for obj in objs:
+            op_log.clear_log_counts()
+            try:
+                asset_name = remove_number_suffix(obj.name.lower())
+                export_bundle = None
+                legacy_success = False
+                with export_context_scope(ExportContext(asset_name, export_settings)):
+                    match obj.sollum_type:
+                        case SollumType.BOUND_COMPOSITE:
+                            export_bundle = export_ybn_asset(obj)
+                        case SollumType.DRAWABLE:
+                            export_bundle = export_ydr_asset(obj)
+                        case SollumType.DRAWABLE_DICTIONARY:
+                            export_bundle = export_ydd_asset(obj)
+                        case SollumType.FRAGMENT:
+                            export_bundle = export_yft_asset(obj)
+
+                        # These assets still need legacy export
+                        case SollumType.CLIP_DICTIONARY:
+                            filepath = SOLLUMZ_OT_export_assets_legacy.get_filepath(self, obj, YCD.file_extension)
+                            legacy_success = export_ycd(obj, filepath)
+                        case SollumType.DEPRECATED__YMAP:
+                            filepath = SOLLUMZ_OT_export_assets_legacy.get_filepath(self, obj, YMAP.file_extension)
+                            legacy_success = deprecated_export_ymap(obj, filepath)
+
+                        case _:
+                            assert False, f"不支持的资产类型 '{obj.sollum_type}'"
+
+
+                any_warnings_or_errors = self._save_bundle(obj.name, export_bundle, directory, export_settings, op_log, legacy_success=legacy_success) or any_warnings_or_errors
+            except:
+                logger.error(f"导出出错: {obj.name} \n {traceback.format_exc()}")
+                any_warnings_or_errors = True
+
+        return any_warnings_or_errors
+
+    def _collect_ytyps_for_export(self, context, include: Literal["ALL", "SELECTED"]) -> list[int]:
+        n = len(context.scene.ytyps)
+        if include == "SELECTED":
+            # no multiselection yet, can only select one
+            idx = context.scene.ytyp_index
+            return [idx] if 0 <= idx < n else []
+        else:
+            return list(range(n))
+
+    def _export_ytyps(self, context, ytyp_indices: list[int], directory: Path, export_settings, op_log) -> bool:
+        from .ytyp.ytypexport_io import export_ytyp as export_ytyp_asset
+
+        any_warnings_or_errors = False
+
+        for ytyp_index in ytyp_indices:
+            op_log.clear_log_counts()
+            ytyp_name = context.scene.ytyps[ytyp_index].name
+            try:
+                with export_context_scope(ExportContext(ytyp_name, export_settings)):
+                    export_bundle = export_ytyp_asset(context.scene, ytyp_index)
+
+                any_warnings_or_errors = self._save_bundle(ytyp_name, export_bundle, directory, export_settings, op_log) or any_warnings_or_errors
+            except Exception:
+                logger.error(f"导出出错: {ytyp_name} \n {traceback.format_exc()}")
+                any_warnings_or_errors = True
+
+        return any_warnings_or_errors
+
+    def _collect_ymaps_for_export(self, context, include: Literal["ALL", "SELECTED"]) -> list[int]:
+        from .ymap_next.properties.map import get_maps
+
+        map_groups = get_maps(context).groups
+        if include == "SELECTED":
+            return map_groups.selected_items_indices
+        else:
+            return list(range(len(map_groups)))
+
+    def _export_ymaps(self, context, ymap_indices: list[int], directory: Path, export_settings, op_log) -> bool:
+        from .ymap_next.properties.map import get_maps
+        from .ymap_next.ymapexport import export_ymap as export_ymap_asset
+
+        any_warnings_or_errors = False
+        maps = get_maps(context)
+        for map_group_index in ymap_indices:
+            op_log.clear_log_counts()
+            map_group = maps.groups[map_group_index]
+            try:
+                asset_name = map_group.name.lower()
+                with export_context_scope(ExportContext(asset_name, export_settings)):
+                    export_bundles = export_ymap_asset(map_group)
+
+                any_warnings_or_errors = self._save_bundle(map_group.name, export_bundles, directory, export_settings, op_log) or any_warnings_or_errors
+            except Exception:
+                logger.error(f"导出出错: {map_group.name} \n {traceback.format_exc()}")
+                any_warnings_or_errors = True
+
+        return any_warnings_or_errors
+
+    def _collect_ytds_for_export(self, context, include: Literal["ALL", "SELECTED"]) -> list[int]:
+        txds = context.scene.sz_txds.texture_dictionaries
+        if include == "SELECTED":
+            return txds.selected_items_indices
+        else:
+            return list(range(len(txds)))
+
+    def _export_ytds(self, context, txd_indices: list[int], directory: Path, export_settings, op_log) -> bool:
+        from .ytd.ytdexport import export_ytd as export_ytd_asset
+
+        any_warnings_or_errors = False
+
+        for txd_index in txd_indices:
+            op_log.clear_log_counts()
+            txd = context.scene.sz_txds.texture_dictionaries[txd_index]
+            try:
+                asset_name = txd.name.lower()
+                with export_context_scope(ExportContext(asset_name, export_settings)):
+                    export_bundle = export_ytd_asset(txd)
+
+                any_warnings_or_errors = self._save_bundle(txd.name, export_bundle, directory, export_settings, op_log) or any_warnings_or_errors
+            except Exception:
+                logger.error(f"导出出错: {txd.name} \n {traceback.format_exc()}")
+                any_warnings_or_errors = True
+
+        return any_warnings_or_errors
+
+    def _save_bundle(self, name: str, export_bundle: ExportBundle | list[ExportBundle], directory: Path, export_settings, op_log, legacy_success=False) -> bool:
+        any_warnings_or_errors = False
+        export_bundles = export_bundle if isinstance(export_bundle, list) else [export_bundle]
+        success = (export_bundles and all(b.is_valid() for b in export_bundles)) or legacy_success
+        if success:
+            for b in export_bundles:
+                if b:
+                    b.save(directory, export_settings.targets)
+
+            if op_log.has_warnings_or_errors:
+                logger.info(
+                    f"已导出 '{name}' 但包含警告或错误！请检查信息日志了解详情。")
+                any_warnings_or_errors = True
+            else:
+                logger.info(f"已成功导出 '{name}'")
+        else:
+            if op_log.has_warnings_or_errors:
+                logger.info(
+                    f"导出 '{name}' 失败，发现错误！请检查信息日志了解详情。")
+                any_warnings_or_errors = True
+
+        return any_warnings_or_errors
+
+
+class SOLLUMZ_OT_export_assets(ExportAssetsOperatorImpl, Operator):
+    """导出 RAGE 资产文件"""
+    bl_idname = "sollumz.export_assets"
+    bl_label = "导出 RAGE 资产"
+
+
+if DEV_MODE:
+    class SOLLUMZ_OT_dev_test_export_assets(Operator):
+        bl_idname = "sollumz.dev_test_export_assets"
+        bl_label = "[DEV] 测试导出"
+
+        directory: bpy.props.StringProperty(
+            name="输出目录",
+            description="选择导出输出目录",
+            subtype="DIR_PATH",
+            options={"HIDDEN"}
+        )
+
+        def draw(self, context):
+            export_prefs = get_addon_preferences(context).export_settings
+            self.layout.prop(export_prefs, "formats")
+
+        def invoke(self, context, event):
+            context.window_manager.fileselect_add(self)
+            return {"RUNNING_MODAL"}
+
+        def execute(self, context: Context):
+            from pathlib import Path
+            d = Path(self.directory)
+            io_dir = d / "io"
+            io_dir.mkdir(exist_ok=True)
+            legacy_dir = d / "legacy"
+            legacy_dir.mkdir(exist_ok=True)
+            bpy.ops.sollumz.export_assets(directory=str(io_dir), direct_export=True)
+            bpy.ops.sollumz.export_assets_legacy(directory=str(legacy_dir), direct_export=True)
+
+            io_files = list(io_dir.iterdir())
+            legacy_files = list(legacy_dir.iterdir())
+            self.report({"INFO"}, f"{io_files=}")
+            self.report({"INFO"}, f"{legacy_files=}")
+
+            for legacy_file in legacy_dir.iterdir():
+                if not legacy_file.is_file():
+                    continue
+
+                io_file = io_dir / legacy_file.name
+                legacy_size = legacy_file.stat().st_size
+                io_size = io_file.stat().st_size
+                self.report({"INFO"}, f"=============== {legacy_file.name} ===============")
+                self.report({"INFO"}, f"  legacy {legacy_size}  bytes")
+                self.report({"INFO"}, f"      io {io_size}  bytes   ({io_size - legacy_size} bytes)")
+
+            return {"FINISHED"}
+
+
+class SOLLUMZ_OT_paint_vertices(SOLLUMZ_OT_base, Operator):
+    """为所选对象的所有顶点上色"""
+    bl_idname = "sollumz.paint_vertices"
+    bl_label = "上色"
+    bl_action = "顶点上色"
+
+    color: bpy.props.FloatVectorProperty(
+        subtype="COLOR_GAMMA",
+        default=(1.0, 1.0, 1.0, 1.0),
+        min=0,
+        max=1,
+        size=4
+    )
+
+    def paint_map(self, color_attr, color):
+        for datum in color_attr.data:
+            # 使用 color_srgb 以匹配旧的 vertex_colors 行为。需要 3.4+。
+            datum.color_srgb = color
+
+    def paint_mesh(self, mesh, color):
+        if not mesh.color_attributes:
+            mesh.color_attributes.new("Color", 'BYTE_COLOR', 'CORNER')
+        self.paint_map(mesh.attributes.active_color, color)
+
+    def run(self, context):
+        objs = context.selected_objects
+
+        if len(objs) > 0:
+            for obj in objs:
+                if obj.sollum_type == SollumType.DRAWABLE_MODEL:
+                    self.paint_mesh(obj.data, self.color)
+                    self.messages.append(
+                        f"{obj.name} 已成功上色。")
+                else:
+                    self.messages.append(
+                        f"{obj.name} 将被跳过，因为它不是 {SOLLUMZ_UI_NAMES[SollumType.DRAWABLE_MODEL]} 类型。")
+        else:
+            self.message("未选中任何对象进行上色。")
+            return False
+
+        return True
+
+
+class SelectTimeFlagsRange(SOLLUMZ_OT_base):
+    """选择一段时间标记"""
+    bl_label = "选择"
+
+    def get_flags(self, context):
+        return None
+
+    def run(self, context):
+        flags = self.get_flags(context)
+        return SelectTimeFlagsRange._process_one(flags, context)
+
+    @staticmethod
+    def _process_one(flags, context) -> bool:
+        if not flags:
+            return False
+        start = int(flags.time_flags_start)
+        end = int(flags.time_flags_end)
+        index = 0
+        for prop in TimeFlagsMixin.flag_names:
+            if index < 24:
+                if start < end:
+                    if index >= start and index < end:
+                        flags[prop] = True
+                elif start > end:
+                    if index < end or index >= start:
+                        flags[prop] = True
+                elif start == 0 and end == 0:
+                    flags[prop] = True
+            index += 1
+        flags.update_flag(context)
+        return True
+
+
+class SelectTimeFlagsRangeMultiSelect(SOLLUMZ_OT_base):
+    """选择一段时间标记"""
+    bl_label = "选择"
+
+    def iter_selection_flags(self, context):
+        if False:  # 空生成器
+            yield
+
+    def run(self, context):
+        for flags in self.iter_selection_flags(context):
+            if not SelectTimeFlagsRange._process_one(flags, context):
+                return False
+        return True
+
+
+class ClearTimeFlags(SOLLUMZ_OT_base):
+    """清除所有时间标记"""
+    bl_label = "清除选择"
+
+    def get_flags(self, context):
+        return None
+
+    def run(self, context):
+        flags = self.get_flags(context)
+        return ClearTimeFlags._process_one(flags, context)
+
+    @staticmethod
+    def _process_one(flags, context) -> bool:
+        if not flags:
+            return False
+        for prop in TimeFlagsMixin.flag_names:
+            flags[prop] = False
+        flags.update_flag(context)
+        return True
+
+
+class ClearTimeFlagsMultiSelect(SOLLUMZ_OT_base):
+    """清除所有时间标记"""
+    bl_label = "清除选择"
+
+    def iter_selection_flags(self, context):
+        if False:  # empty generator
+            yield
+
+    def run(self, context):
+        for flags in self.iter_selection_flags(context):
+            if not ClearTimeFlags._process_one(flags, context):
+                return False
+        return True
+
+
+_MENU_LABEL = "RAGE 资产 (.ydr, .ydd, .yft, .ybn, .ytyp, .ymap, .ycd, .y*.xml)"
+_MENU_LABEL_LEGACY = f"CodeWalker XML ({YDR.file_extension}, {YDD.file_extension}, {YFT.file_extension}, {YBN.file_extension}, {YCD.file_extension})"
+
+
+def sollumz_menu_func_import(self, context):
+    if get_addon_preferences(context).legacy_import_export:
+        op = SOLLUMZ_OT_import_assets_legacy
+        label = _MENU_LABEL_LEGACY
+    else:
+        op = SOLLUMZ_OT_import_assets
+        label = _MENU_LABEL
+
+    self.layout.operator(op.bl_idname, text=label)
+
+
+def sollumz_menu_func_export(self, context):
+    if get_addon_preferences(context).legacy_import_export:
+        op = SOLLUMZ_OT_export_assets_legacy
+        label = _MENU_LABEL_LEGACY
+    else:
+        op = SOLLUMZ_OT_export_assets
+        label = _MENU_LABEL
+
+    self.layout.operator(op.bl_idname, text=label)
+
+
+class SOLLUMZ_OT_copy_location(Operator):
+    """将对象的位置复制到剪贴板"""
+    bl_idname = "wm.sollumz_copy_location"
+    bl_label = ""
+    location: bpy.props.StringProperty()
+
+    def execute(self, context):
+        bpy.context.window_manager.clipboard = self.location
+        self.report(
+            {'INFO'}, "位置已复制到剪贴板：{}".format(self.location))
+        return {'FINISHED'}
+
+
+class SOLLUMZ_OT_copy_rotation(Operator):
+    """将对象的四元数旋转复制到剪贴板"""
+    bl_idname = "wm.sollumz_copy_rotation"
+    bl_label = ""
+    rotation: bpy.props.StringProperty()
+
+    def execute(self, context):
+        rotation = self.rotation.strip('[]')
+        bpy.context.window_manager.clipboard = rotation
+        self.report(
+            {'INFO'}, "旋转已复制到剪贴板：{}".format(rotation))
+        return {'FINISHED'}
+
+
+class SOLLUMZ_OT_paste_location(Operator):
+    """从剪贴板粘贴对象的位置"""
+    bl_idname = "wm.sollumz_paste_location"
+    bl_label = ""
+
+    @classmethod
+    def poll(cls, context):
+        if context.active_object is None:
+            cls.poll_message_set("未选择任何活动对象。")
+            return False
+        return True
+
+    def execute(self, context):
+        def parse_location_string(location_string):
+            pattern = r"(-?\d+\.\d+)"
+            matches = re.findall(pattern, location_string)
+            if len(matches) == 3:
+                return float(matches[0]), float(matches[1]), float(matches[2])
+            else:
+                return None
+
+        location_string = context.window_manager.clipboard
+
+        location = parse_location_string(location_string)
+        if location is not None:
+            context.active_object.location = location
+            self.report({'INFO'}, "位置已成功设置。")
+        else:
+            self.report({'ERROR'}, "无效的位置字符串。")
+
+        return {'FINISHED'}
+
+
+class SOLLUMZ_OT_paste_rotation(Operator):
+    """从剪贴板粘贴对象的旋转（以四元数形式）并应用"""
+    bl_idname = "wm.sollumz_paste_rotation"
+    bl_label = "粘贴旋转"
+
+    @classmethod
+    def poll(cls, context):
+        if context.active_object is None:
+            cls.poll_message_set("未选择任何活动对象。")
+            return False
+        return True
+
+    def execute(self, context):
+        rotation_string = context.window_manager.clipboard
+
+        rotation_quaternion = parse_rotation_string(rotation_string)
+        if rotation_quaternion is not None:
+            obj = context.active_object
+            prev_rotation_mode = obj.rotation_mode
+            obj.rotation_mode = "QUATERNION"
+            obj.rotation_quaternion = rotation_quaternion
+            obj.rotation_mode = prev_rotation_mode
+
+            self.report({"INFO"}, "旋转已成功设置。")
+        else:
+            self.report({"ERROR"}, "无效的旋转四元数字符串。")
+        return {"FINISHED"}
+
+
+def parse_rotation_string(rotation_string):
+    values = rotation_string.split(",")
+    if len(values) == 4:
+        try:
+            x = float(values[0].strip())
+            y = float(values[1].strip())
+            z = float(values[2].strip())
+            w = float(values[3].strip())
+            return Quaternion((w, x, y, z))
+        except ValueError:
+            pass
+    return None
+
+
+class SOLLUMZ_OT_set_sollum_type(Operator):
+    """设置所有所选对象的 Sollum 类型"""
+    bl_idname = "sollumz.setsollumtype"
+    bl_label = "设置 Sollum 类型"
+
+    def execute(self, context):
+        sollum_type = context.scene.all_sollum_type
+
+        for obj in context.selected_objects:
+            obj.sollum_type = sollum_type
+
+        self.report(
+            {"INFO"}, f"已成功将 Sollum 类型设置为 {SOLLUMZ_UI_NAMES[sollum_type]}。")
+
+        return {"FINISHED"}
+
+
+class SearchEnumHelper:
+    """用于搜索与设置枚举的帮助类"""
+    bl_label = "搜索"
+
+    def get_data_block(self, context):
+        """获取包含枚举属性的数据块"""
+        ...
+
+    def execute(self, context):
+        data_block = self.get_data_block(context)
+        prop_name = getattr(self, "bl_property")
+        enum_value = getattr(self, prop_name)
+
+        setattr(data_block, prop_name, enum_value)
+
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        wm.invoke_search_popup(self)
+
+        return {'FINISHED'}
+
+
+def register():
+    bpy.types.TOPBAR_MT_file_import.append(sollumz_menu_func_import)
+    bpy.types.TOPBAR_MT_file_export.append(sollumz_menu_func_export)
+
+
+def unregister():
+    bpy.types.TOPBAR_MT_file_import.remove(sollumz_menu_func_import)
+    bpy.types.TOPBAR_MT_file_export.remove(sollumz_menu_func_export)
