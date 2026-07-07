@@ -168,10 +168,10 @@ class LODLevels(PropertyGroup):
 
 class SOLLUMZ_OT_set_lod_level(Operator):
     bl_idname = "sollumz.set_lod_level"
-    bl_label = "Set LOD Level"
-    bl_description = "Set the viewing level for the selected Fragment/Drawable"
+    bl_label = "设置 LOD 级别"
+    bl_description = "为所选 Fragment/Drawable 设置查看级别"
 
-    lod_level: EnumProperty(name="LOD Level", items=LODLevelEnumItems)
+    lod_level: EnumProperty(name="LOD 级别", items=LODLevelEnumItems)
 
     @classmethod
     def poll(cls, context):
@@ -197,8 +197,8 @@ class SOLLUMZ_OT_set_lod_level(Operator):
 
 class SOLLUMZ_OT_hide_object(Operator):
     bl_idname = "sollumz.hide_object"
-    bl_label = "Hidden"
-    bl_description = "Set the viewing level for the selected Fragment/Drawable"
+    bl_label = "隐藏"
+    bl_description = "为所选 Fragment/Drawable 设置查看级别"
 
     @classmethod
     def poll(cls, context):
@@ -231,8 +231,8 @@ class SOLLUMZ_OT_hide_object(Operator):
 
 class SOLLUMZ_OT_HIDE_COLLISIONS(bpy.types.Operator):
     bl_idname = "sollumz.hide_collisions"
-    bl_label = "Hide Collisions"
-    bl_description = "Hide all collisions in the scene"
+    bl_label = "隐藏碰撞"
+    bl_description = "隐藏场景中的所有碰撞"
 
     def execute(self, context):
         context.scene.sollumz_show_collisions = False
@@ -243,8 +243,8 @@ class SOLLUMZ_OT_HIDE_COLLISIONS(bpy.types.Operator):
 
 class SOLLUMZ_OT_SHOW_COLLISIONS(bpy.types.Operator):
     bl_idname = "sollumz.show_collisions"
-    bl_label = "Show Collisions"
-    bl_description = "Show all collisions in the scene"
+    bl_label = "显示碰撞"
+    bl_description = "显示场景中的所有碰撞"
 
     def execute(self, context):
         context.scene.sollumz_show_collisions = True
@@ -255,8 +255,8 @@ class SOLLUMZ_OT_SHOW_COLLISIONS(bpy.types.Operator):
 
 class SOLLUMZ_OT_SHOW_SHATTERMAPS(bpy.types.Operator):
     bl_idname = "sollumz.show_shattermaps"
-    bl_label = "Show Shattermaps"
-    bl_description = "Show all shattermaps in the scene"
+    bl_label = "显示破碎贴图"
+    bl_description = "显示场景中的所有破碎贴图"
 
     def execute(self, context):
         context.scene.sollumz_show_shattermaps = True
@@ -267,8 +267,8 @@ class SOLLUMZ_OT_SHOW_SHATTERMAPS(bpy.types.Operator):
 
 class SOLLUMZ_OT_HIDE_SHATTERMAPS(bpy.types.Operator):
     bl_idname = "sollumz.hide_shattermaps"
-    bl_label = "Hide Shattermaps"
-    bl_description = "Hide all shattermaps in the scene"
+    bl_label = "隐藏破碎贴图"
+    bl_description = "隐藏场景中的所有破碎贴图"
 
     def execute(self, context):
         context.scene.sollumz_show_shattermaps = False
@@ -279,8 +279,8 @@ class SOLLUMZ_OT_HIDE_SHATTERMAPS(bpy.types.Operator):
 
 class SOLLUMZ_OT_copy_lod(bpy.types.Operator):
     bl_idname = "sollumz.copy_lod"
-    bl_label = "Copy LOD"
-    bl_description = "Copy the current LOD level into the specified LOD level"
+    bl_label = "复制 LOD"
+    bl_description = "将当前 LOD 级别复制到指定的 LOD 级别"
     bl_options = {"REGISTER", "UNDO"}
 
     copy_lod_levels: lod_level_enum_flag_prop_factory(default={LODLevel.HIGH})
@@ -308,7 +308,7 @@ class SOLLUMZ_OT_copy_lod(bpy.types.Operator):
                 return {"CANCELLED"}
 
             if lod.mesh is not None:
-                self.report({"INFO"}, f"{SOLLUMZ_UI_NAMES[lod_level]} already has a mesh!")
+                self.report({"INFO"}, f"{SOLLUMZ_UI_NAMES[lod_level]} 已有网格！")
                 return {"CANCELLED"}
 
             lod.mesh = active_lod_mesh.copy()
@@ -320,7 +320,7 @@ class SOLLUMZ_OT_copy_lod(bpy.types.Operator):
 
 
 class SOLLUMZ_PT_LOD_LEVEL_PANEL(bpy.types.Panel):
-    bl_label = "Sollumz LODs"
+    bl_label = "Sollumz LOD"
     bl_idname = "SOLLUMZ_PT_LOD_LEVEL_PANEL"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"

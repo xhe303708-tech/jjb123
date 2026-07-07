@@ -151,7 +151,7 @@ class TabPanel:
         """Dynamically create a tab toggle operator class"""
         class SOLLUMZ_OT_toggle_tab(bpy.types.Operator):
             bl_idname = f"sollumz.toggletab_{_tab_id.lower()}"
-            bl_description = f"Toggle the {cls.bl_label} tab"
+            bl_description = f"切换 {cls.bl_label} 标签"
             bl_label = _tab_id
             tab_id = _tab_id
 

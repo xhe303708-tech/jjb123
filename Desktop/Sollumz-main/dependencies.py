@@ -314,8 +314,8 @@ def register_minimal():
     # Defines these classes here as in regular usage these won't be used at all, more hidden this way.
     class SOLLUMZ_OT_install_dependencies(Operator):
         bl_idname = "sollumz.install_dependencies"
-        bl_label = "Sollumz: Install Dependencies?"
-        bl_description = "Install dependencies"
+        bl_label = "Sollumz: 安装依赖？"
+        bl_description = "安装依赖"
 
         optional_dependencies: BoolVectorProperty(
             size=len(DEPENDENCIES_OPTIONAL), default=(True,) * len(DEPENDENCIES_OPTIONAL)
@@ -337,13 +337,13 @@ def register_minimal():
                 global _needs_restart
                 _needs_restart = should_restart
                 if _needs_restart:
-                    self.report({"INFO"}, "Successfully installed dependencies. Please, restart Blender.")
+                    self.report({"INFO"}, "已成功安装依赖。请重启 Blender。")
                 else:
-                    self.report({"INFO"}, "Successfully installed dependencies. Reloading add-ons...")
+                    self.report({"INFO"}, "已成功安装依赖。正在重新加载插件...")
                     bpy.ops.script.reload()
                 return {"FINISHED"}
             else:
-                self.report({"ERROR"}, "Failed to install dependencies.")
+                self.report({"ERROR"}, "安装依赖失败。")
                 return {"CANCELLED"}
 
         def invoke(self, context: bpy.types.Context, event):
@@ -351,8 +351,8 @@ def register_minimal():
                 return context.window_manager.invoke_props_dialog(
                     self,
                     width=450,
-                    title="Sollumz: Install Dependencies?",
-                    confirm_text="Install",
+                    title="Sollumz: 安装依赖？",
+                    confirm_text="安装",
                 )
             else:
                 return context.window_manager.invoke_props_dialog(self, width=450)
@@ -364,7 +364,7 @@ def register_minimal():
             _draw_wrapped_text(
                 context,
                 main_col,
-                "These dependencies are needed for Sollumz to work correctly.",
+                "Sollumz 需要这些依赖才能正常工作。",
                 width=550,
                 width_percent=1.0,
                 dim=False,
@@ -376,11 +376,11 @@ def register_minimal():
                 return state.get(dep.name, DependencyState.UNINSTALLED) == DependencyState.INSTALLED_OUTDATED
 
             col = main_col.column()
-            col.label(text="Required:")
+            col.label(text="必需：")
             for dep in DEPENDENCIES_REQUIRED:
                 label = f"{dep.ui_label}  {dep.version}"
                 if _is_outdated(dep) and (installed_version := get_module_version(dep.name)):
-                    label += f"  (installed {installed_version})"
+                    label += f"  (已安装 {installed_version})"
 
                 col.label(text=label, icon="DOT")
                 _draw_wrapped_text(
@@ -395,11 +395,11 @@ def register_minimal():
                 )
 
             col = main_col.column()
-            col.label(text="Optional:")
+            col.label(text="可选：")
             for i, dep in enumerate(DEPENDENCIES_OPTIONAL):
                 label = f"   {dep.ui_label}  {dep.version}"
                 if _is_outdated(dep) and (installed_version := get_module_version(dep.name)):
-                    label += f"  (installed {installed_version})"
+                    label += f"  (已安装 {installed_version})"
 
                 row = col.row()
                 row.alignment = "LEFT"
@@ -410,13 +410,13 @@ def register_minimal():
                 subrow = row.row()
                 subrow.alignment = "LEFT"
                 subrow.emboss = "PULLDOWN_MENU"
-                subrow.operator("wm.url_open", text="License", icon="URL").url = dep.license_url
+                subrow.operator("wm.url_open", text="许可证", icon="URL").url = dep.license_url
 
                 if not dep.supported:
                     _draw_wrapped_text(
                         context,
                         col,
-                        f"{dep} is not supported on this platform.",
+                        f"{dep} 在此平台不受支持。",
                         width=400,
                         width_percent=1.0,
                         dim=False,
@@ -444,7 +444,7 @@ def register_minimal():
                 )
 
     class SOLLUMZ_PT_deps_minimal(Panel):
-        bl_label = "Missing Dependencies"
+        bl_label = "缺失依赖"
         bl_idname = "SOLLUMZ_PT_deps_minimal"
         bl_category = "Sollumz Tools"
         bl_space_type = "VIEW_3D"
@@ -458,9 +458,9 @@ def register_minimal():
         def draw(self, context):
             layout = self.layout
             if _needs_restart:
-                layout.label(text="Dependencies upgraded. Restart Blender.")
+                layout.label(text="依赖已升级。请重启 Blender。")
             else:
-                layout.operator(SOLLUMZ_OT_install_dependencies.bl_idname, text="Install Dependencies")
+                layout.operator(SOLLUMZ_OT_install_dependencies.bl_idname, text="安装依赖")
 
     class SollumzDepsMinimalAddonPreferences(AddonPreferences):
         bl_idname = __package__
@@ -492,10 +492,10 @@ def register_minimal():
         def _draw_install_dependencies(self, context, layout: UILayout):
             row = layout.row()
             if _needs_restart:
-                row.label(text="Dependencies upgraded. Restart Blender.")
+                row.label(text="依赖已升级。请重启 Blender。")
             else:
-                row.label(text="Missing dependencies", icon="ERROR")
-                row.operator(SOLLUMZ_OT_install_dependencies.bl_idname, text="Install")
+                row.label(text="缺失依赖", icon="ERROR")
+                row.operator(SOLLUMZ_OT_install_dependencies.bl_idname, text="安装")
 
     def _draw_wrapped_text(
         context,
