@@ -8,7 +8,7 @@ from bpy.types import (
 
 from ...icons import icon
 
-CHANNEL_LABELS = ("Red", "Green", "Blue", "Alpha")
+CHANNEL_LABELS = ("红色", "绿色", "蓝色", "Alpha")
 CHANNEL_ICONS = ("RGBA_RED", "RGBA_GREEN", "RGBA_BLUE", "RGBA_ALPHA")
 
 
@@ -41,7 +41,7 @@ def ChannelWithNoneEnumItems(self, context):
         return ChannelWithNoneEnumItems._backing
     except AttributeError:
         ChannelWithNoneEnumItems._backing = tuple((ch.name, ch.label, "", ch.icon, ch.value) for ch in Channel) + (
-            ("NONE", "None", "", "CANCEL", -1),
+            ("NONE", "无", "", "CANCEL", -1),
         )
         return ChannelWithNoneEnumItems._backing
 

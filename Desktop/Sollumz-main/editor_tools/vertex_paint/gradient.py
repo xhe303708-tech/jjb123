@@ -95,16 +95,16 @@ def _np_hsv_to_rgb(h, s, v):
 
 class SOLLUMZ_OT_vertex_paint_gradient(Operator):
     bl_idname = "sollumz.vertex_paint_gradient"
-    bl_label = "Vertex Paint Gradient"
-    bl_description = "Draw a line to paint a color gradient to the selected vertices"
+    bl_label = "顶点绘制渐变"
+    bl_description = "绘制一条线，将颜色渐变绘制到所选顶点"
     bl_options = {"REGISTER", "UNDO", "DEPENDS_ON_CURSOR"}
     bl_cursor_pending = "PICK_AREA"
 
     start_color: FloatVectorProperty(
-        name="Start Color",
+        name="起始颜色",
         subtype="COLOR_GAMMA",
         default=[1.0, 0.0, 0.0],
-        description="Start color of the gradient",
+        description="渐变的起始颜色",
         size=3,
         min=0.0,
         max=1.0,
@@ -112,37 +112,37 @@ class SOLLUMZ_OT_vertex_paint_gradient(Operator):
     )
 
     end_color: FloatVectorProperty(
-        name="End Color",
+        name="结束颜色",
         subtype="COLOR_GAMMA",
         default=[0.0, 1.0, 0.0],
-        description="End color of the gradient",
+        description="渐变的结束颜色",
         size=3,
         min=0.0,
         max=1.0,
         options={"SKIP_SAVE"},
     )
 
-    start_point: FloatVectorProperty(name="Start Point", size=2, options={"HIDDEN", "SKIP_SAVE"})
-    end_point: FloatVectorProperty(name="End Point", size=2, options={"HIDDEN", "SKIP_SAVE"})
+    start_point: FloatVectorProperty(name="起始点", size=2, options={"HIDDEN", "SKIP_SAVE"})
+    end_point: FloatVectorProperty(name="结束点", size=2, options={"HIDDEN", "SKIP_SAVE"})
 
     type: EnumProperty(
-        name="Type",
+        name="类型",
         items=(
-            ("LINEAR", "Linear", ""),
-            ("RADIAL", "Radial", ""),
+            ("LINEAR", "线性", ""),
+            ("RADIAL", "径向", ""),
         ),
         default="LINEAR",
         options={"SKIP_SAVE"},
     )
     use_hue_blend: BoolProperty(
-        name="Use Hue Blend",
-        description="Gradually blend start and end colors using full hue range instead of simple blend",
+        name="使用色相混合",
+        description="使用完整色相范围在起始和结束颜色间平滑混合，而不是简单混合",
         default=False,
         options={"SKIP_SAVE"},
     )
     truncate: BoolProperty(
-        name="Truncate",
-        description="Truncate the gradient to the drag area instead of applying it to the whole mesh",
+        name="截断",
+        description="将渐变截断到拖动区域，而不是应用到整个网格",
         default=False,
         options={"SKIP_SAVE"},
     )
@@ -448,12 +448,12 @@ class SOLLUMZ_OT_vertex_paint_gradient(Operator):
 
     def _draw_status_bar(self, header, context):
         layout = header.layout.row(align=True)
-        layout.label(text=" Cancel", icon="EVENT_ESC")
-        layout.label(text="    Move", icon="EVENT_SPACEKEY")
-        layout.label(text=" Snap", icon="EVENT_CTRL")
-        layout.label(text="Linear" if self.type == "RADIAL" else "Radial", icon="EVENT_R")
-        layout.label(text="Hue Blend", icon="EVENT_H")
-        layout.label(text="Truncate", icon="EVENT_T")
+        layout.label(text=" 取消", icon="EVENT_ESC")
+        layout.label(text="    移动", icon="EVENT_SPACEKEY")
+        layout.label(text=" 捕捉", icon="EVENT_CTRL")
+        layout.label(text="线性" if self.type == "RADIAL" else "径向", icon="EVENT_R")
+        layout.label(text="色相混合", icon="EVENT_H")
+        layout.label(text="截断", icon="EVENT_T")
 
     def _draw_gradient_callback(self):
         line_shader = gpu.shader.from_builtin("SMOOTH_COLOR")
@@ -490,8 +490,8 @@ class VertexPaintGradientTool(WorkSpaceTool):
     bl_context_mode = "PAINT_VERTEX"
 
     bl_idname = "sollumz.vertex_paint_gradient_tool"
-    bl_label = "Gradient"
-    bl_description = "Paint a gradient"
+    bl_label = "渐变"
+    bl_description = "绘制渐变"
     bl_icon = ICON_GEOM_GRADIENT
 
     bl_keymap = (

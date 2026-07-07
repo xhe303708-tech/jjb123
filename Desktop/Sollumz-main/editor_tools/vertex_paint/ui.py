@@ -39,10 +39,10 @@ from .utils import (
 
 class SOLLUMZ_PT_vertex_paint_isolate_channels(Panel):
     bl_idname = "SOLLUMZ_PT_vertex_paint_isolate_channels"
-    bl_label = "Isolate Channels"
+    bl_label = "隔离通道"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vertex Paint"
+    bl_category = "顶点绘制"
     bl_context = "vertexpaint"
     bl_order = 1
 
@@ -64,10 +64,10 @@ class SOLLUMZ_PT_vertex_paint_isolate_channels(Panel):
 
 class SOLLUMZ_PT_vertex_paint_multiproxy(Panel):
     bl_idname = "SOLLUMZ_PT_vertex_paint_multiproxy"
-    bl_label = "Multi-Object Vertex Paint"
+    bl_label = "多对象顶点绘制"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vertex Paint"
+    bl_category = "顶点绘制"
     bl_context = "vertexpaint"
     bl_order = 2
 
@@ -81,9 +81,9 @@ class SOLLUMZ_PT_vertex_paint_multiproxy(Panel):
                 layout.operator(SOLLUMZ_OT_vertex_paint_multiproxy_exit.bl_idname, depress=True, icon="TRIA_LEFT")
                 col = layout.column(align=True)
                 col.scale_y = 0.9
-                col.label(text="Objects:")
+                col.label(text="对象：")
                 for o in proxy_state.objects:
-                    n = o.ref.name if o.ref else "< Deleted >"
+                    n = o.ref.name if o.ref else "< 已删除 >"
                     col.label(text=n, icon="DOT")
             else:
                 layout.operator(SOLLUMZ_OT_vertex_paint_multiproxy.bl_idname, icon="TRIA_RIGHT")
@@ -91,10 +91,10 @@ class SOLLUMZ_PT_vertex_paint_multiproxy(Panel):
 
 class SOLLUMZ_PT_vertex_paint_transfer_channels(Panel):
     bl_idname = "SOLLUMZ_PT_vertex_paint_transfer_channels"
-    bl_label = "Transfer Channels"
+    bl_label = "转移通道"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vertex Paint"
+    bl_category = "顶点绘制"
     bl_context = "vertexpaint"
     bl_options = {"DEFAULT_CLOSED"}
     bl_order = 3
@@ -133,7 +133,7 @@ class SOLLUMZ_PT_vertex_paint_transfer_channels(Panel):
             subrow.label(text="", icon_value=dst_ch.icon)
             subrow.label(text="")
 
-        op = layout.operator(SOLLUMZ_OT_vertex_paint_transfer_channels.bl_idname, text="Transfer")
+        op = layout.operator(SOLLUMZ_OT_vertex_paint_transfer_channels.bl_idname, text="转移")
         op.src_attribute = wm.sz_ui_vertex_paint_transfer_src_attr
         op.dst_attribute = wm.sz_ui_vertex_paint_transfer_dst_attr
         op.src_for_dst_r = wm.sz_ui_vertex_paint_transfer_src_for_dst_r
@@ -156,22 +156,22 @@ class SOLLUMZ_PT_vertex_paint_transfer_channels(Panel):
             return items
 
         WindowManager.sz_ui_vertex_paint_transfer_src_attr = EnumProperty(
-            items=_attr_enum_items, name="Source Attribute", default=0
+            items=_attr_enum_items, name="源属性", default=0
         )
         WindowManager.sz_ui_vertex_paint_transfer_dst_attr = EnumProperty(
-            items=_attr_enum_items, name="Destination Attribute", default=0
+            items=_attr_enum_items, name="目标属性", default=0
         )
         WindowManager.sz_ui_vertex_paint_transfer_src_for_dst_r = EnumProperty(
-            items=ChannelWithNoneEnumItems, name="Source Channel for Destination Red Channel", default=0
+            items=ChannelWithNoneEnumItems, name="目标红色通道对应的源通道", default=0
         )
         WindowManager.sz_ui_vertex_paint_transfer_src_for_dst_g = EnumProperty(
-            items=ChannelWithNoneEnumItems, name="Source Channel for Destination Green Channel", default=1
+            items=ChannelWithNoneEnumItems, name="目标绿色通道对应的源通道", default=1
         )
         WindowManager.sz_ui_vertex_paint_transfer_src_for_dst_b = EnumProperty(
-            items=ChannelWithNoneEnumItems, name="Source Channel for Destination Blue Channel", default=2
+            items=ChannelWithNoneEnumItems, name="目标蓝色通道对应的源通道", default=2
         )
         WindowManager.sz_ui_vertex_paint_transfer_src_for_dst_a = EnumProperty(
-            items=ChannelWithNoneEnumItems, name="Source Channel for Destination Alpha Channel", default=3
+            items=ChannelWithNoneEnumItems, name="目标 Alpha 通道对应的源通道", default=3
         )
 
     @classmethod
@@ -186,10 +186,10 @@ class SOLLUMZ_PT_vertex_paint_transfer_channels(Panel):
 
 class SOLLUMZ_PT_vertex_paint_terrain(Panel):
     bl_idname = "SOLLUMZ_PT_vertex_paint_terrain"
-    bl_label = "Terrain Painter"
+    bl_label = "地形绘制器"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vertex Paint"
+    bl_category = "顶点绘制"
     bl_context = "vertexpaint"
     bl_options = {"DEFAULT_CLOSED"}
     bl_order = 4
@@ -200,11 +200,11 @@ class SOLLUMZ_PT_vertex_paint_terrain(Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Paint Texture 1").texture = 1
-        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Paint Texture 2").texture = 2
+        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="绘制贴图 1").texture = 1
+        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="绘制贴图 2").texture = 2
         row = layout.row()
-        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Paint Texture 3").texture = 3
-        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Paint Texture 4").texture = 4
+        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="绘制贴图 3").texture = 3
+        row.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="绘制贴图 4").texture = 4
         row = layout.row(align=True)
         alpha = context.window_manager.sz_ui_vertex_paint_terrain_alpha
         row.operator(SOLLUMZ_OT_vertex_paint_terrain_alpha.bl_idname).alpha = alpha
@@ -221,10 +221,10 @@ class SOLLUMZ_PT_vertex_paint_terrain(Panel):
 
 class SOLLUMZ_PT_palette_picker(Panel):
     bl_idname = "SOLLUMZ_PT_palette_picker"
-    bl_label = "Palette Picker"
+    bl_label = "调色板拾取器"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
-    bl_category = "Vertex Paint"
+    bl_category = "顶点绘制"
     bl_context = "vertexpaint"
     bl_options = {"DEFAULT_CLOSED"}
     bl_order = 5
@@ -234,12 +234,12 @@ class SOLLUMZ_PT_palette_picker(Panel):
 
     def draw(self, context):
         layout = self.layout
-        layout.operator(SOLLUMZ_OT_vertex_paint_pick_palette_color.bl_idname, text="Pick")
+        layout.operator(SOLLUMZ_OT_vertex_paint_pick_palette_color.bl_idname, text="拾取")
 
 
 class SOLLUMZ_MT_vertex_painter_pie_menu(Menu):
     bl_idname = "SOLLUMZ_MT_vertex_painter_pie_menu"
-    bl_label = "Sollumz Vertex Painter"
+    bl_label = "Sollumz 顶点绘制器"
 
     @classmethod
     def poll(cls, context):
@@ -250,35 +250,35 @@ class SOLLUMZ_MT_vertex_painter_pie_menu(Menu):
 
         pie = layout.menu_pie()
 
-        # Left
+        # 左
         pie.column()
 
-        # Right
+        # 右
         prow = pie.row()
         col = prow.column()
         row = col.row(align=True)
         row.alignment = "CENTER"
-        row.label(text="Terrain")
+        row.label(text="地形")
         subcol = col.column(align=True)
         subcol.scale_x = 1.0
         subcol.scale_y = 1.6
-        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Texture 1").texture = 1
-        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Texture 2").texture = 2
-        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Texture 3").texture = 3
-        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="Texture 4").texture = 4
+        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="贴图 1").texture = 1
+        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="贴图 2").texture = 2
+        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="贴图 3").texture = 3
+        subcol.operator(SOLLUMZ_OT_vertex_paint_terrain_texture.bl_idname, text="贴图 4").texture = 4
 
         prow.separator()
 
         col = prow.column()
         row = col.row(align=True)
         row.alignment = "CENTER"
-        row.label(text="Palette")
+        row.label(text="调色板")
         subcol = col.column(align=True)
         subcol.scale_x = 1.0
         subcol.scale_y = 1.6
-        subcol.operator(SOLLUMZ_OT_vertex_paint_pick_palette_color.bl_idname, text="Palette Pick", icon="EYEDROPPER")
+        subcol.operator(SOLLUMZ_OT_vertex_paint_pick_palette_color.bl_idname, text="调色板拾取", icon="EYEDROPPER")
 
-        # Bottom
+        # 下
         col = pie.column()
         if aobj := context.active_object:
             if aobj.sz_multiproxy_state.is_multiproxy:
@@ -286,12 +286,12 @@ class SOLLUMZ_MT_vertex_painter_pie_menu(Menu):
             else:
                 col.operator(SOLLUMZ_OT_vertex_paint_multiproxy.bl_idname, icon="TRIA_RIGHT")
 
-        # Top
+        # 上
         isolated_channels = isolate_get_state(context).channels
         col = pie.column()
         row = col.row(align=True)
         row.alignment = "CENTER"
-        row.label(text="Isolate")
+        row.label(text="隔离")
         row = col.row(align=True)
         row.scale_x = 1.6
         row.scale_y = 2.0
@@ -308,8 +308,8 @@ class SOLLUMZ_MT_vertex_painter_pie_menu(Menu):
 def _draw_vertex_paint_menu(menu, context):
     layout = menu.layout
     layout.separator()
-    layout.operator(SOLLUMZ_OT_vertex_paint_gradient.bl_idname, text="Gradient (Linear)").type = "LINEAR"
-    layout.operator(SOLLUMZ_OT_vertex_paint_gradient.bl_idname, text="Gradient (Radial)").type = "RADIAL"
+    layout.operator(SOLLUMZ_OT_vertex_paint_gradient.bl_idname, text="渐变（线性）").type = "LINEAR"
+    layout.operator(SOLLUMZ_OT_vertex_paint_gradient.bl_idname, text="渐变（径向）").type = "RADIAL"
 
 
 _addon_keymaps = []

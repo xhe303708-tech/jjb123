@@ -18,8 +18,8 @@ from bpy.types import (
 
 class SOLLUMZ_OT_vertex_paint_multiproxy(Operator):
     bl_idname = "sollumz.vertex_paint_multiproxy"
-    bl_label = "Enter Multi-Object Vertex Paint"
-    bl_description = "Vertex paint across all selected objects simultaneously through a proxy object"
+    bl_label = "进入多对象顶点绘制"
+    bl_description = "通过代理对象同时对所有已选对象进行顶点绘制"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -50,8 +50,7 @@ class SOLLUMZ_OT_vertex_paint_multiproxy(Operator):
             bad_attrs = ", ".join(bad_attrs)
             self.report(
                 {"WARNING"},
-                f"Attributes found on different domains! Make sure the following attributes are on the same domain "
-                f"for all selected objects: {bad_attrs}",
+                f"在不同域上找到的属性！请确保以下属性在所有所选对象上位于同一域: {bad_attrs}",
             )
             return {"CANCELLED"}
 
@@ -116,24 +115,24 @@ class SOLLUMZ_OT_vertex_paint_multiproxy(Operator):
 
 class SOLLUMZ_OT_vertex_paint_multiproxy_exit(Operator):
     bl_idname = "sollumz.vertex_paint_multiproxy_exit"
-    bl_label = "Exit Multi-Object Vertex Paint"
-    bl_description = "Apply vertex paint changes to the original objects and delete the proxy object"
+    bl_label = "退出多对象顶点绘制"
+    bl_description = "将顶点绘制更改应用到原始对象并删除代理对象"
     bl_options = {"UNDO"}
 
     missing_attributes_mode: EnumProperty(
         items=(
             (
                 "ADD_MISSING",
-                "Add Missing",
-                "Add all attributes to the meshes that don't have them",
+                "添加缺失",
+                "为没有这些属性的网格添加所有属性",
             ),
             (
                 "SKIP_MISSING",
-                "Skip Missing",
-                "Skip missing attributes, only apply attributes that already exist in the meshes",
+                "跳过缺失",
+                "跳过缺失的属性，只应用网格中已存在的属性",
             ),
         ),
-        name="Missing Attributes Mode",
+        name="缺失属性模式",
         default="ADD_MISSING",
     )
 
@@ -146,8 +145,8 @@ class SOLLUMZ_OT_vertex_paint_multiproxy_exit(Operator):
         layout = self.layout
         col = layout.column(align=True)
         col.scale_y = 0.9
-        col.label(text="Objects have different color attributes.")
-        col.label(text="Choose how to handle missing attributes on exit:")
+        col.label(text="对象拥有不同的颜色属性。")
+        col.label(text="选择在退出时如何处理缺失的属性：")
         layout.prop(self, "missing_attributes_mode", expand=True)
         layout.separator()
 

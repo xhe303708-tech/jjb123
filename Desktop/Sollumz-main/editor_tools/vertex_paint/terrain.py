@@ -47,10 +47,10 @@ def apply_terrain_brush_setting_to_current_brush(idx: int, paint_alpha: float | 
 
 class SOLLUMZ_OT_vertex_paint_terrain_texture(Operator):
     bl_idname = "sollumz.vertex_paint_terrain_texture"
-    bl_label = "Paint Terrain Texture"
-    bl_description = "Apply brush color settings to paint a terrain texture layer"
+    bl_label = "绘制地形贴图"
+    bl_description = "应用画笔颜色设置以绘制地形贴图层"
 
-    texture: IntProperty(name="Texture", min=1, max=4)
+    texture: IntProperty(name="贴图", min=1, max=4)
 
     @classmethod
     def poll(cls, context) -> bool:
@@ -64,8 +64,8 @@ class SOLLUMZ_OT_vertex_paint_terrain_texture(Operator):
 
 class SOLLUMZ_OT_vertex_paint_terrain_alpha(Operator):
     bl_idname = "sollumz.vertex_paint_terrain_alpha"
-    bl_label = "Paint Terrain Alpha"
-    bl_description = "Apply brush setting to paint a terrain lookup sampler alpha"
+    bl_label = "绘制地形 Alpha"
+    bl_description = "应用画笔设置以绘制地形查找采样器 Alpha"
 
     alpha: bpy.props.FloatProperty(name="Alpha", min=-1.0, max=1.0)
 

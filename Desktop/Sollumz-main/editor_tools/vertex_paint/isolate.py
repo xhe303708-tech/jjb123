@@ -145,24 +145,24 @@ def isolate_toggle_channel(context: Context, ch: Channel, extend: bool):
 
 class SOLLUMZ_OT_vertex_paint_isolate_toggle_channel(Operator):
     bl_idname = "sollumz.vertex_paint_isolate_toggle_channel"
-    bl_label = "Isolate Channel"
-    bl_description = "Isolate a channel of the active color attribute"
+    bl_label = "隔离通道"
+    bl_description = "隔离当前颜色属性的一个通道"
     bl_options = {"UNDO"}
 
-    channel: IntProperty(name="Channel", min=0, max=3, default=0)
-    extend: BoolProperty(name="Extend", default=False)
+    channel: IntProperty(name="通道", min=0, max=3, default=0)
+    extend: BoolProperty(name="扩展", default=False)
 
     @classmethod
     def description(cls, context, properties) -> str:
         match Channel(properties.channel):
             case Channel.RED:
-                return "Isolate the red channel of the active color attribute"
+                return "隔离当前颜色属性的红色通道"
             case Channel.GREEN:
-                return "Isolate the green channel of the active color attribute"
+                return "隔离当前颜色属性的绿色通道"
             case Channel.BLUE:
-                return "Isolate the blue channel of the active color attribute"
+                return "隔离当前颜色属性的蓝色通道"
             case Channel.ALPHA:
-                return "Isolate the alpha channel of the active color attribute"
+                return "隔离当前颜色属性的 Alpha 通道"
 
         return cls.bl_description
 

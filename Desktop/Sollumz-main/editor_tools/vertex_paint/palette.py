@@ -44,13 +44,13 @@ def is_in_texture(area, position):
 
 class SOLLUMZ_OT_vertex_paint_pick_palette_color(Operator):
     bl_idname = "sollumz.vertex_paint_pick_palette_color"
-    bl_label = "Palette Color Picker"
-    bl_description = "Pick a tint index from a Image Editor and set the vertex brush color channel"
+    bl_label = "调色板颜色拾取器"
+    bl_description = "从图像编辑器中拾取色调索引，并设置顶点画笔颜色通道"
 
     @classmethod
     def poll(cls, context):
         if not get_all_image_editor_areas(context):
-            cls.poll_message_set("No Image Editor open")
+            cls.poll_message_set("未打开图像编辑器")
             return False
 
         return True
@@ -82,7 +82,7 @@ class SOLLUMZ_OT_vertex_paint_pick_palette_color(Operator):
                         # Since 5.0, brush colors are stored in scene linear color space
                         b = Color((0.0, 0.0, b)).from_srgb_to_scene_linear().b
                     vertex_paint_unified_colors(context).color.b = b
-                    self.report({"INFO"}, f"Picked index: {index}")
+                    self.report({"INFO"}, f"已拾取索引: {index}")
                     self._cleanup(context)
                     return {"FINISHED"}
 
@@ -129,8 +129,8 @@ class SOLLUMZ_OT_vertex_paint_pick_palette_color(Operator):
 
     def _draw_status_bar(self, header, context):
         layout = header.layout.row(align=True)
-        layout.label(text=" Cancel", icon="EVENT_ESC")
-        layout.label(text="Pick", icon="MOUSE_LMB")
+        layout.label(text=" 取消", icon="EVENT_ESC")
+        layout.label(text="拾取", icon="MOUSE_LMB")
 
     def _draw_overlay(self):
         """Draw an overlay over the palette image to show the selected column."""
@@ -175,4 +175,4 @@ class SOLLUMZ_OT_vertex_paint_pick_palette_color(Operator):
         blf.position(0, x0 + 16, y0 + 32, 0)
         blf.size(0, 15.0)
         blf.color(0, 0.9, 0.9, 0.9, 1.0)
-        blf.draw(0, f"Index: {index}")
+        blf.draw(0, f"索引: {index}")

@@ -14,23 +14,23 @@ from .utils import Channel, ChannelWithNoneEnumItems, attr_domain_size
 
 class SOLLUMZ_OT_vertex_paint_transfer_channels(Operator):
     bl_idname = "sollumz.vertex_paint_transfer_channels"
-    bl_label = "Transfer Channels"
-    bl_description = "Transfer channels between color attributes"
+    bl_label = "转移通道"
+    bl_description = "在颜色属性之间转移通道"
     bl_options = {"UNDO"}
 
-    src_attribute: StringProperty(name="Source Attribute")
-    dst_attribute: StringProperty(name="Destination Attribute")
+    src_attribute: StringProperty(name="源属性")
+    dst_attribute: StringProperty(name="目标属性")
     src_for_dst_r: EnumProperty(
-        items=ChannelWithNoneEnumItems, name="Source Channel for Destination Red Channel", default=-1
+        items=ChannelWithNoneEnumItems, name="目标红色通道对应的源通道", default=-1
     )
     src_for_dst_g: EnumProperty(
-        items=ChannelWithNoneEnumItems, name="Source Channel for Destination Green Channel", default=-1
+        items=ChannelWithNoneEnumItems, name="目标绿色通道对应的源通道", default=-1
     )
     src_for_dst_b: EnumProperty(
-        items=ChannelWithNoneEnumItems, name="Source Channel for Destination Blue Channel", default=-1
+        items=ChannelWithNoneEnumItems, name="目标蓝色通道对应的源通道", default=-1
     )
     src_for_dst_a: EnumProperty(
-        items=ChannelWithNoneEnumItems, name="Source Channel for Destination Alpha Channel", default=-1
+        items=ChannelWithNoneEnumItems, name="目标 Alpha 通道对应的源通道", default=-1
     )
 
     @classmethod
@@ -45,7 +45,7 @@ class SOLLUMZ_OT_vertex_paint_transfer_channels(Operator):
         dst_attr = mesh.color_attributes.get(self.dst_attribute, None)
 
         if src_attr is None or dst_attr is None:
-            self.report({"INFO"}, "Source and/or destination attributes do not exist.")
+            self.report({"INFO"}, "源属性和/或目标属性不存在。")
             return {"CANCELLED"}
 
         src_domain_size = attr_domain_size(mesh, src_attr)
