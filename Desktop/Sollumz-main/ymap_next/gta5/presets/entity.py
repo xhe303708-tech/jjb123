@@ -82,7 +82,7 @@ def _poll(context):
 
 ENTITY_PRESET_CATEGORY = PresetCategory(
     id="entity",
-    label="Entity",
+    label="实体",
     game="gta5",
     bundled_defaults_path=Path(__file__).parent / "entity_presets.json",
     get_target=active_entity,
@@ -98,27 +98,27 @@ register_preset_category(ENTITY_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_entity_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_entity_preset"
-    bl_label = "Save Entity Preset"
-    bl_description = "Save current entity properties as a named preset"
+    bl_label = "保存实体预设"
+    bl_description = "将当前实体属性保存为命名预设"
     category = ENTITY_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_entity_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_entity_preset"
-    bl_label = "Apply Entity Preset"
-    bl_description = "Apply a saved entity preset to the active entity"
+    bl_label = "应用实体预设"
+    bl_description = "将已保存的实体预设应用到活动实体"
     category = ENTITY_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_entity_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_entity_preset"
-    bl_label = "Delete Entity Preset"
-    bl_description = "Remove a saved entity preset"
+    bl_label = "删除实体预设"
+    bl_description = "移除已保存的实体预设"
     category = ENTITY_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_entity_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Entity Presets"
+    bl_label = "实体预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

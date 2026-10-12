@@ -151,7 +151,7 @@ def _poll(context):
 
 SHADER_PRESET_CATEGORY = PresetCategory(
     id="shader",
-    label="Shader",
+    label="着色器",
     game="gta5",
     bundled_defaults_path=Path(__file__).parent / "shader_presets.json",
     get_target=_get_target,
@@ -196,18 +196,18 @@ migration.register_legacy_migration(SHADER_PRESET_CATEGORY, _convert_legacy_xml)
 
 class SOLLUMZ_OT_save_shader_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_shader_preset"
-    bl_label = "Save Shader Preset"
-    bl_description = "Save current shader parameters as a named preset"
+    bl_label = "保存着色器预设"
+    bl_description = "将当前着色器参数保存为命名预设"
     category = SHADER_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_shader_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_shader_preset"
-    bl_label = "Apply Shader Preset"
-    bl_description = "Apply a saved shader preset to the active material"
+    bl_label = "应用着色器预设"
+    bl_description = "将已保存的着色器预设应用到活动材质"
     category = SHADER_PRESET_CATEGORY
 
-    apply_textures: BoolProperty(name="Apply Textures", default=True)
+    apply_textures: BoolProperty(name="应用贴图", default=True)
 
     def _apply_options(self, context):
         return {"apply_textures": bool(self.apply_textures)}
@@ -215,13 +215,13 @@ class SOLLUMZ_OT_load_shader_preset(PresetLoadOperatorBase, bpy.types.Operator):
 
 class SOLLUMZ_OT_delete_shader_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_shader_preset"
-    bl_label = "Delete Shader Preset"
-    bl_description = "Remove a saved shader preset"
+    bl_label = "删除着色器预设"
+    bl_description = "移除已保存的着色器预设"
     category = SHADER_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_shader_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Shader Presets"
+    bl_label = "着色器预设"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_options = {"INSTANCED"}
@@ -237,7 +237,7 @@ class SOLLUMZ_PT_shader_presets(PresetPanel, bpy.types.Panel):
         prefs = get_addon_preferences(context)
         if prefs is not None:
             self.layout.separator()
-            self.layout.prop(prefs, "shader_preset_apply_textures", text="Apply Textures")
+            self.layout.prop(prefs, "shader_preset_apply_textures", text="应用贴图")
 
     def extra_load_operator_props(self, context):
         prefs = get_addon_preferences(context)

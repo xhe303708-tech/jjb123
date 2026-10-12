@@ -28,7 +28,7 @@ def create_brush(name):
     return bpy.data.brushes[name]
 
 
-def material_from_image(img, name="Material", nodename="Image"):
+def material_from_image(img, name="材质", nodename="图像"):
     mat = bpy.data.materials.new(name)
     if bpy.app.version < (5, 0, 0):
         mat.use_nodes = True

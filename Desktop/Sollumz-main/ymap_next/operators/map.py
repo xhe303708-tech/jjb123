@@ -44,11 +44,11 @@ def _parents_locked_map_entities(group, entity_uuids: set[bytes]) -> bool:
 
 class SOLLUMZ_OT_maps_new_group(Operator):
     bl_idname = "sollumz.maps_new_group"
-    bl_label = "Create Map Group"
-    bl_description = "Create a map group"
+    bl_label = "创建地图组"
+    bl_description = "创建地图组"
     bl_options = {"REGISTER", "UNDO"}
 
-    name: StringProperty(name="Name")
+    name: StringProperty(name="名称")
 
     def execute(self, context):
         name = self.name or "map"
@@ -66,8 +66,8 @@ class SOLLUMZ_OT_maps_new_group(Operator):
 
 class SOLLUMZ_OT_maps_delete_group(Operator):
     bl_idname = "sollumz.maps_delete_group"
-    bl_label = "Delete Map Group"
-    bl_description = "Delete selected map group(s)"
+    bl_label = "删除地图组"
+    bl_description = "删除所选地图组"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -103,8 +103,8 @@ class SOLLUMZ_OT_maps_delete_group(Operator):
 
 class SOLLUMZ_OT_map_group_new_map_data(Operator):
     bl_idname = "sollumz.map_group_new_map_data"
-    bl_label = "Create Map Data"
-    bl_description = "Create a map data container in the active map group"
+    bl_label = "创建地图数据"
+    bl_description = "在活动地图组中创建地图数据容器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -132,8 +132,8 @@ class SOLLUMZ_OT_map_group_new_map_data(Operator):
 
 class SOLLUMZ_OT_map_group_delete_map_data(Operator):
     bl_idname = "sollumz.map_group_delete_map_data"
-    bl_label = "Delete Map Data"
-    bl_description = "Delete the selected map data container"
+    bl_label = "删除地图数据"
+    bl_description = "删除所选地图数据容器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -196,7 +196,7 @@ class SOLLUMZ_OT_map_group_delete_map_data(Operator):
 
 class SOLLUMZ_OT_map_data_unlock_lod_hierarchy(Operator):
     bl_idname = "sollumz.map_data_unlock_lod_hierarchy"
-    bl_label = "Unlock Incomplete LOD Hierarchy"
+    bl_label = "解锁不完整的 LOD 层级"
     bl_description = (
         "Unlock the selected container(s) so their entities can be edited again.\n\nThis can cause data loss. LOD "
         "hierarchy values are recomputed on export: entities whose LOD parent is in a YMAP file that was not imported"
@@ -224,8 +224,8 @@ class SOLLUMZ_OT_map_data_unlock_lod_hierarchy(Operator):
 
 class SOLLUMZ_OT_map_group_new_entity(Operator):
     bl_idname = "sollumz.map_group_new_entity"
-    bl_label = "Create Map Entity"
-    bl_description = "Create a map entity in the active map group"
+    bl_label = "创建地图实体"
+    bl_description = "在活动地图组中创建地图实体"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -241,8 +241,8 @@ class SOLLUMZ_OT_map_group_new_entity(Operator):
 
 class SOLLUMZ_OT_map_group_delete_entity(Operator):
     bl_idname = "sollumz.map_group_delete_entity"
-    bl_label = "Delete Map Entity"
-    bl_description = "Delete selected map entity(s)"
+    bl_label = "删除地图实体"
+    bl_description = "删除所选地图实体"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -283,8 +283,8 @@ class SOLLUMZ_OT_map_group_delete_entity(Operator):
 
 class SOLLUMZ_OT_map_group_new_cargen(Operator):
     bl_idname = "sollumz.map_group_new_cargen"
-    bl_label = "Create Map Car Generator"
-    bl_description = "Create a car generator in the active map group"
+    bl_label = "创建地图载具生成器"
+    bl_description = "在活动地图组中创建载具生成器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -300,8 +300,8 @@ class SOLLUMZ_OT_map_group_new_cargen(Operator):
 
 class SOLLUMZ_OT_map_group_delete_cargen(Operator):
     bl_idname = "sollumz.map_group_delete_cargen"
-    bl_label = "Delete Map Car Generator"
-    bl_description = "Delete selected car generator(s)"
+    bl_label = "删除地图载具生成器"
+    bl_description = "删除所选载具生成器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -318,8 +318,8 @@ class SOLLUMZ_OT_map_group_delete_cargen(Operator):
 
 class SOLLUMZ_OT_map_group_new_tcm(Operator):
     bl_idname = "sollumz.map_group_new_tcm"
-    bl_label = "Create Map Timecycle Modifier"
-    bl_description = "Create a timecycle modifier in the active map group"
+    bl_label = "创建地图时间周期修改器"
+    bl_description = "在活动地图组中创建时间周期修改器"
     bl_options = {"REGISTER", "UNDO"}
 
     location: FloatVectorProperty(name="Location", default=(0.0, 0.0, 0.0), size=3, subtype="XYZ")
@@ -344,8 +344,8 @@ class SOLLUMZ_OT_map_group_new_tcm(Operator):
 
 class SOLLUMZ_OT_map_group_delete_tcm(Operator):
     bl_idname = "sollumz.map_group_delete_tcm"
-    bl_label = "Delete Map Timecycle Modifier"
-    bl_description = "Delete selected timecycle modifier(s)"
+    bl_label = "删除地图时间周期修改器"
+    bl_description = "删除所选时间周期修改器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -361,8 +361,8 @@ class SOLLUMZ_OT_map_group_delete_tcm(Operator):
 
 class SOLLUMZ_OT_map_group_new_grass_batch(Operator):
     bl_idname = "sollumz.map_group_new_grass_batch"
-    bl_label = "Create Map Grass Batch"
-    bl_description = "Create a grass batch in the active map group"
+    bl_label = "创建地图草批"
+    bl_description = "在活动地图组中创建草批"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -378,8 +378,8 @@ class SOLLUMZ_OT_map_group_new_grass_batch(Operator):
 
 class SOLLUMZ_OT_map_group_delete_grass_batch(Operator):
     bl_idname = "sollumz.map_group_delete_grass_batch"
-    bl_label = "Delete Map Grass Batch"
-    bl_description = "Delete selected grass batch(es)"
+    bl_label = "删除地图草批"
+    bl_description = "删除所选草批"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -396,8 +396,8 @@ class SOLLUMZ_OT_map_group_delete_grass_batch(Operator):
 
 class SOLLUMZ_OT_map_group_new_grass_template(Operator):
     bl_idname = "sollumz.map_group_new_grass_template"
-    bl_label = "Create Map Grass Template"
-    bl_description = "Create a grass template in the active grass batch"
+    bl_label = "创建地图草模板"
+    bl_description = "在活动草批中创建草模板"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -413,8 +413,8 @@ class SOLLUMZ_OT_map_group_new_grass_template(Operator):
 
 class SOLLUMZ_OT_map_group_delete_grass_template(Operator):
     bl_idname = "sollumz.map_group_delete_grass_template"
-    bl_label = "Delete Map Grass Template"
-    bl_description = "Delete selected grass template(s)"
+    bl_label = "删除地图草模板"
+    bl_description = "删除所选草模板"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -429,8 +429,8 @@ class SOLLUMZ_OT_map_group_delete_grass_template(Operator):
 
 class SOLLUMZ_OT_map_group_new_occluder(Operator):
     bl_idname = "sollumz.map_group_new_occluder"
-    bl_label = "Create Map Occluder"
-    bl_description = "Create an occluder in the active map group"
+    bl_label = "创建地图遮挡器"
+    bl_description = "在活动地图组中创建遮挡器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -446,8 +446,8 @@ class SOLLUMZ_OT_map_group_new_occluder(Operator):
 
 class SOLLUMZ_OT_map_group_delete_occluder(Operator):
     bl_idname = "sollumz.map_group_delete_occluder"
-    bl_label = "Delete Map Occluder"
-    bl_description = "Delete selected occluder(s)"
+    bl_label = "删除地图遮挡器"
+    bl_description = "删除所选遮挡器"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -464,8 +464,8 @@ class SOLLUMZ_OT_map_group_delete_occluder(Operator):
 
 class SOLLUMZ_OT_map_group_new_lod_lights(Operator):
     bl_idname = "sollumz.map_group_new_lod_lights"
-    bl_label = "Create Map LOD Lights"
-    bl_description = "Create LOD lights in the active map group"
+    bl_label = "创建地图 LOD 灯光"
+    bl_description = "在活动地图组中创建 LOD 灯光"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -481,8 +481,8 @@ class SOLLUMZ_OT_map_group_new_lod_lights(Operator):
 
 class SOLLUMZ_OT_map_group_delete_lod_lights(Operator):
     bl_idname = "sollumz.map_group_delete_lod_lights"
-    bl_label = "Delete Map LOD Lights"
-    bl_description = "Delete selected LOD lights(s)"
+    bl_label = "删除地图 LOD 灯光"
+    bl_description = "删除所选 LOD 灯光"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -499,8 +499,8 @@ class SOLLUMZ_OT_map_group_delete_lod_lights(Operator):
 
 class SOLLUMZ_OT_map_generate_partitions(Operator):
     bl_idname = "sollumz.map_generate_partitions"
-    bl_label = "Generate Partitions"
-    bl_description = "Generate or regenerate auto-partitioned leaf map datas for the selected map"
+    bl_label = "生成分区"
+    bl_description = "为所选地图生成或重新生成自动分区的叶节点地图数据"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -526,8 +526,8 @@ class SOLLUMZ_OT_map_generate_partitions(Operator):
 
 class SOLLUMZ_OT_map_collapse_to_auto(Operator):
     bl_idname = "sollumz.map_collapse_to_auto"
-    bl_label = "Collapse to Auto"
-    bl_description = "Merge items from leaf children back into this map data and switch to auto-partition mode"
+    bl_label = "折叠为自动"
+    bl_description = "将叶节点的子项合并回此地图数据，并切换到自动分区模式"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -561,8 +561,8 @@ class SOLLUMZ_OT_map_collapse_to_auto(Operator):
 
 class SOLLUMZ_OT_map_convert_to_manual(Operator):
     bl_idname = "sollumz.map_convert_to_manual"
-    bl_label = "Convert to Manual"
-    bl_description = "Switch to manual mode. Auto-generated leaves become regular map datas"
+    bl_label = "转换为手动"
+    bl_description = "切换到手动模式。自动生成的叶节点变为常规地图数据"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -587,8 +587,8 @@ class SOLLUMZ_OT_map_convert_to_manual(Operator):
 
 class SOLLUMZ_OT_map_auto_assign_unassigned(Operator):
     bl_idname = "sollumz.map_auto_assign_unassigned"
-    bl_label = "Auto-Assign Unassigned Items"
-    bl_description = "Assign items without a map data to the nearest existing leaf map data by spatial proximity"
+    bl_label = "自动分配未分配项"
+    bl_description = "将没有地图数据的项按空间距离分配到最近的现有叶节点地图数据"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -608,8 +608,8 @@ class SOLLUMZ_OT_map_auto_assign_unassigned(Operator):
 
 class SOLLUMZ_OT_map_calculate_extents(Operator):
     bl_idname = "sollumz.map_calculate_extents"
-    bl_label = "Calculate Extents"
-    bl_description = "Recalculate entities and streaming extents of the selected container(s) from their assigned items"
+    bl_label = "计算范围"
+    bl_description = "根据分配的项重新计算所选容器的实体和流送范围"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -629,8 +629,8 @@ class SOLLUMZ_OT_map_calculate_extents(Operator):
 
 class SOLLUMZ_OT_map_add_obj_as_entity(Operator):
     bl_idname = "sollumz.map_add_obj_as_entity"
-    bl_label = "Add Object(s) as Entity"
-    bl_description = "Create Map Entities from selected objects (auto-sets linked object)"
+    bl_label = "将对象添加为实体"
+    bl_description = "从所选对象创建地图实体（自动设置链接对象）"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -690,8 +690,8 @@ class SOLLUMZ_OT_map_add_obj_as_entity(Operator):
 
 class SOLLUMZ_OT_map_mlo_instance_calc_num_exit_portals(Operator):
     bl_idname = "sollumz.map_mlo_instance_calc_num_exit_portals"
-    bl_label = "Calculate Number of Exit Portals"
-    bl_description = "Calculate the number of exit portals of this MLO instance"
+    bl_label = "计算出口 Portal 数"
+    bl_description = "计算此 MLO 实例的出口 Portal 数"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -719,8 +719,8 @@ class SOLLUMZ_OT_map_mlo_instance_calc_num_exit_portals(Operator):
 
 class SOLLUMZ_OT_map_highlight_map_data_entities(Operator):
     bl_idname = "sollumz.map_highlight_map_data_entities"
-    bl_label = "Highlight Entities"
-    bl_description = "Temporarily highlight all entities belonging to the selected container in the viewport"
+    bl_label = "高亮实体"
+    bl_description = "在视口中临时高亮属于所选容器的所有实体"
 
     @classmethod
     def poll(cls, context):
@@ -753,8 +753,8 @@ class SOLLUMZ_OT_map_highlight_map_data_entities(Operator):
 
 class SOLLUMZ_OT_map_go_to_entity(Operator):
     bl_idname = "sollumz.map_go_to_entity"
-    bl_label = "Go To Entity"
-    bl_description = "Go to the active entity"
+    bl_label = "转到实体"
+    bl_description = "转到活动实体"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -783,7 +783,7 @@ class SOLLUMZ_OT_map_go_to_entity(Operator):
 # TODO(ymap): support other map items in sollumz.map_view_object_in_sidebar
 class SOLLUMZ_OT_map_view_object_in_sidebar(Operator):
     bl_idname = "sollumz.map_view_object_in_sidebar"
-    bl_label = "View in Sidebar"
+    bl_label = "在侧栏中查看"
     bl_description = ""
     bl_options = {"UNDO"}
 
@@ -861,7 +861,7 @@ class SOLLUMZ_OT_map_entity_add_extension(Operator):
 
     bl_idname = "sollumz.map_entity_add_extension"
     bl_options = {"UNDO"}
-    bl_label = "Add Extension"
+    bl_label = "添加扩展"
 
     @classmethod
     def poll(cls, context):
@@ -878,7 +878,7 @@ class SOLLUMZ_OT_map_entity_delete_extension(Operator):
 
     bl_idname = "sollumz.map_entity_delete_extension"
     bl_options = {"UNDO"}
-    bl_label = "Delete Extension"
+    bl_label = "删除扩展"
 
     @classmethod
     def poll(cls, context):
@@ -895,7 +895,7 @@ class SOLLUMZ_OT_map_entity_duplicate_extension(Operator):
 
     bl_idname = "sollumz.map_entity_duplicate_extension"
     bl_options = {"UNDO"}
-    bl_label = "Duplicate Extension"
+    bl_label = "复制扩展"
 
     @classmethod
     def poll(cls, context):

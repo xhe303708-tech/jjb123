@@ -1,6 +1,6 @@
 """Computation of map data entities/streaming extents from the items assigned to a container.
 
-Used at export for containers without manual extents, and by the "Calculate Extents" operator.
+Used at export for containers without manual extents, and by the "计算范围" operator.
 """
 
 from collections import defaultdict

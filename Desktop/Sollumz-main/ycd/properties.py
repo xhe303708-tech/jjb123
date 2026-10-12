@@ -31,14 +31,14 @@ ClipAttributeTypes = [
 
 
 class ClipAttribute(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="Name", default="")
-    type: bpy.props.EnumProperty(name="Type", items=ClipAttributeTypes)
-    value_float: bpy.props.FloatProperty(name="Value", default=0.0)
-    value_int: bpy.props.IntProperty(name="Value", default=0)
-    value_bool: bpy.props.BoolProperty(name="Value", default=False)
-    value_vec3: bpy.props.FloatVectorProperty(name="Value", default=(0.0, 0.0, 0.0), size=3)
-    value_vec4: bpy.props.FloatVectorProperty(name="Value", default=(0.0, 0.0, 0.0, 0.0), size=4)
-    value_string: bpy.props.StringProperty(name="Value", default="")  # used with String and HashString
+    name: bpy.props.StringProperty(name="名称", default="")
+    type: bpy.props.EnumProperty(name="类型", items=ClipAttributeTypes)
+    value_float: bpy.props.FloatProperty(name="值", default=0.0)
+    value_int: bpy.props.IntProperty(name="值", default=0)
+    value_bool: bpy.props.BoolProperty(name="值", default=False)
+    value_vec3: bpy.props.FloatVectorProperty(name="值", default=(0.0, 0.0, 0.0), size=3)
+    value_vec4: bpy.props.FloatVectorProperty(name="值", default=(0.0, 0.0, 0.0, 0.0), size=4)
+    value_string: bpy.props.StringProperty(name="值", default="")  # used with String and HashString
 
 
 class ClipTag(bpy.types.PropertyGroup):
@@ -50,47 +50,47 @@ class ClipTag(bpy.types.PropertyGroup):
         if self.start_phase > self.end_phase:
             self.start_phase = self.end_phase
 
-    name: bpy.props.StringProperty(name="Name", default="")
+    name: bpy.props.StringProperty(name="名称", default="")
 
     start_phase: bpy.props.FloatProperty(
-        name="Start Phase", description="Start phase of the tag",
+        name="起始相位", description="Start phase of the tag",
         default=0, min=0, max=1, step=1, update=on_start_phase_changed)
     end_phase: bpy.props.FloatProperty(
-        name="End Phase", description="End phase of the tag",
+        name="结束相位", description="End phase of the tag",
         default=0, min=0, max=1, step=1, update=on_end_phase_changed)
 
     attributes: bpy.props.CollectionProperty(name="Attributes", type=ClipAttribute)
 
     ui_active_attribute_index: bpy.props.IntProperty()
     ui_show_expanded: bpy.props.BoolProperty(
-        name="Show Expanded", description="Show details of the tag",
+        name="展开显示", description="Show details of the tag",
         default=True)
     ui_view_on_timeline: bpy.props.BoolProperty(
-        name="View on Timeline", description="Show tag on the timeline",
+        name="在时间轴上查看", description="Show tag on the timeline",
         default=True)
     ui_timeline_color: bpy.props.FloatVectorProperty(
-        name="Timeline Color", description="Color of the tag on the timeline",
+        name="时间轴颜色", description="Color of the tag on the timeline",
         default=(1.0, 0.0, 0.0, 1.0), size=4, subtype="COLOR", min=0.0, max=1.0)
     ui_timeline_hovered_start: bpy.props.BoolProperty(
-        name="Timeline Hovered Start", description="Is the tag start marker hovered on the timeline?",
+        name="时间轴悬停起始", description="Is the tag start marker hovered on the timeline?",
         default=False, options={"HIDDEN", "SKIP_SAVE"})
     ui_timeline_hovered_end: bpy.props.BoolProperty(
-        name="Timeline Hovered End", description="Is the tag end marker hovered on the timeline?",
+        name="时间轴悬停结束", description="Is the tag end marker hovered on the timeline?",
         default=False, options={"HIDDEN", "SKIP_SAVE"})
     ui_timeline_drag_start: bpy.props.BoolProperty(
-        name="Timeline Drag Start", description="Is the tag start marker being dragged on the timeline?",
+        name="时间轴拖动起始", description="Is the tag start marker being dragged on the timeline?",
         default=False, options={"HIDDEN", "SKIP_SAVE"})
     ui_timeline_drag_end: bpy.props.BoolProperty(
-        name="Timeline Drag End", description="Is the tag end marker being dragged on the timeline?",
+        name="时间轴拖动结束", description="Is the tag end marker being dragged on the timeline?",
         default=False, options={"HIDDEN", "SKIP_SAVE"})
 
 
 class ClipProperty(bpy.types.PropertyGroup):
-    name: bpy.props.StringProperty(name="Name", default="")
+    name: bpy.props.StringProperty(name="名称", default="")
     attributes: bpy.props.CollectionProperty(name="Attributes", type=ClipAttribute)
 
     ui_show_expanded: bpy.props.BoolProperty(
-        name="Show Expanded", default=True, description="Show details of the property")
+        name="展开显示", default=True, description="Show details of the property")
 
 
 class ClipAnimation(bpy.types.PropertyGroup):
@@ -112,30 +112,30 @@ class ClipAnimation(bpy.types.PropertyGroup):
             update_uv_clip_hash(clip_obj)
 
     start_frame: bpy.props.FloatProperty(
-        name="Start Frame", default=0, min=0, step=100, description="First frame of the playback area")
+        name="起始帧", default=0, min=0, step=100, description="First frame of the playback area")
     end_frame: bpy.props.FloatProperty(
-        name="End Frame", default=0, min=0, step=100, description="Last frame (inclusive) of the playback area")
+        name="结束帧", default=0, min=0, step=100, description="Last frame (inclusive) of the playback area")
 
     animation: bpy.props.PointerProperty(
-        name="Animation", type=bpy.types.Object, poll=animations_filter, update=on_animation_changed)
+        name="动画", type=bpy.types.Object, poll=animations_filter, update=on_animation_changed)
 
     ui_show_expanded: bpy.props.BoolProperty(
-        name="Show Expanded", default=True, description="Show details of the linked animation")
+        name="展开显示", default=True, description="Show details of the linked animation")
 
 
 class ClipProperties(bpy.types.PropertyGroup):
     hash: bpy.props.StringProperty(name="Hash", default="")
-    name: bpy.props.StringProperty(name="Name", default="")
+    name: bpy.props.StringProperty(name="名称", default="")
 
     duration: bpy.props.FloatProperty(
-        name="Duration", description="Duration of the clip in seconds",
+        name="时长", description="Duration of the clip in seconds",
         default=0, min=0, subtype="TIME_ABSOLUTE")
 
-    animations: bpy.props.CollectionProperty(name="Animations", type=ClipAnimation)
+    animations: bpy.props.CollectionProperty(name="动画", type=ClipAnimation)
 
-    tags: bpy.props.CollectionProperty(name="Tags", type=ClipTag)
+    tags: bpy.props.CollectionProperty(name="标签", type=ClipTag)
 
-    properties: bpy.props.CollectionProperty(name="Properties", type=ClipProperty)
+    properties: bpy.props.CollectionProperty(name="属性", type=ClipProperty)
 
     def get_duration_in_frames(self) -> float:
         """Number of frames this clip lasts. Includes subframes."""
@@ -143,9 +143,9 @@ class ClipProperties(bpy.types.PropertyGroup):
 
 
 AnimationTargetIDTypes = [
-    ("ARMATURE", "Armature", "Armature", "ARMATURE_DATA", 0),
-    ("CAMERA", "Camera", "Camera", "CAMERA_DATA", 1),
-    ("MATERIAL", "Material", "Material", "MATERIAL_DATA", 2),
+    ("ARMATURE", "骨骼", "骨骼", "ARMATURE_DATA", 0),
+    ("CAMERA", "相机", "相机", "CAMERA_DATA", 1),
+    ("MATERIAL", "材质", "材质", "MATERIAL_DATA", 2),
 ]
 
 
@@ -161,9 +161,9 @@ class AnimationProperties(bpy.types.PropertyGroup):
     hash: bpy.props.StringProperty(name="Hash", default="")
     action: bpy.props.PointerProperty(name="Action", type=bpy.types.Action)
 
-    target_id: bpy.props.PointerProperty(name="Target", type=bpy.types.ID, update=on_target_update)
-    target_id_prev: bpy.props.PointerProperty(name="Target (Prev)", type=bpy.types.ID)
-    target_id_type: bpy.props.EnumProperty(name="Target Type", items=AnimationTargetIDTypes, default="ARMATURE")
+    target_id: bpy.props.PointerProperty(name="目标", type=bpy.types.ID, update=on_target_update)
+    target_id_prev: bpy.props.PointerProperty(name="目标（上一）", type=bpy.types.ID)
+    target_id_type: bpy.props.EnumProperty(name="目标类型", items=AnimationTargetIDTypes, default="ARMATURE")
 
     def get_target(self) -> bpy.types.ID:
         """Returns the ID instance where the animation data should be created to play the animation."""
@@ -173,7 +173,7 @@ class AnimationProperties(bpy.types.PropertyGroup):
 UVTransformModes = [
     ("TRANSLATE", "Translate", "Translate", 0),
     ("ROTATE", "Rotate", "Rotate", 1),
-    ("SCALE", "Scale", "Scale", 2),
+    ("SCALE", "缩放", "缩放", 2),
     ("SHEAR", "Shear", "Shear", 3),
     ("REFLECT", "Reflect", "Reflect across an axis", 4),
 ]
@@ -225,17 +225,17 @@ class UVTransform(bpy.types.PropertyGroup):
 
     update_uv_transform_matrix_on_change: bpy.props.BoolProperty(default=True, options={"HIDDEN", "SKIP_SAVE"})
     mode: bpy.props.EnumProperty(
-        name="Transformation Mode", items=UVTransformModes, default="TRANSLATE", update=on_update, options=set())
+        name="变换模式", items=UVTransformModes, default="TRANSLATE", update=on_update, options=set())
     translation: bpy.props.FloatVectorProperty(
         name="Translation", size=2, subtype="XYZ", get=_vec2_getter(0, 1), set=_vec2_setter(0, 1))
     rotation: bpy.props.FloatProperty(
-        name="Rotation", subtype="ANGLE", unit="ROTATION", get=_float_getter(2), set=_float_setter(2))
+        name="旋转", subtype="ANGLE", unit="ROTATION", get=_float_getter(2), set=_float_setter(2))
     scale: bpy.props.FloatVectorProperty(
-        name="Scale", size=2, subtype="XYZ", get=_vec2_getter(3, 4), set=_vec2_setter(3, 4))
+        name="缩放", size=2, subtype="XYZ", get=_vec2_getter(3, 4), set=_vec2_setter(3, 4))
     shear: bpy.props.FloatVectorProperty(
         name="Shear", size=2, subtype="XYZ", get=_vec2_getter(5, 6), set=_vec2_setter(5, 6))
     reflect: bpy.props.FloatVectorProperty(
-        name="Reflection Axis", size=2, subtype="XYZ", get=_vec2_getter(7, 8), set=_vec2_setter(7, 8))
+        name="反射轴", size=2, subtype="XYZ", get=_vec2_getter(7, 8), set=_vec2_setter(7, 8))
 
     def get_matrix(self) -> Matrix:
         """
@@ -362,8 +362,8 @@ class AnimationTracks(bpy.types.PropertyGroup):
                     area.tag_redraw()
 
     uv_transforms: bpy.props.CollectionProperty(type=UVTransform,
-                                                name="UV Transformations")
-    uv_transforms_active_index: bpy.props.IntProperty(name="Active UV Transformation", options=set())
+                                                name="UV 变换")
+    uv_transforms_active_index: bpy.props.IntProperty(name="活动 UV 变换", options=set())
 
 
 def calculate_final_uv_transform_matrix(uv_transforms: Iterable[UVTransform]) -> Matrix:
@@ -381,7 +381,7 @@ def register_tracks(cls, inline=False):
         for prop, info in AnimationTracks.__annotations__.items():
             setattr(cls, f"animation_tracks_{prop}", info)
     else:
-        cls.animation_tracks = bpy.props.PointerProperty(name="Animation Tracks", type=AnimationTracks)
+        cls.animation_tracks = bpy.props.PointerProperty(name="动画轨道", type=AnimationTracks)
 
 
 def unregister_tracks(cls, inline=False):
@@ -408,9 +408,9 @@ def register():
 
     # used with operator SOLLUMZ_OT_animations_set_target
     bpy.types.Scene.sollumz_animations_target_id = bpy.props.PointerProperty(
-        name="Target", type=bpy.types.ID, options={"HIDDEN", "SKIP_SAVE"})
+        name="目标", type=bpy.types.ID, options={"HIDDEN", "SKIP_SAVE"})
     bpy.types.Scene.sollumz_animations_target_id_type = bpy.props.EnumProperty(
-        name="Target Type", items=AnimationTargetIDTypes, default="ARMATURE", options={"HIDDEN", "SKIP_SAVE"})
+        name="目标类型", items=AnimationTargetIDTypes, default="ARMATURE", options={"HIDDEN", "SKIP_SAVE"})
 
 
 def unregister():

@@ -76,7 +76,7 @@ class SpecialAttribute(IntEnum):
 
 SpecialAttributeEnumItems = tuple(None if enum is None else (enum.name, f"{label} ({enum.value})", desc, enum.value)
                                   for enum, label, desc in (
-    (SpecialAttribute.NOTHING_SPECIAL, "None", ""),
+    (SpecialAttribute.NOTHING_SPECIAL, "无", ""),
     (None, "", ""),
     (SpecialAttribute.IS_NORMAL_DOOR, "Normal Door", ""),
     (SpecialAttribute.IS_GARAGE_DOOR, "Garage Door", ""),
@@ -115,7 +115,7 @@ class ArchetypeTimeFlags(TimeFlagsMixin, bpy.types.PropertyGroup):
     flag_names = TimeFlagsMixin.flag_names + ["swap_while_visible"]
 
     swap_while_visible: BoolProperty(
-        name="Allow Swap While Visible",
+        name="可见时允许交换",
         description=(
             "If enabled, the model may become visible or hidden while the player is looking at it; otherwise, waits "
             "until the player faces the camera away"
@@ -257,8 +257,8 @@ class EntitySetSelectionAccess(MultiSelectAccess):
 
 @define_multiselect_collection("rooms", {"name": "Rooms"})
 @define_multiselect_collection("portals", {"name": "Portals"})
-@define_multiselect_collection("entities", {"name": "Entities"})
-@define_multiselect_collection("timecycle_modifiers", {"name": "Timecycle Modifiers"})
+@define_multiselect_collection("entities", {"name": "实体"})
+@define_multiselect_collection("timecycle_modifiers", {"name": "时间周期修改器"})
 @define_multiselect_collection("entity_sets", {"name": "Entity Sets"})
 class ArchetypeProperties(bpy.types.PropertyGroup, ExtensionsContainer):
     IS_ARCHETYPE = True
@@ -449,28 +449,28 @@ class ArchetypeProperties(bpy.types.PropertyGroup, ExtensionsContainer):
         if context.scene.show_mlo_tcm_gizmo:
             tag_redraw(context, space_type="VIEW_3D", region_type="WINDOW")
 
-    bb_min: bpy.props.FloatVectorProperty(name="Bound Min")
-    bb_max: bpy.props.FloatVectorProperty(name="Bound Max")
-    bs_center: bpy.props.FloatVectorProperty(name="Bound Center")
-    bs_radius: bpy.props.FloatProperty(name="Bound Radius")
-    type: bpy.props.EnumProperty(items=items_from_enums(ArchetypeType), name="Type")
-    lod_dist: bpy.props.FloatProperty(name="Lod Distance", default=200, min=-1)
-    flags: bpy.props.PointerProperty(type=ArchetypeFlags, name="Flags")
+    bb_min: bpy.props.FloatVectorProperty(name="边界最小")
+    bb_max: bpy.props.FloatVectorProperty(name="边界最大")
+    bs_center: bpy.props.FloatVectorProperty(name="边界中心")
+    bs_radius: bpy.props.FloatProperty(name="边界半径")
+    type: bpy.props.EnumProperty(items=items_from_enums(ArchetypeType), name="类型")
+    lod_dist: bpy.props.FloatProperty(name="LOD 距离", default=200, min=-1)
+    flags: bpy.props.PointerProperty(type=ArchetypeFlags, name="标记")
     special_attribute: bpy.props.EnumProperty(
-        name="Special Attribute", items=SpecialAttributeEnumItems, default=SpecialAttribute.NOTHING_SPECIAL.name)
-    hd_texture_dist: bpy.props.FloatProperty(name="HD Texture Distance", default=100, min=0)
-    name: bpy.props.StringProperty(name="Name")
-    texture_dictionary: bpy.props.StringProperty(name="Texture Dictionary")
-    clip_dictionary: bpy.props.StringProperty(name="Clip Dictionary")
-    drawable_dictionary: bpy.props.StringProperty(name="Drawable Dictionary")
-    physics_dictionary: bpy.props.StringProperty(name="Physics Dictionary")
-    asset_type: bpy.props.EnumProperty(items=items_from_enums(AssetType), name="Asset Type")
+        name="特殊属性", items=SpecialAttributeEnumItems, default=SpecialAttribute.NOTHING_SPECIAL.name)
+    hd_texture_dist: bpy.props.FloatProperty(name="HD 贴图距离", default=100, min=0)
+    name: bpy.props.StringProperty(name="名称")
+    texture_dictionary: bpy.props.StringProperty(name="贴图字典")
+    clip_dictionary: bpy.props.StringProperty(name="动画片段字典")
+    drawable_dictionary: bpy.props.StringProperty(name="可绘制字典")
+    physics_dictionary: bpy.props.StringProperty(name="物理字典")
+    asset_type: bpy.props.EnumProperty(items=items_from_enums(AssetType), name="资产类型")
     asset: bpy.props.PointerProperty(name="Asset", type=bpy.types.Object, update=update_asset)
-    asset_name: bpy.props.StringProperty(name="Asset Name")
+    asset_name: bpy.props.StringProperty(name="资产名称")
     # Time archetype
-    time_flags: bpy.props.PointerProperty(type=ArchetypeTimeFlags, name="Time Flags")
+    time_flags: bpy.props.PointerProperty(type=ArchetypeTimeFlags, name="时间标记")
     # Mlo archetype
-    mlo_flags: bpy.props.PointerProperty(type=MloFlags, name="MLO Flags")
+    mlo_flags: bpy.props.PointerProperty(type=MloFlags, name="MLO 标记")
     rooms: MultiSelectCollection[RoomProperties, RoomSelectionAccess]
     portals: MultiSelectCollection[PortalProperties, PortalSelectionAccess]
     entities: MultiSelectCollection[MloEntityProperties, MloEntitySelectionAccess]
@@ -512,7 +512,7 @@ class ArchetypeProperties(bpy.types.PropertyGroup, ExtensionsContainer):
         if items := ArchetypeProperties.__portal_enum_items_cache.get(self.uuid, None):
             return items
 
-        items = [("-1", "None", "", -1)]
+        items = [("-1", "无", "", -1)]
         for portal in self.portals:
             items.append((str(portal.id), portal.name, "", portal.id))
         ArchetypeProperties.__portal_enum_items_cache[self.uuid] = items
@@ -522,7 +522,7 @@ class ArchetypeProperties(bpy.types.PropertyGroup, ExtensionsContainer):
         if items := ArchetypeProperties.__room_enum_items_cache.get(self.uuid, None):
             return items
 
-        items = [("-1", "None", "", -1)]
+        items = [("-1", "无", "", -1)]
         for room in self.rooms:
             items.append((str(room.id), room.name, "", room.id))
         ArchetypeProperties.__room_enum_items_cache[self.uuid] = items
@@ -532,7 +532,7 @@ class ArchetypeProperties(bpy.types.PropertyGroup, ExtensionsContainer):
         if items := ArchetypeProperties.__entity_set_enum_items_cache.get(self.uuid, None):
             return items
 
-        items = [("-1", "None", "", -1)]
+        items = [("-1", "无", "", -1)]
         for entity_set in self.entity_sets:
             items.append((str(entity_set.id), entity_set.name, "", entity_set.id))
         ArchetypeProperties.__entity_set_enum_items_cache[self.uuid] = items
@@ -753,7 +753,7 @@ class CMapTypesProperties(PropertyGroup):
     def on_archetypes_active_index_update_from_ui(self, context):
         self.select_archetype_linked_object()
 
-    name: bpy.props.StringProperty(name="Name")
+    name: bpy.props.StringProperty(name="名称")
     archetypes: MultiSelectCollection[ArchetypeProperties, ArchetypeSelectionAccess]
 
     # Unique archetype id
@@ -767,24 +767,24 @@ class CMapTypesProperties(PropertyGroup):
 def register():
     bpy.types.Scene.ytyps = bpy.props.CollectionProperty(type=CMapTypesProperties, name="YTYPs")
     bpy.types.Scene.ytyp_index = bpy.props.IntProperty(name="YTYP")
-    bpy.types.Scene.show_room_gizmo = bpy.props.BoolProperty(name="Show Room Gizmo", default=True)
-    bpy.types.Scene.show_portal_gizmo = bpy.props.BoolProperty(name="Show Portal Gizmo", default=True)
-    bpy.types.Scene.show_mlo_tcm_gizmo = bpy.props.BoolProperty(name="Show Timecycle Modifier Gizmo", default=True)
+    bpy.types.Scene.show_room_gizmo = bpy.props.BoolProperty(name="显示房间操控器", default=True)
+    bpy.types.Scene.show_portal_gizmo = bpy.props.BoolProperty(name="显示 Portal 操控器", default=True)
+    bpy.types.Scene.show_mlo_tcm_gizmo = bpy.props.BoolProperty(name="显示时间周期修改器操控器", default=True)
     sync_default = get_addon_preferences().default_sync_selection_enabled
     bpy.types.Scene.sz_sync_archetypes_selection = BoolProperty(
-        name="Sync Selection", description="Synchronize archetypes selection with objects selection in the scene.",
+        name="同步选择", description="同步场景中架构选择与对象选择。",
         default=sync_default
     )
     bpy.types.Scene.sz_sync_mlo_entities_selection = BoolProperty(
-        name="Sync Selection", description="Synchronize MLO entities selection with objects selection in the scene.",
+        name="同步选择", description="同步场景中 MLO 实体选择与对象选择。",
         default=sync_default
     )
 
     bpy.types.Scene.create_archetype_type = bpy.props.EnumProperty(
-        items=items_from_enums(ArchetypeType), name="Type")
+        items=items_from_enums(ArchetypeType), name="类型")
 
     bpy.types.Scene.ytyp_apply_transforms = bpy.props.BoolProperty(
-        name="Apply Parent Transforms", description="Apply transforms to all assets when calculating Archetype extents")
+        name="应用父级变换", description="计算架构范围时对所有资产应用变换")
 
 
 def unregister():

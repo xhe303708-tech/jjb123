@@ -20,7 +20,7 @@ from ..properties.map import get_maps
 
 class SOLLUMZ_OT_map_grass_bake_color(Operator):
     bl_idname = "sollumz.map_grass_bake_color"
-    bl_label = "Bake Grass Color and AO On Active Object"
+    bl_label = "在活动对象上烘焙草色和 AO"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -105,8 +105,8 @@ class SOLLUMZ_OT_map_grass_bake_color(Operator):
 
 class SOLLUMZ_OT_map_grass_create_geonodes(Operator):
     bl_idname = "sollumz.map_grass_create_geonodes"
-    bl_label = "Update Grass Geometry Nodes"
-    bl_description = "Create or refresh the geometry nodes for this grass batch based on its templates"
+    bl_label = "更新草几何节点"
+    bl_description = "根据此草批的模板创建或刷新几何节点"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -127,7 +127,7 @@ class SOLLUMZ_OT_map_grass_create_geonodes(Operator):
 
 class SOLLUMZ_OT_map_grass_add_modifier(Operator):
     bl_idname = "sollumz.map_grass_add_modifier"
-    bl_label = "Add Grass Modifier To Active Object"
+    bl_label = "向活动对象添加草修改器"
     bl_description = ""
     bl_options = {"UNDO"}
 
@@ -149,7 +149,7 @@ class SOLLUMZ_OT_map_grass_add_modifier(Operator):
 
 class SOLLUMZ_OT_map_grass_create_instances_mesh(Operator):
     bl_idname = "sollumz.map_grass_create_instances_mesh"
-    bl_label = "Create Grass Instances Mesh"
+    bl_label = "创建草实例网格"
     bl_description = ""
     bl_options = {"UNDO"}
 

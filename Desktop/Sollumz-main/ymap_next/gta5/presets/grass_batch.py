@@ -41,27 +41,27 @@ register_preset_category(GRASS_BATCH_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_grass_batch_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_grass_batch_preset"
-    bl_label = "Save Grass Batch Preset"
-    bl_description = "Save current grass batch settings as a named preset"
+    bl_label = "保存草批预设"
+    bl_description = "将当前草批设置保存为命名预设"
     category = GRASS_BATCH_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_grass_batch_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_grass_batch_preset"
-    bl_label = "Apply Grass Batch Preset"
-    bl_description = "Apply a saved grass batch preset"
+    bl_label = "应用草批预设"
+    bl_description = "应用已保存的草批预设"
     category = GRASS_BATCH_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_grass_batch_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_grass_batch_preset"
-    bl_label = "Delete Grass Batch Preset"
-    bl_description = "Remove a saved grass batch preset"
+    bl_label = "删除草批预设"
+    bl_description = "移除已保存的草批预设"
     category = GRASS_BATCH_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_grass_batch_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Grass Batch Presets"
+    bl_label = "草批预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

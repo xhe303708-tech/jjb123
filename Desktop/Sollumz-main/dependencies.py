@@ -298,7 +298,7 @@ PYMATERIA_REQUIRED_MSG = ""
 
 OFFLINE_MSG = (
     'Internet access is required to download the missing dependencies but it is currently disabled in "System" '
-    'preferences. Clicking "Install" will override this preference and proceed with the installation.'
+    'preferences. Clicking "安装" will override this preference and proceed with the installation.'
 )
 
 

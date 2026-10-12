@@ -71,7 +71,7 @@ def ExtensionTypeEnumItems(self, context: Optional[Context]):
         from ...icons import icon
         ExtensionTypeEnumItems._backing = (
             (ExtensionType.DOOR, "Door", "", icon("extension_door"), 0),
-            (ExtensionType.PARTICLE, "Particle", "", icon("extension_particle_effect"), 1),
+            (ExtensionType.PARTICLE, "粒子", "", icon("extension_particle_effect"), 1),
             (ExtensionType.AUDIO_COLLISION, "Audio Collision Settings", "", icon("extension_audio_collision_settings"), 2),
             (ExtensionType.AUDIO_EMITTER, "Audio Emitter", "", icon("extension_audio_emitter"), 3),
             (ExtensionType.EXPLOSION_EFFECT, "Explosion Effect", "", icon("extension_explosion_effect"), 4),
@@ -151,12 +151,12 @@ class LightShaftVolumeType(str, Enum):
 
 LightShaftVolumeTypeEnumItems = (
     (LightShaftVolumeType.SHAFT, "Shaft", "", 0),
-    (LightShaftVolumeType.CYLINDER, "Cylinder", "", 1),
+    (LightShaftVolumeType.CYLINDER, "圆柱体", "", 1),
 )
 
 
 class BaseExtensionProperties:
-    offset_position: FloatVectorProperty(name="Offset Position", subtype="TRANSLATION")
+    offset_position: FloatVectorProperty(name="位置偏移", subtype="TRANSLATION")
 
     def find_owner_archetype(self) -> 'ArchetypeProperties':
         id_data = self.id_data
@@ -262,7 +262,7 @@ class ExtensionWithBoneTagMixin:
             yield bone.name
 
     bone_name: StringProperty(
-        name="Bone",
+        name="骨骼",
         get=bone_name_get,
         set=bone_name_set,
         search=bone_name_search,
@@ -275,12 +275,12 @@ class DoorExtensionProperties(BaseExtensionProperties, PropertyGroup):
         "enable_limit_angle", "starts_locked", "can_break", "limit_angle", "door_target_ratio", "audio_hash"
     )
 
-    enable_limit_angle: BoolProperty(name="Enable Limit Angle")
-    starts_locked: BoolProperty(name="Starts Locked")
-    can_break: BoolProperty(name="Can Break")
-    limit_angle: FloatProperty(name="Limit Angle")
-    door_target_ratio: FloatProperty(name="Door Target Ratio")
-    audio_hash: StringProperty(name="Audio Hash")
+    enable_limit_angle: BoolProperty(name="启用限制角度")
+    starts_locked: BoolProperty(name="起始锁定")
+    can_break: BoolProperty(name="可破坏")
+    limit_angle: FloatProperty(name="限制角度")
+    door_target_ratio: FloatProperty(name="门目标比率")
+    audio_hash: StringProperty(name="音频哈希")
 
 
 class ParticleFxType(IntEnum):
@@ -355,14 +355,14 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
         "fx_name", "fx_type", "scale", "probability", "flags", "color"
     )
 
-    offset_rotation: FloatVectorProperty(name="Offset Rotation", subtype="EULER")
-    fx_name: StringProperty(name="FX Name")
-    fx_type: IntProperty(name="FX Type", min=0, max=7, default=ParticleFxType.AMBIENT.value)
-    bone_tag: IntProperty(name="Bone Tag", default=0)
-    scale: FloatProperty(name="Scale", min=0.0, default=1.0)
+    offset_rotation: FloatVectorProperty(name="旋转偏移", subtype="EULER")
+    fx_name: StringProperty(name="特效名称")
+    fx_type: IntProperty(name="特效类型", min=0, max=7, default=ParticleFxType.AMBIENT.value)
+    bone_tag: IntProperty(name="骨骼标签", default=0)
+    scale: FloatProperty(name="缩放", min=0.0, default=1.0)
     probability: IntProperty(name="Probability", min=0, max=100, default=100, subtype="PERCENTAGE")
-    flags: IntProperty(name="Flags", subtype="UNSIGNED")
-    color: FloatVectorProperty(name="Tint Color", subtype="COLOR", min=0, max=1, size=4, default=(1, 1, 1, 1))
+    flags: IntProperty(name="标记", subtype="UNSIGNED")
+    color: FloatVectorProperty(name="色调颜色", subtype="COLOR", min=0, max=1, size=4, default=(1, 1, 1, 1))
 
     # Wrapper properties for better UI
     def fx_type_get(self) -> int:
@@ -373,7 +373,7 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
 
     fx_type_enum: EnumProperty(
         items=ParticleFxTypeEnumItems,
-        name="FX Type",
+        name="特效类型",
         get=fx_type_get,
         set=fx_type_set,
     )
@@ -394,17 +394,17 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
         return lambda s, v: s.set_flag(bit, v)
 
     flag_has_tint: BoolProperty(
-        name="Enable Tint",
-        description="Tint the particle effect with the specified color",
+        name="启用色调",
+        description="使用指定颜色对粒子效果进行色调",
         get=flag_get(0), set=flag_set(0)
     )
     flag_ignore_damaged_model: BoolProperty(
-        name="Ignore Damaged Model",
-        description="For fragments, do not trigger when using the damaged model. Used by Collision and Shot FX types",
+        name="忽略破损模型",
+        description="对于碎片，使用破损模型时不触发。由 Collision 和 Shot FX 类型使用",
         get=flag_get(1), set=flag_set(1)
     )
     flag_play_on_parent: BoolProperty(
-        name="Play on Parent",
+        name="在父级上播放",
         description=(
             "For fragments when breaking, attach the particle to the parent instead of the broken apart piece. Used by "
             "Break FX type"
@@ -412,19 +412,19 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
         get=flag_get(2), set=flag_set(2)
     )
     flag_only_on_damaged_model: BoolProperty(
-        name="Only on Damaged Model",
-        description="For fragments, only trigger when using the damaged model. Used by Ambient FX type",
+        name="仅在破损模型上",
+        description="对于碎片，仅在使用破损模型时触发。由 Ambient FX 类型使用",
         get=flag_get(3), set=flag_set(3)
     )
     flag_allow_rubber_bullet_shot_fx: BoolProperty(
-        name="Allow Rubber Bullet Shot",
+        name="允许橡皮子弹射击",
         description=(
             "When shot at, trigger even if the damage type of the weapon used is BULLET_RUBBER. Used by Shot FX type"
         ),
         get=flag_get(4), set=flag_set(4)
     )
     flag_allow_electric_bullet_shot_fx: BoolProperty(
-        name="Allow Electric Bullet Shot",
+        name="允许电击子弹射击",
         description=(
             "When shot at, trigger even if the damage type of the weapon used is ELECTRIC. Used by Shot FX type"
         ),
@@ -449,7 +449,7 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
                     prop_name = "bone_name"
             row.prop(self, prop_name, icon=icon)
 
-        col = layout.column(heading="Flags", align=True)
+        col = layout.column(heading="标记", align=True)
 
         def _prop_enabled(prop_name, enabled):
             row = col.row(align=True)
@@ -463,7 +463,7 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
         _prop_enabled("flag_allow_rubber_bullet_shot_fx", is_shot)
         _prop_enabled("flag_allow_electric_bullet_shot_fx", is_shot)
 
-        col = layout.column(heading="Tint Color")
+        col = layout.column(heading="色调颜色")
         row = col.row()
         row.prop(self, "flag_has_tint", text="")
         row.prop(self, "color", text="")
@@ -472,14 +472,14 @@ class ParticleExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProper
 class AudioCollisionExtensionProperties(BaseExtensionProperties, PropertyGroup):
     __sz_preset_capture__ = ("settings",)
 
-    settings: StringProperty(name="Settings")
+    settings: StringProperty(name="设置")
 
 
 class AudioEmitterExtensionProperties(BaseExtensionProperties, PropertyGroup):
     __sz_preset_capture__ = ("effect_hash",)
 
-    offset_rotation: FloatVectorProperty(name="Offset Rotation", subtype="EULER")
-    effect_hash: StringProperty(name="Effect Hash")
+    offset_rotation: FloatVectorProperty(name="旋转偏移", subtype="EULER")
+    effect_hash: StringProperty(name="效果哈希")
 
 
 class ExplosionFxType(IntEnum):
@@ -608,9 +608,9 @@ KNOWN_EXPLOSION_NAMES = (
 class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProperties, PropertyGroup):
     __sz_preset_capture__ = ("explosion_name", "explosion_type", "flags")
 
-    offset_rotation: FloatVectorProperty(name="Offset Rotation", subtype="EULER")
+    offset_rotation: FloatVectorProperty(name="旋转偏移", subtype="EULER")
     explosion_name: StringProperty(
-        name="Explosion Name",
+        name="爆炸名称",
         description=(
             "Name of the explosion to use, as defined in explosion.ymt or explosion.meta. If the explosion is marked "
             "as 'minorExplosion', it will trigger each time the conditions are met (e.g. each time the object is shot "
@@ -620,10 +620,10 @@ class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionPrope
         search_options={"SUGGESTION"}
     )
     # Game only uses explosion_name, this is here only to avoid a special case in import/export code. Not shown in UI.
-    explosion_tag: IntProperty(name="Explosion Tag (Unused)", default=0)
-    bone_tag: IntProperty(name="Bone Tag", default=0)
-    explosion_type: IntProperty(name="Explosion Type", min=0, max=3, default=ExplosionFxType.SHOT_POINT.value)
-    flags: IntProperty(name="Flags", subtype="UNSIGNED")
+    explosion_tag: IntProperty(name="爆炸标签（未使用）", default=0)
+    bone_tag: IntProperty(name="骨骼标签", default=0)
+    explosion_type: IntProperty(name="爆炸类型", min=0, max=3, default=ExplosionFxType.SHOT_POINT.value)
+    flags: IntProperty(name="标记", subtype="UNSIGNED")
 
     # Wrapper properties for better UI
     def explosion_type_get(self) -> int:
@@ -634,7 +634,7 @@ class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionPrope
 
     explosion_type_enum: EnumProperty(
         items=ExplosionFxTypeEnumItems,
-        name="Explosion Type",
+        name="爆炸类型",
         get=explosion_type_get,
         set=explosion_type_set,
     )
@@ -655,12 +655,12 @@ class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionPrope
         return lambda s, v: s.set_flag(bit, v)
 
     flag_ignore_damaged_model: BoolProperty(
-        name="Ignore Damaged Model",
-        description="For fragments, do not trigger when using the damaged model. Used by Shot explosion type",
+        name="忽略破损模型",
+        description="对于碎片，使用破损模型时不触发。由 Shot 爆炸类型使用",
         get=flag_get(1), set=flag_set(1)
     )
     flag_play_on_parent: BoolProperty(
-        name="Play on Parent",
+        name="在父级上播放",
         description=(
             "For fragments when breaking, attach the explosion to the parent instead of the broken apart piece. Used by "
             "Break explosion type"
@@ -668,14 +668,14 @@ class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionPrope
         get=flag_get(2), set=flag_set(2)
     )
     flag_allow_rubber_bullet_shot_fx: BoolProperty(
-        name="Allow Rubber Bullet Shot",
+        name="允许橡皮子弹射击",
         description=(
             "When shot at, trigger even if the damage type of the weapon used is BULLET_RUBBER. Used by Shot explosion type"
         ),
         get=flag_get(4), set=flag_set(4)
     )
     flag_allow_electric_bullet_shot_fx: BoolProperty(
-        name="Allow Electric Bullet Shot",
+        name="允许电击子弹射击",
         description=(
             "When shot at, trigger even if the damage type of the weapon used is ELECTRIC. Used by Shot explosion type"
         ),
@@ -698,7 +698,7 @@ class ExplosionExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionPrope
                     prop_name = "bone_name"
             row.prop(self, prop_name, icon=icon)
 
-        col = layout.column(heading="Flags", align=True)
+        col = layout.column(heading="标记", align=True)
 
         def _prop_enabled(prop_name, enabled):
             row = col.row(align=True)
@@ -717,11 +717,11 @@ class LadderExtensionProperties(BaseExtensionProperties, PropertyGroup):
 
     bottom: FloatVectorProperty(name="Bottom", subtype="TRANSLATION")
     top: FloatVectorProperty(name="Top", subtype="TRANSLATION")
-    normal: FloatVectorProperty(name="Normal", subtype="TRANSLATION")
-    material_type: StringProperty(name="Material Type", default="METAL_SOLID_LADDER")
+    normal: FloatVectorProperty(name="法线", subtype="TRANSLATION")
+    material_type: StringProperty(name="材质类型", default="METAL_SOLID_LADDER")
     template: StringProperty(name="Template", default="default")
-    can_get_off_at_top: BoolProperty(name="Can Get Off At Top", default=True)
-    can_get_off_at_bottom: BoolProperty(name="Can Get Off At Bottom", default=True)
+    can_get_off_at_top: BoolProperty(name="可从顶部下车", default=True)
+    can_get_off_at_bottom: BoolProperty(name="可从底部下车", default=True)
 
     def draw_props_post(self, layout: UILayout):
         super().draw_props_post(layout)
@@ -742,10 +742,10 @@ class ExpressionExtensionProperties(BaseExtensionProperties, PropertyGroup):
         "expression_dictionary_name", "expression_name", "creature_metadata_name", "initialize_on_collision"
     )
 
-    expression_dictionary_name: StringProperty(name="Expression Dictionary Name")
-    expression_name: StringProperty(name="Expression Name")
-    creature_metadata_name: StringProperty(name="Creature Metadata Name")
-    initialize_on_collision: BoolProperty(name="Initialize on Collision")
+    expression_dictionary_name: StringProperty(name="表情字典名称")
+    expression_name: StringProperty(name="表情名称")
+    creature_metadata_name: StringProperty(name="生物元数据名称")
+    initialize_on_collision: BoolProperty(name="碰撞时初始化")
 
 
 class LightShaftExtensionProperties(BaseExtensionProperties, PropertyGroup):
@@ -755,34 +755,34 @@ class LightShaftExtensionProperties(BaseExtensionProperties, PropertyGroup):
         "fade_distance_start", "fade_distance_end", "softness",
     )
 
-    density_type: EnumProperty(items=LightShaftDensityTypeEnumItems, name="Density Type")
-    volume_type: EnumProperty(items=LightShaftVolumeTypeEnumItems, name="Volume Type")
-    scale_by_sun_intensity: BoolProperty(name="Scale by Sun Intensity")
-    direction_amount: FloatProperty(name="Direction Amount")
-    length: FloatProperty(name="Length")
+    density_type: EnumProperty(items=LightShaftDensityTypeEnumItems, name="密度类型")
+    volume_type: EnumProperty(items=LightShaftVolumeTypeEnumItems, name="体积类型")
+    scale_by_sun_intensity: BoolProperty(name="按太阳强度缩放")
+    direction_amount: FloatProperty(name="方向量")
+    length: FloatProperty(name="长度")
     color: FloatVectorProperty(
-        name="Color", subtype="COLOR", min=0, max=1, size=4, default=(1, 1, 1, 1))
+        name="颜色", subtype="COLOR", min=0, max=1, size=4, default=(1, 1, 1, 1))
     intensity: FloatProperty(name="Intensity")
     flashiness: EnumProperty(name="Flashiness", items=LightFlashinessEnumItems,
                              default=LightFlashiness.CONSTANT.name)
-    flags: IntProperty(name="Flags")
-    fade_in_time_start: FloatProperty(name="Fade In Time Start")
-    fade_in_time_end: FloatProperty(name="Fade In Time End")
-    fade_out_time_start: FloatProperty(name="Fade Out Time Start")
-    fade_out_time_end: FloatProperty(name="Fade Out Time End")
-    fade_distance_start: FloatProperty(name="Fade Distance Start")
-    fade_distance_end: FloatProperty(name="Fade Distance End")
+    flags: IntProperty(name="标记")
+    fade_in_time_start: FloatProperty(name="淡入时间起始")
+    fade_in_time_end: FloatProperty(name="淡入时间结束")
+    fade_out_time_start: FloatProperty(name="淡出时间起始")
+    fade_out_time_end: FloatProperty(name="淡出时间结束")
+    fade_distance_start: FloatProperty(name="淡出距离起始")
+    fade_distance_end: FloatProperty(name="淡出距离结束")
     softness: FloatProperty(name="Softness")
     cornerA: FloatVectorProperty(
-        name="Corner A", subtype="TRANSLATION")
+        name="角点 A", subtype="TRANSLATION")
     cornerB: FloatVectorProperty(
-        name="Corner B", subtype="TRANSLATION")
+        name="角点 B", subtype="TRANSLATION")
     cornerC: FloatVectorProperty(
-        name="Corner C", subtype="TRANSLATION")
+        name="角点 C", subtype="TRANSLATION")
     cornerD: FloatVectorProperty(
-        name="Corner D", subtype="TRANSLATION")
+        name="角点 D", subtype="TRANSLATION")
     direction: FloatVectorProperty(
-        name="Direction", subtype="XYZ")
+        name="方向", subtype="XYZ")
 
     # HACK: import/export iterates the annotations matching properties here with properties in the XML class,
     # if they don't match it prints a warning. This is not really flexible when we need a different layout
@@ -821,11 +821,11 @@ class LightShaftExtensionProperties(BaseExtensionProperties, PropertyGroup):
 
     # Using getters and setters because there isn't a nice way to have a list of checkboxes with EnumProperty and ENUM_FLAG option :(
     # BoolVectorProperty isn't a good option either because there are unused bits.
-    flag_0: BoolProperty(name="Use Sun Direction", description="", get=flag_get(0), set=flag_set(0))
-    flag_1: BoolProperty(name="Use Sun Color", description="", get=flag_get(1), set=flag_set(1))
-    flag_4: BoolProperty(name="Scale By Sun Color", description="", get=flag_get(4), set=flag_set(4))
-    flag_5: BoolProperty(name="Scale By Sun Intensity", description="", get=flag_get(5), set=flag_set(5))
-    flag_6: BoolProperty(name="Draw In Front And Behind", description="", get=flag_get(6), set=flag_set(6))
+    flag_0: BoolProperty(name="使用太阳方向", description="", get=flag_get(0), set=flag_set(0))
+    flag_1: BoolProperty(name="使用太阳颜色", description="", get=flag_get(1), set=flag_set(1))
+    flag_4: BoolProperty(name="按太阳颜色缩放", description="", get=flag_get(4), set=flag_set(4))
+    flag_5: BoolProperty(name="按太阳强度缩放", description="", get=flag_get(5), set=flag_set(5))
+    flag_6: BoolProperty(name="在前面和后面绘制", description="", get=flag_get(6), set=flag_set(6))
 
     def draw_props_pre(self, layout: UILayout):
         from ..operators.extensions import (
@@ -858,7 +858,7 @@ class LightShaftExtensionProperties(BaseExtensionProperties, PropertyGroup):
         for prop_name in self.__class__.__annotations__:
             if prop_name == "flags":
                 # draw individual checkboxes for the bits instead of the flags IntProperty
-                col = layout.column(heading="Flags")
+                col = layout.column(heading="标记")
                 col.prop(self, "flag_0")
                 col.prop(self, "flag_1")
                 col.prop(self, "flag_4")
@@ -884,24 +884,24 @@ class SpawnPointExtensionProperties(BaseExtensionProperties, PropertyGroup):
         "radius", "start", "end", "high_pri", "extended_range", "short_range", "available_in_mp_sp", "scenario_flags"
     )
 
-    offset_rotation: FloatVectorProperty(name="Offset Rotation", subtype="EULER")
-    spawn_type: StringProperty(name="Spawn Type")
-    ped_type: StringProperty(name="Ped Type")
+    offset_rotation: FloatVectorProperty(name="旋转偏移", subtype="EULER")
+    spawn_type: StringProperty(name="生成类型")
+    ped_type: StringProperty(name="行人类型")
     group: StringProperty(name="Group")
     interior: StringProperty(name="Interior")
-    required_imap: StringProperty(name="Required Map")
+    required_imap: StringProperty(name="必需地图")
     probability: FloatProperty(name="Probability")
-    time_till_ped_leaves: FloatProperty(name="Time Till Ped Leaves")
-    radius: FloatProperty(name="Radius")
+    time_till_ped_leaves: FloatProperty(name="行人离开时间")
+    radius: FloatProperty(name="半径")
     start: IntProperty(name="Start", min=0, max=24)
     end: IntProperty(name="End", min=0, max=24)
-    high_pri: BoolProperty(name="High Priority")
-    extended_range: BoolProperty(name="Extended Range")
-    short_range: BoolProperty(name="Short Range")
+    high_pri: BoolProperty(name="高优先级")
+    extended_range: BoolProperty(name="扩展范围")
+    short_range: BoolProperty(name="短范围")
 
     # TODO: Use enums
-    available_in_mp_sp: StringProperty(name="Available in MP/SP")
-    scenario_flags: StringProperty(name="Scenario Flags")
+    available_in_mp_sp: StringProperty(name="MP/SP 中可用")
+    scenario_flags: StringProperty(name="场景标记")
 
 
 class SpawnPointOverrideProperties(BaseExtensionProperties, PropertyGroup):
@@ -910,28 +910,28 @@ class SpawnPointOverrideProperties(BaseExtensionProperties, PropertyGroup):
         "time_till_ped_leaves", "available_in_mp_sp", "scenario_flags",
     )
 
-    scenario_type: StringProperty(name="Scenario Type")
+    scenario_type: StringProperty(name="场景类型")
     itime_start_override: FloatProperty(name="iTime Start Override")
     itime_end_override: FloatProperty(name="iTime End Override")
     group: StringProperty(name="Group")
-    model_set: StringProperty(name="Model Set")
-    radius: FloatProperty(name="Radius")
-    time_till_ped_leaves: FloatProperty(name="Time Till Ped Leaves")
+    model_set: StringProperty(name="模型集")
+    radius: FloatProperty(name="半径")
+    time_till_ped_leaves: FloatProperty(name="行人离开时间")
 
     # TODO: Use enums
-    available_in_mp_sp: StringProperty(name="Available in MP/SP")
-    scenario_flags: StringProperty(name="Scenario Flags")
+    available_in_mp_sp: StringProperty(name="MP/SP 中可用")
+    scenario_flags: StringProperty(name="场景标记")
 
 
 class WindDisturbanceExtensionProperties(ExtensionWithBoneTagMixin, BaseExtensionProperties, PropertyGroup):
     __sz_preset_capture__ = ("disturbance_type", "size", "strength", "flags")
 
-    offset_rotation: FloatVectorProperty(name="Offset Rotation", subtype="EULER")
-    disturbance_type: IntProperty(name="Disturbance Type")
-    bone_tag: IntProperty(name="Bone Tag", default=0)
+    offset_rotation: FloatVectorProperty(name="旋转偏移", subtype="EULER")
+    disturbance_type: IntProperty(name="扰动类型")
+    bone_tag: IntProperty(name="骨骼标签", default=0)
     size: FloatVectorProperty(name="Size", size=4, subtype="XYZ")
-    strength: FloatProperty(name="Strength")
-    flags: IntProperty(name="Flags")
+    strength: FloatProperty(name="强度")
+    flags: IntProperty(name="标记")
 
 
 class ProcObjectExtensionProperties(BaseExtensionProperties, PropertyGroup):
@@ -940,24 +940,24 @@ class ProcObjectExtensionProperties(BaseExtensionProperties, PropertyGroup):
         "min_z_offset", "max_z_offset", "flags",
     )
 
-    radius_inner: FloatProperty(name="Radius Inner")
-    radius_outer: FloatProperty(name="Radius Outer")
+    radius_inner: FloatProperty(name="内半径")
+    radius_outer: FloatProperty(name="外半径")
     spacing: FloatProperty(name="Spacing")
-    min_scale: FloatProperty(name="Min Scale")
-    max_scale: FloatProperty(name="Max Scale")
-    min_scale_z: FloatProperty(name="Min Scale Z")
-    max_scale_z: FloatProperty(name="Max Scale Z")
-    min_z_offset: FloatProperty(name="Min Z Offset")
-    max_z_offset: FloatProperty(name="Max Z Offset")
-    object_hash: IntProperty(name="Object Hash", subtype="UNSIGNED")
-    flags: IntProperty(name="Flags", subtype="UNSIGNED")
+    min_scale: FloatProperty(name="最小缩放")
+    max_scale: FloatProperty(name="最大缩放")
+    min_scale_z: FloatProperty(name="最小 Z 缩放")
+    max_scale_z: FloatProperty(name="最大 Z 缩放")
+    min_z_offset: FloatProperty(name="最小 Z 偏移")
+    max_z_offset: FloatProperty(name="最大 Z 偏移")
+    object_hash: IntProperty(name="对象哈希", subtype="UNSIGNED")
+    flags: IntProperty(name="标记", subtype="UNSIGNED")
 
 
 class LightEffectExtensionProperties(BaseExtensionProperties, PropertyGroup):
     __sz_preset_capture__ = ()
     ignored_in_import_export = {"linked_lights_object"}
 
-    linked_lights_object: PointerProperty(name="Linked Lights", type=Object)
+    linked_lights_object: PointerProperty(name="链接灯光", type=Object)
 
     def draw_props_post(self, layout: UILayout):
         from ..operators.extensions import SOLLUMZ_OT_light_effect_create_lights_from_entity
@@ -1020,17 +1020,17 @@ class ExtensionProperties(PropertyGroup):
     def _set_extension_type_int(self, value: int):
         self["extension_type"] = value  # using indexer to set the integer value directly
 
-    extension_type: EnumProperty(name="Type", items=ExtensionTypeEnumItems)
+    extension_type: EnumProperty(name="类型", items=ExtensionTypeEnumItems)
     extension_type_for_archetypes: EnumProperty(
-        name="Type", items=ExtensionTypeForArchetypesEnumItems,
+        name="类型", items=ExtensionTypeForArchetypesEnumItems,
         get=_get_extension_type_int, set=_set_extension_type_int,
     )
     extension_type_for_entities: EnumProperty(
-        name="Type", items=ExtensionTypeForEntitiesEnumItems,
+        name="类型", items=ExtensionTypeForEntitiesEnumItems,
         get=_get_extension_type_int, set=_set_extension_type_int,
     )
 
-    name: StringProperty(name="Name", default="Extension")
+    name: StringProperty(name="名称", default="Extension")
 
     door_extension_properties: PointerProperty(type=DoorExtensionProperties)
     particle_extension_properties: PointerProperty(type=ParticleExtensionProperties)

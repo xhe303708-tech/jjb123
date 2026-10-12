@@ -842,7 +842,7 @@ def calc_composite_transforms(bound_obj: Object) -> Matrix:
 
 
 def calc_scale_to_apply_to_bound(bound_obj: Object) -> Vector:
-    """Get scale to apply to bound object based on "Apply Parent Transforms" option."""
+    """Get scale to apply to bound object based on "应用父级变换" option."""
     parent_inverse = get_parent_inverse(bound_obj)
     scale = (parent_inverse @ bound_obj.matrix_world).to_scale()
 

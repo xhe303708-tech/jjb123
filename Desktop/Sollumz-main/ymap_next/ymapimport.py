@@ -721,7 +721,7 @@ def _create_map_grass_batch(
         instances_template_index = templates_reorder_inverse[np.concatenate(instances_template_index)]
         instances_partition_index = np.concatenate(instances_partition_index)
 
-        verts = instances["Position"]
+        verts = instances["位置"]
         name = f"{map_data.name}.instances"
         mesh = bpy.data.meshes.new(name)
         mesh.from_pydata(verts, [], [])
@@ -729,14 +729,14 @@ def _create_map_grass_batch(
         from .grass import GrassBatchAttr, mesh_add_grass_batch_attribute
 
         color_ao = np.empty((len(instances), 4), dtype=np.float32)
-        color_ao[:, :3] = instances["Color"]
+        color_ao[:, :3] = instances["颜色"]
         color_ao[:, 3] = instances["Ao"]
         mesh_attr = mesh_add_grass_batch_attribute(mesh, GrassBatchAttr.COLOR_AO)
         mesh_attr.data.foreach_set("color_srgb", color_ao.ravel())
 
         normal_scale = np.empty((len(instances), 3), dtype=np.float32)
-        normal_scale[:, :2] = instances["Normal"]
-        normal_scale[:, 2] = instances["Scale"]
+        normal_scale[:, :2] = instances["法线"]
+        normal_scale[:, 2] = instances["缩放"]
         mesh_attr = mesh_add_grass_batch_attribute(mesh, GrassBatchAttr.NORMAL_SCALE)
         mesh_attr.data.foreach_set("vector", normal_scale.ravel())
 
@@ -882,7 +882,7 @@ def _create_map_lod_lights(
     ll.name = map_data.name
     ll.category = distant_lod_lights.category.name
 
-    verts = distant_lod_lights.lights["Position"]
+    verts = distant_lod_lights.lights["位置"]
     mesh = bpy.data.meshes.new(map_data.name)
     mesh.from_pydata(verts, [], [])
 
@@ -894,7 +894,7 @@ def _create_map_lod_lights(
     mesh_attr.data.foreach_set("color_srgb", rgbi.ravel())
 
     mesh_attr = mesh_add_lod_light_attribute(mesh, LodLightAttr.DIRECTION)
-    mesh_attr.data.foreach_set("vector", lod_lights.lights["Direction"].ravel())
+    mesh_attr.data.foreach_set("vector", lod_lights.lights["方向"].ravel())
 
     mesh_attr = mesh_add_lod_light_attribute(mesh, LodLightAttr.FALLOFF)
     mesh_attr.data.foreach_set("value", lod_lights.lights["Falloff"])

@@ -472,12 +472,12 @@ class SOLLUMZ_GT_archetype_extension(bpy.types.Gizmo):
 
 class SOLLUMZ_OT_extension_select(bpy.types.Operator):
     bl_idname = "sollumz.extension_select"
-    bl_label = "Extension Select"
+    bl_label = "扩展选择"
     bl_description = bl_label
     bl_options = {"UNDO", "INTERNAL"}
 
-    archetype_index: bpy.props.IntProperty(name="Archetype Index")
-    extension_index: bpy.props.IntProperty(name="Extension Index")
+    archetype_index: bpy.props.IntProperty(name="架构索引")
+    extension_index: bpy.props.IntProperty(name="扩展索引")
 
     def execute(self, context):
         selected_ytyp = get_selected_ytyp(context)
@@ -492,11 +492,11 @@ class SOLLUMZ_OT_extension_select(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_translate(bpy.types.Operator):
     bl_idname = "sollumz.extension_translate"
-    bl_label = "Extension Translate"
+    bl_label = "扩展平移"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_position: bpy.props.FloatVectorProperty(name="Delta Position", subtype="TRANSLATION", size=3)
+    delta_position: bpy.props.FloatVectorProperty(name="增量位置", subtype="TRANSLATION", size=3)
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -506,11 +506,11 @@ class SOLLUMZ_OT_extension_translate(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_rotate(bpy.types.Operator):
     bl_idname = "sollumz.extension_rotate"
-    bl_label = "Extension Rotate"
+    bl_label = "扩展旋转"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_rotation: bpy.props.FloatVectorProperty(name="Delta Rotation", subtype="QUATERNION", size=4)
+    delta_rotation: bpy.props.FloatVectorProperty(name="增量旋转", subtype="QUATERNION", size=4)
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -548,11 +548,11 @@ class SOLLUMZ_OT_extension_rotate(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_rotate_ladder_normal(bpy.types.Operator):
     bl_idname = "sollumz.extension_rotate_ladder_normal"
-    bl_label = "Extension Rotate Ladder"
+    bl_label = "扩展旋转梯子"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_angle: bpy.props.FloatProperty(name="Delta Angle", subtype="ANGLE")
+    delta_angle: bpy.props.FloatProperty(name="增量角度", subtype="ANGLE")
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -564,11 +564,11 @@ class SOLLUMZ_OT_extension_rotate_ladder_normal(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_translate_ladder_bottom_z(bpy.types.Operator):
     bl_idname = "sollumz.extension_translate_ladder_bottom_z"
-    bl_label = "Extension Translate Ladder Bottom"
+    bl_label = "扩展平移梯子底部"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_z: bpy.props.FloatProperty(name="Delta Z", subtype="DISTANCE")
+    delta_z: bpy.props.FloatProperty(name="增量 Z", subtype="DISTANCE")
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -582,12 +582,12 @@ class SOLLUMZ_OT_extension_translate_ladder_bottom_z(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_scale_light_shaft_frame(bpy.types.Operator):
     bl_idname = "sollumz.extension_scale_light_shaft_frame"
-    bl_label = "Extension Scale Light Shaft Frame"
+    bl_label = "扩展缩放光柱框"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    width_scale: bpy.props.FloatProperty(name="Width Scale", subtype="FACTOR")
-    height_scale: bpy.props.FloatProperty(name="Height Scale", subtype="FACTOR")
+    width_scale: bpy.props.FloatProperty(name="宽度缩放", subtype="FACTOR")
+    height_scale: bpy.props.FloatProperty(name="高度缩放", subtype="FACTOR")
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -626,11 +626,11 @@ class SOLLUMZ_OT_extension_scale_light_shaft_frame(bpy.types.Operator):
 
 class SOLLUMZ_OT_extension_offset_light_shaft_end_point(bpy.types.Operator):
     bl_idname = "sollumz.extension_offset_light_shaft_end_point"
-    bl_label = "Extension Offset Light Shaft End Point"
+    bl_label = "扩展偏移光柱端点"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_offset: bpy.props.FloatVectorProperty(name="Delta Offset", subtype="TRANSLATION", size=2)
+    delta_offset: bpy.props.FloatVectorProperty(name="增量偏移", subtype="TRANSLATION", size=2)
 
     def execute(self, context):
         ext = get_selected_extension(context)
@@ -659,7 +659,7 @@ class SOLLUMZ_OT_extension_offset_light_shaft_end_point(bpy.types.Operator):
 class SOLLUMZ_OT_archetype_extensions_detect_ctrl_pressed(bpy.types.Operator):
     """Operator that runs as modal in the background to detect when CTRL is pressed down"""
     bl_idname = "sollumz.archetype_extensions_detect_ctrl_pressed"
-    bl_label = "DetectCtrlPressed"
+    bl_label = "检测 Ctrl 键按下"
     bl_options = {"INTERNAL"}
 
     def invoke(self, context, event):
@@ -677,7 +677,7 @@ class SOLLUMZ_OT_archetype_extensions_detect_ctrl_pressed(bpy.types.Operator):
 
 class SOLLUMZ_GGT_archetype_extensions(bpy.types.GizmoGroup):
     bl_idname = "SOLLUMZ_GGT_archetype_extensions"
-    bl_label = "Archetype Extension Widget"
+    bl_label = "架构扩展控件"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
     bl_options = {"3D", "SELECT"}

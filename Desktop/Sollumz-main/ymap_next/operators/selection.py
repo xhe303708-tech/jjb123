@@ -17,17 +17,17 @@ class MapsGroupsSelectMixin:
 
 class SOLLUMZ_OT_maps_select_group(MapsGroupsSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.maps_select_group"
-    bl_label = "Select Map Group"
+    bl_label = "选择地图组"
 
 
 class SOLLUMZ_OT_maps_select_all_groups(MapsGroupsSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.maps_select_all_groups"
-    bl_label = "Select All Map Groups"
+    bl_label = "全选地图组"
 
 
 class SOLLUMZ_OT_maps_select_invert_groups(MapsGroupsSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.maps_select_invert_groups"
-    bl_label = "Invert Selected Map Groups"
+    bl_label = "反转已选地图组"
 
 
 class MapGroupMapsSelectMixin:
@@ -48,17 +48,17 @@ class MapGroupMapsSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_map(MapGroupMapsSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_map"
-    bl_label = "Select Map Container"
+    bl_label = "选择地图容器"
 
 
 class SOLLUMZ_OT_map_group_select_all_maps(MapGroupMapsSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_maps"
-    bl_label = "Select All Map Containers"
+    bl_label = "全选地图容器"
 
 
 class SOLLUMZ_OT_map_group_select_invert_maps(MapGroupMapsSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.map_group_select_invert_maps"
-    bl_label = "Invert Selected Map Container"
+    bl_label = "反转已选地图容器"
 
 
 class MapGroupEntitiesSelectMixin:
@@ -78,17 +78,17 @@ class MapGroupEntitiesSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_entity(MapGroupEntitiesSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_entity"
-    bl_label = "Select Map Entity"
+    bl_label = "选择地图实体"
 
 
 class SOLLUMZ_OT_map_group_select_all_entities(MapGroupEntitiesSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_entities"
-    bl_label = "Select All Map Entities"
+    bl_label = "全选地图实体"
 
 
 class SOLLUMZ_OT_map_group_select_invert_entities(MapGroupEntitiesSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.map_group_select_invert_entities"
-    bl_label = "Invert Selected Map Entities"
+    bl_label = "反转已选地图实体"
 
 
 class MapGroupCarGensSelectMixin:
@@ -98,17 +98,17 @@ class MapGroupCarGensSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_cargen(MapGroupCarGensSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_cargen"
-    bl_label = "Select Map Car Generator"
+    bl_label = "选择地图载具生成器"
 
 
 class SOLLUMZ_OT_map_group_select_all_cargens(MapGroupCarGensSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_cargens"
-    bl_label = "Select All Map Car Generators"
+    bl_label = "全选地图载具生成器"
 
 
 class SOLLUMZ_OT_map_group_select_invert_cargens(MapGroupCarGensSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.map_group_select_invert_cargens"
-    bl_label = "Invert Selected Map Car Generators"
+    bl_label = "反转已选地图载具生成器"
 
 
 class MapGroupTimecycleModifiersSelectMixin:
@@ -118,19 +118,19 @@ class MapGroupTimecycleModifiersSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_tcm(MapGroupTimecycleModifiersSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_tcm"
-    bl_label = "Select Map Timecycle Modifier"
+    bl_label = "选择地图时间周期修改器"
 
 
 class SOLLUMZ_OT_map_group_select_all_tcms(MapGroupTimecycleModifiersSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_tcms"
-    bl_label = "Select All Map Timecycle Modifiers"
+    bl_label = "全选地图时间周期修改器"
 
 
 class SOLLUMZ_OT_map_group_select_invert_tcms(
     MapGroupTimecycleModifiersSelectMixin, MultiSelectInvertOperator, Operator
 ):
     bl_idname = "sollumz.map_group_select_invert_tcms"
-    bl_label = "Invert Selected Map Timecycle Modifiers"
+    bl_label = "反转已选地图时间周期修改器"
 
 
 class MapGroupGrassBatchesSelectMixin:
@@ -140,19 +140,19 @@ class MapGroupGrassBatchesSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_grass_batch(MapGroupGrassBatchesSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_grass_batch"
-    bl_label = "Select Map Grass Batch"
+    bl_label = "选择地图草批"
 
 
 class SOLLUMZ_OT_map_group_select_all_grass_batches(MapGroupGrassBatchesSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_grass_batches"
-    bl_label = "Select All Map Grass Batches"
+    bl_label = "全选地图草批"
 
 
 class SOLLUMZ_OT_map_group_select_invert_grass_batches(
     MapGroupGrassBatchesSelectMixin, MultiSelectInvertOperator, Operator
 ):
     bl_idname = "sollumz.map_group_select_invert_grass_batches"
-    bl_label = "Invert Selected Map Grass Batches"
+    bl_label = "反转已选地图草批"
 
 
 class MapGroupGrassTemplatesSelectMixin:
@@ -162,21 +162,21 @@ class MapGroupGrassTemplatesSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_grass_template(MapGroupGrassTemplatesSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_grass_template"
-    bl_label = "Select Map Grass template"
+    bl_label = "选择地图草模板"
 
 
 class SOLLUMZ_OT_map_group_select_all_grass_templates(
     MapGroupGrassTemplatesSelectMixin, MultiSelectAllOperator, Operator
 ):
     bl_idname = "sollumz.map_group_select_all_grass_templates"
-    bl_label = "Select All Map Grass templates"
+    bl_label = "全选地图草模板"
 
 
 class SOLLUMZ_OT_map_group_select_invert_grass_templates(
     MapGroupGrassTemplatesSelectMixin, MultiSelectInvertOperator, Operator
 ):
     bl_idname = "sollumz.map_group_select_invert_grass_templates"
-    bl_label = "Invert Selected Map Grass templates"
+    bl_label = "反转已选地图草模板"
 
 
 class MapGroupOccludersSelectMixin:
@@ -186,17 +186,17 @@ class MapGroupOccludersSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_occluder(MapGroupOccludersSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_occluder"
-    bl_label = "Select Map Occluder"
+    bl_label = "选择地图遮挡器"
 
 
 class SOLLUMZ_OT_map_group_select_all_occluders(MapGroupOccludersSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_occluders"
-    bl_label = "Select All Map Occluders"
+    bl_label = "全选地图遮挡器"
 
 
 class SOLLUMZ_OT_map_group_select_invert_occluders(MapGroupOccludersSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.map_group_select_invert_occluders"
-    bl_label = "Invert Selected Map Occluders"
+    bl_label = "反转已选地图遮挡器"
 
 
 class MapGroupLodLightsSelectMixin:
@@ -206,14 +206,14 @@ class MapGroupLodLightsSelectMixin:
 
 class SOLLUMZ_OT_map_group_select_lod_lights(MapGroupLodLightsSelectMixin, MultiSelectOneOperator, Operator):
     bl_idname = "sollumz.map_group_select_lod_lights"
-    bl_label = "Select Map LOD Lights"
+    bl_label = "选择地图 LOD 灯光"
 
 
 class SOLLUMZ_OT_map_group_select_all_lod_lights(MapGroupLodLightsSelectMixin, MultiSelectAllOperator, Operator):
     bl_idname = "sollumz.map_group_select_all_lod_lights"
-    bl_label = "Select All Map LOD Lights"
+    bl_label = "全选地图 LOD 灯光"
 
 
 class SOLLUMZ_OT_map_group_select_invert_lod_lights(MapGroupLodLightsSelectMixin, MultiSelectInvertOperator, Operator):
     bl_idname = "sollumz.map_group_select_invert_lod_lights"
-    bl_label = "Invert Selected Map LOD Lights"
+    bl_label = "反转已选地图 LOD 灯光"

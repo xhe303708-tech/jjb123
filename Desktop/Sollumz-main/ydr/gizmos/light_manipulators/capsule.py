@@ -14,12 +14,12 @@ from ....sollumz_properties import SollumType, LightType
 
 class SOLLUMZ_OT_capsule_light_set_size(Operator):
     bl_idname = "sollumz.capsule_light_set_size"
-    bl_label = "Capsule Light Scale"
+    bl_label = "胶囊体灯光缩放"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    length: bpy.props.FloatProperty(name="Length")
-    radius: bpy.props.FloatProperty(name="Radius")
+    length: bpy.props.FloatProperty(name="长度")
+    radius: bpy.props.FloatProperty(name="半径")
 
     def execute(self, context: Context):
         light_obj = context.view_layer.objects.active

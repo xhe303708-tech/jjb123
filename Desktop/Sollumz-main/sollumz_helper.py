@@ -202,12 +202,12 @@ def get_export_transforms_to_apply(obj: bpy.types.Object):
     parent_inverse = get_parent_inverse(obj)
     bone_inverse = get_bone_pose_matrix(obj).inverted()
 
-    # Apply all transforms except any transforms from the current pose, and any parent transforms (depends on "Apply Parent Transforms" option)
+    # Apply all transforms except any transforms from the current pose, and any parent transforms (depends on "应用父级变换" option)
     return parent_inverse @ bone_inverse @ obj.matrix_world
 
 
 def get_parent_inverse(obj: bpy.types.Object) -> Matrix:
-    """Get the parent transforms to unapply based on the "Apply Parent Transforms" option"""
+    """Get the parent transforms to unapply based on the "应用父级变换" option"""
     parent_obj = find_sollumz_parent(obj)
 
     if obj.matrix_world.is_identity or parent_obj is None:

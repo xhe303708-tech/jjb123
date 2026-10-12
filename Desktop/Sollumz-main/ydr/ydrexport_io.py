@@ -370,7 +370,7 @@ def create_geometries(
             vert_buffer = remove_arr_field("Tangent", vert_buffer)
 
         if not normal_required:
-            vert_buffer = remove_arr_field("Normal", vert_buffer)
+            vert_buffer = remove_arr_field("法线", vert_buffer)
 
         vert_buffer, ind_buffer = dedupe_and_get_indices(vert_buffer)
 

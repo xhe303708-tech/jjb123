@@ -576,7 +576,7 @@ def get_bound_poly_transforms_to_apply(obj: bpy.types.Object, composite_transfor
 
 
 def get_scale_to_apply_to_bound(bound_obj: bpy.types.Object) -> Vector:
-    """Get scale to apply to bound object based on "Apply Parent Transforms" option."""
+    """Get scale to apply to bound object based on "应用父级变换" option."""
     parent_inverse = get_parent_inverse(bound_obj)
     scale = (parent_inverse @ bound_obj.matrix_world).to_scale()
 

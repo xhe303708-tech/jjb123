@@ -10,7 +10,7 @@ def draw_cache_result(layout: UILayout, cache_result: object | None, missing_msg
     if cache_result is CACHE_NOT_READY:
         progress = MAP_INDEX.build_progress
         if progress is None:
-            layout.progress(text="Building cache...", factor=0.0, type="BAR")
+            layout.progress(text="正在构建缓存...", factor=0.0, type="BAR")
         else:
             current, total = progress
             layout.progress(text=f"Building cache ({current}/{total})...", factor=current / total, type="BAR")

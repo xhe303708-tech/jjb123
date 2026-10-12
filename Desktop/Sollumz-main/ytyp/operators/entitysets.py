@@ -23,7 +23,7 @@ class SOLLUMZ_OT_search_entityset(SearchEnumHelper, bpy.types.Operator):
 class SOLLUMZ_OT_create_entityset(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add a Entity Set to the selected archetype"""
     bl_idname = "sollumz.createentityset"
-    bl_label = "Create Entity Set"
+    bl_label = "创建实体集"
 
     @classmethod
     def poll(cls, context):
@@ -39,7 +39,7 @@ class SOLLUMZ_OT_create_entityset(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_delete_entityset(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete selected entity set(s)"""
     bl_idname = "sollumz.deleteentityset"
-    bl_label = "Delete Entity Set"
+    bl_label = "删除实体集"
 
     @classmethod
     def poll(cls, context):
@@ -60,11 +60,11 @@ class SOLLUMZ_OT_delete_entityset(SOLLUMZ_OT_base, bpy.types.Operator):
 
 class SOLLUMZ_OT_entityset_toggle_visibility(bpy.types.Operator):
     bl_idname = "sollumz.entityset_toggle_visibility"
-    bl_label = "Toggle Entity Set"
+    bl_label = "切换实体集"
 
-    ytyp_index: bpy.props.IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: bpy.props.IntProperty(name="Archetype Index", min=-1, default=-1)
-    index: bpy.props.IntProperty(name="Entity Set Index")
+    ytyp_index: bpy.props.IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: bpy.props.IntProperty(name="架构索引", min=-1, default=-1)
+    index: bpy.props.IntProperty(name="实体集索引")
 
     def _get_archetype(self, context):
         return (

@@ -59,19 +59,19 @@ def create_bound_composite(composite_xml: BoundComposite, name: Optional[str] = 
 
 def create_bound_object(bound_xml: BoundChild | Bound):
     """Create a bound object based on ``bound_xml.type``"""
-    if bound_xml.type == "Box":
+    if bound_xml.type == "盒":
         return create_bound_box(bound_xml)
 
-    if bound_xml.type == "Sphere":
+    if bound_xml.type == "球":
         return create_bound_sphere(bound_xml)
 
-    if bound_xml.type == "Capsule":
+    if bound_xml.type == "胶囊体":
         return create_bound_capsule(bound_xml)
 
-    if bound_xml.type == "Cylinder":
+    if bound_xml.type == "圆柱体":
         return create_bound_cylinder(bound_xml)
 
-    if bound_xml.type == "Disc":
+    if bound_xml.type == "圆盘":
         return create_bound_disc(bound_xml)
 
     if bound_xml.type == "Geometry":

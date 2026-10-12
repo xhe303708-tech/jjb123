@@ -221,7 +221,7 @@ class VertexBufferBuilder:
         """Returns a dict mapping arrays of all GTAV vertex attributes in ``self.mesh`` stored on the loop domain."""
         mesh_attrs = {}
 
-        mesh_attrs["Position"] = self._get_positions()
+        mesh_attrs["位置"] = self._get_positions()
 
         if self._has_weights:
             blend_weights, blend_indices = self._get_weights_indices()
@@ -229,7 +229,7 @@ class VertexBufferBuilder:
             mesh_attrs["BlendWeights"] = blend_weights
             mesh_attrs["BlendIndices"] = blend_indices
 
-        mesh_attrs["Normal"] = self._get_normals()
+        mesh_attrs["法线"] = self._get_normals()
 
         colors = self._get_colors()
         mesh_attrs.update(colors)

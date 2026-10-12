@@ -18,21 +18,21 @@ if TYPE_CHECKING:
 
 class CollisionMatFlags(bpy.types.PropertyGroup):
     stairs: bpy.props.BoolProperty(name="STAIRS", default=False)
-    not_climbable: bpy.props.BoolProperty(name="NOT CLIMBABLE", default=False)
-    see_through: bpy.props.BoolProperty(name="SEE THROUGH", default=False)
-    shoot_through: bpy.props.BoolProperty(name="SHOOT THROUGH", default=False)
-    not_cover: bpy.props.BoolProperty(name="NOT COVER", default=False)
-    walkable_path: bpy.props.BoolProperty(name="WALKABLE PATH", default=False)
-    no_cam_collision: bpy.props.BoolProperty(name="NO CAM COLLISION", default=False)
-    shoot_through_fx: bpy.props.BoolProperty(name="SHOOT THROUGH FX", default=False)
-    no_decal: bpy.props.BoolProperty(name="NO DECAL", default=False)
-    no_navmesh: bpy.props.BoolProperty(name="NO NAVMESH", default=False)
-    no_ragdoll: bpy.props.BoolProperty(name="NO RAGDOLL", default=False)
-    vehicle_wheel: bpy.props.BoolProperty(name="VEHICLE WHEEL", default=False)
-    no_ptfx: bpy.props.BoolProperty(name="NO PTFX", default=False)
-    too_steep_for_player: bpy.props.BoolProperty(name="TOO STEEP FOR PLAYER", default=False)
-    no_network_spawn: bpy.props.BoolProperty(name="NO NETWORK SPAWN", default=False)
-    no_cam_collision_allow_clipping: bpy.props.BoolProperty(name="NO CAM COLLISION ALLOW CLIPPING", default=False)
+    not_climbable: bpy.props.BoolProperty(name="不可攀爬", default=False)
+    see_through: bpy.props.BoolProperty(name="可透视", default=False)
+    shoot_through: bpy.props.BoolProperty(name="可穿透", default=False)
+    not_cover: bpy.props.BoolProperty(name="非掩体", default=False)
+    walkable_path: bpy.props.BoolProperty(name="可通行路径", default=False)
+    no_cam_collision: bpy.props.BoolProperty(name="无相机碰撞", default=False)
+    shoot_through_fx: bpy.props.BoolProperty(name="可穿透特效", default=False)
+    no_decal: bpy.props.BoolProperty(name="无贴花", default=False)
+    no_navmesh: bpy.props.BoolProperty(name="无导航网格", default=False)
+    no_ragdoll: bpy.props.BoolProperty(name="无布娃娃", default=False)
+    vehicle_wheel: bpy.props.BoolProperty(name="载具车轮", default=False)
+    no_ptfx: bpy.props.BoolProperty(name="无粒子特效", default=False)
+    too_steep_for_player: bpy.props.BoolProperty(name="玩家过陡", default=False)
+    no_network_spawn: bpy.props.BoolProperty(name="无网络生成", default=False)
+    no_cam_collision_allow_clipping: bpy.props.BoolProperty(name="无相机碰撞允许裁切", default=False)
 
 
 def set_collision_mat_raw_flags(f: CollisionMatFlags, flags_lo: int, flags_hi: int):
@@ -172,11 +172,11 @@ _collision_material_mlo_archetype_cache = {}  # [material name] -> (ytyp index, 
 
 
 class CollisionProperties(CollisionMatFlags, bpy.types.PropertyGroup):
-    collision_index: bpy.props.IntProperty(name="Collision Index", default=0)
-    procedural_id: bpy.props.IntProperty(name="Procedural ID", default=0, min=0, max=MAX_NUM_PROCEDURAL_IDS-1)
-    room_id: bpy.props.IntProperty(name="Room ID", default=0, min=0)
-    ped_density: bpy.props.IntProperty(name="Ped Density", default=0)
-    material_color_index: bpy.props.IntProperty(name="Material Color Index", default=0)
+    collision_index: bpy.props.IntProperty(name="碰撞索引", default=0)
+    procedural_id: bpy.props.IntProperty(name="程序 ID", default=0, min=0, max=MAX_NUM_PROCEDURAL_IDS-1)
+    room_id: bpy.props.IntProperty(name="房间 ID", default=0, min=0)
+    ped_density: bpy.props.IntProperty(name="行人密度", default=0)
+    material_color_index: bpy.props.IntProperty(name="材质颜色索引", default=0)
 
     def _get_procedural_id(self) -> int:
         value = self.procedural_id
@@ -187,7 +187,7 @@ class CollisionProperties(CollisionMatFlags, bpy.types.PropertyGroup):
 
     procedural_id_enum: bpy.props.EnumProperty(
         items=ProceduralIdEnumItems,
-        name="Procedural ID",
+        name="程序 ID",
         get=_get_procedural_id, set=_set_procedural_id
     )
 
@@ -238,22 +238,22 @@ class CollisionProperties(CollisionMatFlags, bpy.types.PropertyGroup):
     def _set_room(self, value: int):
         self.room_id = value if value >= 0 else 0
 
-    room_id_enum: bpy.props.EnumProperty(name="Room ID", items=_get_room_items, get=_get_room, set=_set_room, default=0)
+    room_id_enum: bpy.props.EnumProperty(name="房间 ID", items=_get_room_items, get=_get_room, set=_set_room, default=0)
 
 
 class BoundFlags(bpy.types.PropertyGroup):
     unknown: bpy.props.BoolProperty(name="UNKNOWN", default=False)
-    map_weapon: bpy.props.BoolProperty(name="MAP WEAPON", default=False)
-    map_dynamic: bpy.props.BoolProperty(name="MAP DYNAMIC", default=False)
-    map_animal: bpy.props.BoolProperty(name="MAP ANIMAL", default=False)
-    map_cover: bpy.props.BoolProperty(name="MAP COVER", default=False)
-    map_vehicle: bpy.props.BoolProperty(name="MAP VEHICLE", default=False)
-    vehicle_not_bvh: bpy.props.BoolProperty(name="VEHICLE NOT BVH", default=False)
-    vehicle_bvh: bpy.props.BoolProperty(name="VEHICLE BVH", default=False)
+    map_weapon: bpy.props.BoolProperty(name="地图武器", default=False)
+    map_dynamic: bpy.props.BoolProperty(name="地图动态", default=False)
+    map_animal: bpy.props.BoolProperty(name="地图动物", default=False)
+    map_cover: bpy.props.BoolProperty(name="地图掩体", default=False)
+    map_vehicle: bpy.props.BoolProperty(name="地图载具", default=False)
+    vehicle_not_bvh: bpy.props.BoolProperty(name="载具非 BVH", default=False)
+    vehicle_bvh: bpy.props.BoolProperty(name="载具 BVH", default=False)
     ped: bpy.props.BoolProperty(name="PED", default=False)
     ragdoll: bpy.props.BoolProperty(name="RAGDOLL", default=False)
     animal: bpy.props.BoolProperty(name="ANIMAL", default=False)
-    animal_ragdoll: bpy.props.BoolProperty(name="ANIMAL RAGDOLL", default=False)
+    animal_ragdoll: bpy.props.BoolProperty(name="动物布娃娃", default=False)
     object: bpy.props.BoolProperty(name="OBJECT", default=False)
     object_env_cloth: bpy.props.BoolProperty(name="OBJECT_ENV_CLOTH", default=False)
     plant: bpy.props.BoolProperty(name="PLANT", default=False)
@@ -261,18 +261,18 @@ class BoundFlags(bpy.types.PropertyGroup):
     explosion: bpy.props.BoolProperty(name="EXPLOSION", default=False)
     pickup: bpy.props.BoolProperty(name="PICKUP", default=False)
     foliage: bpy.props.BoolProperty(name="FOLIAGE", default=False)
-    forklift_forks: bpy.props.BoolProperty(name="FORKLIFT FORKS", default=False)
-    test_weapon: bpy.props.BoolProperty(name="TEST WEAPON", default=False)
-    test_camera: bpy.props.BoolProperty(name="TEST CAMERA", default=False)
-    test_ai: bpy.props.BoolProperty(name="TEST AI", default=False)
-    test_script: bpy.props.BoolProperty(name="TEST SCRIPT", default=False)
-    test_vehicle_wheel: bpy.props.BoolProperty(name="TEST VEHICLE WHEEL", default=False)
+    forklift_forks: bpy.props.BoolProperty(name="叉车货叉", default=False)
+    test_weapon: bpy.props.BoolProperty(name="测试武器", default=False)
+    test_camera: bpy.props.BoolProperty(name="测试相机", default=False)
+    test_ai: bpy.props.BoolProperty(name="测试 AI", default=False)
+    test_script: bpy.props.BoolProperty(name="测试脚本", default=False)
+    test_vehicle_wheel: bpy.props.BoolProperty(name="测试载具车轮", default=False)
     glass: bpy.props.BoolProperty(name="GLASS", default=False)
-    map_river: bpy.props.BoolProperty(name="MAP RIVER", default=False)
+    map_river: bpy.props.BoolProperty(name="地图河流", default=False)
     smoke: bpy.props.BoolProperty(name="SMOKE", default=False)
     unsmashed: bpy.props.BoolProperty(name="UNSMASHED", default=False)
-    map_stairs: bpy.props.BoolProperty(name="MAP STAIRS", default=False)
-    map_deep_surface: bpy.props.BoolProperty(name="MAP DEEP SURFACE", default=False)
+    map_stairs: bpy.props.BoolProperty(name="地图楼梯", default=False)
+    map_deep_surface: bpy.props.BoolProperty(name="地图深表面", default=False)
 
 
 class BoundShapeProps(bpy.types.PropertyGroup):
@@ -318,7 +318,7 @@ class BoundShapeProps(bpy.types.PropertyGroup):
         tag_redraw(bpy.context, space_type="VIEW_3D", region_type="WINDOW")
 
     sphere_radius: bpy.props.FloatProperty(
-        name="Radius",
+        name="半径",
         get=sphere_radius_getter,
         set=sphere_radius_setter,
         subtype="DISTANCE",
@@ -366,7 +366,7 @@ class BoundShapeProps(bpy.types.PropertyGroup):
         tag_redraw(bpy.context, space_type="VIEW_3D", region_type="WINDOW")
 
     capsule_radius: bpy.props.FloatProperty(
-        name="Radius",
+        name="半径",
         get=capsule_radius_getter,
         set=capsule_radius_setter,
         subtype="DISTANCE",
@@ -374,7 +374,7 @@ class BoundShapeProps(bpy.types.PropertyGroup):
         min=0.01,
     )
     capsule_length: bpy.props.FloatProperty(
-        name="Length",
+        name="长度",
         get=capsule_length_getter,
         set=capsule_length_setter,
         subtype="DISTANCE",
@@ -429,7 +429,7 @@ class BoundShapeProps(bpy.types.PropertyGroup):
         tag_redraw(bpy.context, space_type="VIEW_3D", region_type="WINDOW")
 
     cylinder_radius: bpy.props.FloatProperty(
-        name="Radius",
+        name="半径",
         get=cylinder_radius_getter,
         set=cylinder_radius_setter,
         subtype="DISTANCE",
@@ -437,7 +437,7 @@ class BoundShapeProps(bpy.types.PropertyGroup):
         min=0.01,
     )
     cylinder_length: bpy.props.FloatProperty(
-        name="Length",
+        name="长度",
         get=cylinder_length_getter,
         set=cylinder_length_setter,
         subtype="DISTANCE",
@@ -455,9 +455,9 @@ class CollisionMaterial(bpy.types.PropertyGroup):
         preferences = get_addon_preferences(bpy.context)
         preferences.toggle_favorite_collision_material(self.name, value)
 
-    index: bpy.props.IntProperty(name="Index")
-    name: bpy.props.StringProperty(name="Name")
-    search_name: bpy.props.StringProperty(name="Name")  # name without '_' or spaces used by list search filter
+    index: bpy.props.IntProperty(name="索引")
+    name: bpy.props.StringProperty(name="名称")
+    search_name: bpy.props.StringProperty(name="名称")  # name without '_' or spaces used by list search filter
     favorite: BoolProperty(
         name="Favorite",
         get=_get_favorite,
@@ -494,13 +494,13 @@ def register():
     bpy.types.Object.composite_flags1 = bpy.props.PointerProperty(type=BoundFlags)
     bpy.types.Object.composite_flags2 = bpy.props.PointerProperty(type=BoundFlags)
 
-    bpy.types.WindowManager.sz_collision_material_index = bpy.props.IntProperty(name="Material Index")
+    bpy.types.WindowManager.sz_collision_material_index = bpy.props.IntProperty(name="材质索引")
     bpy.types.WindowManager.sz_collision_materials = bpy.props.CollectionProperty(
-        type=CollisionMaterial, name="Collision Materials")
+        type=CollisionMaterial, name="碰撞材质")
 
     bpy.types.Scene.sz_default_flag_preset_name = bpy.props.StringProperty(
-        name="Default Flag Preset",
-        description="Flag preset applied to new bounds and to bounds auto-created during drawable conversion",
+        name="默认标记预设",
+        description="应用于新边界以及可绘制体转换过程中自动创建的边界的标记预设",
         default="General (Default)",
         search=_flag_preset_name_search,
     )
@@ -522,7 +522,7 @@ def register():
             (SollumType.BOUND_POLY_CYLINDER.value,
              SOLLUMZ_UI_NAMES[SollumType.BOUND_POLY_CYLINDER], "Create a bound poly cylinder object"),
         ],
-        name="Type",
+        name="类型",
         default=SollumType.BOUND_POLY_BOX.value
     )
 
@@ -548,7 +548,7 @@ def register():
              "world bounds"
              ),
         ],
-        name="Type",
+        name="类型",
         default=SollumType.BOUND_COMPOSITE.value
     )
 
@@ -557,11 +557,11 @@ def register():
             (SollumType.BOUND_POLY_BOX.value,
              SOLLUMZ_UI_NAMES[SollumType.BOUND_POLY_BOX], "Create a bound polygon box object"),
             (SollumType.BOUND_BOX.value, SOLLUMZ_UI_NAMES[SollumType.BOUND_BOX], "Create a bound box object")],
-        name="Type",
+        name="类型",
         default=SollumType.BOUND_POLY_BOX.value
     )
 
-    bpy.types.Scene.poly_edge = bpy.props.EnumProperty(name="Edge", items=[("long", "Long Edge", "Create along the long edge"),
+    bpy.types.Scene.poly_edge = bpy.props.EnumProperty(name="边", items=[("long", "Long Edge", "Create along the long edge"),
                                                                            ("short", "Short Edge", "Create along the short edge")])
     bpy.types.Scene.bound_child_type = bpy.props.EnumProperty(
         items=[
@@ -570,17 +570,17 @@ def register():
             (SollumType.BOUND_GEOMETRYBVH.value,
              SOLLUMZ_UI_NAMES[SollumType.BOUND_GEOMETRYBVH], "Create bound geometrybvh children.")
         ],
-        name="Child Type",
-        description="The bound type of the Composite Children",
+        name="子级类型",
+        description="组合体子级的边界类型",
         default=SollumType.BOUND_GEOMETRYBVH.value)
     bpy.types.Scene.create_seperate_composites = bpy.props.BoolProperty(
-        name="Separate Objects", description="Create a separate Composite for each selected object")
+        name="分离对象", description="Create a separate Composite for each selected object")
 
     bpy.types.Scene.center_composite_to_selection = bpy.props.BoolProperty(
-        name="Center to Selection", description="Center the Bound Composite to all selected objects", default=True)
+        name="居中到所选", description="Center the Bound Composite to all selected objects", default=True)
 
     bpy.types.WindowManager.sz_create_bound_box_parent = bpy.props.PointerProperty(
-        name="Parent", description="Parent for the new box object. If not set, the parent of the active object is used.",
+        name="Parent", description="新盒对象的父级。如果未设置，则使用活动对象的父级。",
         type=bpy.types.Object
     )
 

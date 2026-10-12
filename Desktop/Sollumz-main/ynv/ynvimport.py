@@ -33,13 +33,13 @@ def portals_to_obj(portals):
     pobj.empty_display_size = 0
 
     for idx, portal in enumerate(portals):
-        frommesh = bpy.data.meshes.new("from")
+        frommesh = bpy.data.meshes.new("从")
         create_box(frommesh, 0.5)
-        fromobj = bpy.data.objects.new("from", frommesh)
+        fromobj = bpy.data.objects.new("从", frommesh)
         fromobj.location = portal.position_from
-        tomesh = bpy.data.meshes.new("to")
+        tomesh = bpy.data.meshes.new("至")
         create_box(tomesh, 0.5)
-        toobj = bpy.data.objects.new("to", tomesh)
+        toobj = bpy.data.objects.new("至", tomesh)
         toobj.location = portal.position_to
         obj = bpy.data.objects.new(
             SOLLUMZ_UI_NAMES[SollumType.NAVMESH_PORTAL] + " " + str(idx), tomesh)

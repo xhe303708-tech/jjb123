@@ -128,27 +128,27 @@ migration.register_legacy_migration(FLAG_PRESET_CATEGORY, _convert_legacy_xml)
 
 class SOLLUMZ_OT_save_flag_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_flag_preset"
-    bl_label = "Save Flag Preset"
-    bl_description = "Save current bound flags as a named preset"
+    bl_label = "保存标记预设"
+    bl_description = "将当前边界标记保存为命名预设"
     category = FLAG_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_flag_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_flag_preset"
-    bl_label = "Apply Flag Preset"
-    bl_description = "Apply a saved flag preset to the active bound"
+    bl_label = "应用标记预设"
+    bl_description = "将已保存的标记预设应用到活动边界"
     category = FLAG_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_flag_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_flag_preset"
-    bl_label = "Delete Flag Preset"
-    bl_description = "Remove a saved flag preset"
+    bl_label = "删除标记预设"
+    bl_description = "移除已保存的标记预设"
     category = FLAG_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_flag_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Flag Presets"
+    bl_label = "标记预设"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_options = {"INSTANCED"}

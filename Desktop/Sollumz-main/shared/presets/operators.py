@@ -20,7 +20,7 @@ class PresetSaveOperatorBase:
     category: PresetCategory = None  # override in subclass
     get_target = None  # optional classvar override; if set, replaces category.get_target
 
-    name: StringProperty(name="Name", description="Preset name")
+    name: StringProperty(name="名称", description="Preset name")
 
     @classmethod
     def poll(cls, context):

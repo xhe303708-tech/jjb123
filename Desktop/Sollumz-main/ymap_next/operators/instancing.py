@@ -10,7 +10,7 @@ from ..properties.map import MapLodLevelEnumFlagItems
 
 class SOLLUMZ_OT_map_instance_entities(Operator):
     bl_idname = "sollumz.map_instance_entities"
-    bl_label = "Instance Entities"
+    bl_label = "实例化实体"
     bl_description = (
         "Create editable Blender objects for the entities of the active map group, linked from the shared asset "
         "library. Entities already linked to an object are skipped"
@@ -18,8 +18,8 @@ class SOLLUMZ_OT_map_instance_entities(Operator):
     bl_options = {"REGISTER", "UNDO"}
 
     lod_levels: EnumProperty(
-        name="LOD Levels",
-        description="Only instance entities of the selected LOD levels",
+        name="LOD 级别",
+        description="仅实例化所选 LOD 级别的实体",
         items=MapLodLevelEnumFlagItems,
         options={"ENUM_FLAG"},
         default={item[0] for item in MapLodLevelEnumFlagItems},  # all levels
@@ -35,7 +35,7 @@ class SOLLUMZ_OT_map_instance_entities(Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text="LOD Levels")
+        layout.label(text="LOD 级别")
         layout.props_enum(self, "lod_levels")
 
     def execute(self, context):
@@ -68,7 +68,7 @@ class SOLLUMZ_OT_map_instance_entities(Operator):
 
 class SOLLUMZ_OT_map_remove_entity_instances(Operator):
     bl_idname = "sollumz.map_remove_entity_instances"
-    bl_label = "Remove Instances"
+    bl_label = "移除实例"
     bl_description = (
         "Remove the linked Blender objects of the active map group's entities, saving each object's current "
         "transform back into the entity data"

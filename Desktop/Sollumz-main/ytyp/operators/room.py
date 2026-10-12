@@ -9,7 +9,7 @@ from ..utils import get_selected_archetype, get_selected_room, validate_dynamic_
 class SOLLUMZ_OT_create_room(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add a room to the selected archetype"""
     bl_idname = "sollumz.createroom"
-    bl_label = "Create Room"
+    bl_label = "创建房间"
 
     @classmethod
     def poll(cls, context):
@@ -26,7 +26,7 @@ class SOLLUMZ_OT_create_room(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_create_limbo_room(SOLLUMZ_OT_base, bpy.types.Operator):
     """Automatically create a limbo room for the selected archetype (requires linked object to be specified)"""
     bl_idname = "sollumz.createlimboroom"
-    bl_label = "Create Limbo Room"
+    bl_label = "创建 Limbo 房间"
 
     @classmethod
     def poll(cls, context):
@@ -48,7 +48,7 @@ class SOLLUMZ_OT_create_limbo_room(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_set_bounds_from_selection(SOLLUMZ_OT_base, bpy.types.Operator):
     """Set room bounds from selection (must be in edit mode)"""
     bl_idname = "sollumz.setroomboundsfromselection"
-    bl_label = "Set Bounds From Selection"
+    bl_label = "从所选对象设置边界"
 
     @classmethod
     def poll(cls, context):
@@ -84,7 +84,7 @@ class SOLLUMZ_OT_set_bounds_from_selection(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_delete_room(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete selected room(s)"""
     bl_idname = "sollumz.deleteroom"
-    bl_label = "Delete Room"
+    bl_label = "删除房间"
 
     @classmethod
     def poll(cls, context):

@@ -44,7 +44,7 @@ class _ExtDef:
 
 # Archetype-only extension types.
 _ARCHETYPE_EXTENSIONS = [
-    _ExtDef(ExtensionType.PARTICLE, "Particle"),
+    _ExtDef(ExtensionType.PARTICLE, "粒子"),
     _ExtDef(ExtensionType.AUDIO_COLLISION, "Audio Collision"),
     _ExtDef(ExtensionType.AUDIO_EMITTER, "Audio Emitter"),
     _ExtDef(ExtensionType.EXPLOSION_EFFECT, "Explosion"),

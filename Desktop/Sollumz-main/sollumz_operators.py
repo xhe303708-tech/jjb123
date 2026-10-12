@@ -901,7 +901,7 @@ class SOLLUMZ_OT_paint_vertices(SOLLUMZ_OT_base, Operator):
 
     def paint_mesh(self, mesh, color):
         if not mesh.color_attributes:
-            mesh.color_attributes.new("Color", 'BYTE_COLOR', 'CORNER')
+            mesh.color_attributes.new("颜色", 'BYTE_COLOR', 'CORNER')
         self.paint_map(mesh.attributes.active_color, color)
 
     def run(self, context):

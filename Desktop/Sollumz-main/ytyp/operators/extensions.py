@@ -15,7 +15,7 @@ class SOLLUMZ_OT_add_archetype_extension(bpy.types.Operator):
     """Add an extension to the archetype"""
     bl_idname = "sollumz.addarchetypeextension"
     bl_options = {"UNDO"}
-    bl_label = "Add Extension"
+    bl_label = "添加扩展"
 
     @classmethod
     def poll(cls, context):
@@ -34,7 +34,7 @@ class SOLLUMZ_OT_delete_archetype_extension(bpy.types.Operator):
     """Delete the selected extension from the archetype"""
     bl_idname = "sollumz.deletearchetypeextension"
     bl_options = {"UNDO"}
-    bl_label = "Delete Extension"
+    bl_label = "删除扩展"
 
     @classmethod
     def poll(cls, context):
@@ -53,7 +53,7 @@ class SOLLUMZ_OT_duplicate_archetype_extension(bpy.types.Operator):
     """Duplicate the selected extension in the archetype"""
     bl_idname = "sollumz.duplicatearchetypeextension"
     bl_options = {"UNDO"}
-    bl_label = "Duplicate Extension"
+    bl_label = "复制扩展"
 
     @classmethod
     def poll(cls, context):
@@ -72,7 +72,7 @@ class SOLLUMZ_OT_add_entity_extension(bpy.types.Operator):
     """Add an extension to the entity"""
     bl_idname = "sollumz.addentityextension"
     bl_options = {"UNDO"}
-    bl_label = "Add Extension"
+    bl_label = "添加扩展"
 
     @classmethod
     def poll(cls, context):
@@ -89,7 +89,7 @@ class SOLLUMZ_OT_delete_entity_extension(bpy.types.Operator):
     """Delete the selected extension from the entity"""
     bl_idname = "sollumz.deleteentityextension"
     bl_options = {"UNDO"}
-    bl_label = "Delete Extension"
+    bl_label = "删除扩展"
 
     @classmethod
     def poll(cls, context):
@@ -106,7 +106,7 @@ class SOLLUMZ_OT_duplicate_entity_extension(bpy.types.Operator):
     """Duplicate the selected extension in the entity"""
     bl_idname = "sollumz.duplicateentityextension"
     bl_options = {"UNDO"}
-    bl_label = "Duplicate Extension"
+    bl_label = "复制扩展"
 
     @classmethod
     def poll(cls, context):
@@ -137,7 +137,7 @@ class ExtensionUpdateFromSelectionHelper:
         me = aobj.data
         selected_vertices = [v.co for v in me.vertices if v.select]
         if not selected_vertices:
-            self.report({"WARNING"}, "Please select at least one vertex.")
+            self.report({"WARNING"}, "请至少选择一个顶点。")
             return {"CANCELLED"}
 
         verts_location = sum(selected_vertices, Vector()) / len(selected_vertices)
@@ -151,7 +151,7 @@ class SOLLUMZ_OT_extension_update_location_from_selected(bpy.types.Operator, Ext
     """Update extension offset from selection"""
     bl_idname = "sollumz.extension_update_location_from_selected"
     bl_options = {"UNDO"}
-    bl_label = "Update Location"
+    bl_label = "更新位置"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -165,7 +165,7 @@ class SOLLUMZ_OT_update_bottom_from_selected(bpy.types.Operator, ExtensionUpdate
     """Update ladder bottom from selection"""
     bl_idname = "sollumz.updatebottomfromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Bottom"
+    bl_label = "更新底部"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -177,7 +177,7 @@ class SOLLUMZ_OT_update_corner_a_location(bpy.types.Operator, ExtensionUpdateFro
     """Update light shaft corner A location from selection"""
     bl_idname = "sollumz.updatecornerafromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Corner A"
+    bl_label = "更新角点 A"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -189,7 +189,7 @@ class SOLLUMZ_OT_update_corner_b_location(bpy.types.Operator, ExtensionUpdateFro
     """Update light shaft corner B location from selection"""
     bl_idname = "sollumz.updatecornerbfromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Corner B"
+    bl_label = "更新角点 B"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -201,7 +201,7 @@ class SOLLUMZ_OT_update_corner_c_location(bpy.types.Operator, ExtensionUpdateFro
     """Update light shaft corner C location from selection"""
     bl_idname = "sollumz.updatecornercfromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Corner C"
+    bl_label = "更新角点 C"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -213,7 +213,7 @@ class SOLLUMZ_OT_update_corner_d_location(bpy.types.Operator, ExtensionUpdateFro
     """Update light shaft corner D location from selection"""
     bl_idname = "sollumz.updatecornerdfromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Corner D"
+    bl_label = "更新角点 D"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -225,7 +225,7 @@ class SOLLUMZ_OT_update_light_shaft_direction(bpy.types.Operator, ExtensionUpdat
     """Update light shaft direction from selection"""
     bl_idname = "sollumz.updatelightshaftdirectionfromselection"
     bl_options = {"UNDO"}
-    bl_label = "Update Lightshaft Direction"
+    bl_label = "更新光柱方向"
 
     @classmethod
     def set_extension_props(cls, context: bpy.types.Context, verts_location: Vector):
@@ -243,7 +243,7 @@ class SOLLUMZ_OT_calculate_light_shaft_center_offset_location(bpy.types.Operator
     """Calculates the center based on the corner coordinates"""
     bl_idname = "sollumz.calculatelightshaftoffsetlocation"
     bl_options = {"UNDO"}
-    bl_label = "Calculate Center Offset location"
+    bl_label = "计算中心偏移位置"
 
     def execute(self, context):
         light_shaft_props = get_selected_extension(context).light_shaft_extension_properties
@@ -266,7 +266,7 @@ class SOLLUMZ_OT_light_effect_create_lights_from_entity(bpy.types.Operator):
     """Duplicates the lights found in the entity linked object and links them to this light effect extension"""
     bl_idname = "sollumz.light_effect_create_lights_from_entity"
     bl_options = {"UNDO"}
-    bl_label = "Create Lights"
+    bl_label = "创建灯光"
 
     @classmethod
     def poll(cls, context):

@@ -36,27 +36,27 @@ register_preset_category(MLO_PORTAL_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_mlo_portal_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_mlo_portal_preset"
-    bl_label = "Save Portal Preset"
-    bl_description = "Save current portal properties as a named preset"
+    bl_label = "保存 Portal 预设"
+    bl_description = "将当前 Portal 属性保存为命名预设"
     category = MLO_PORTAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_mlo_portal_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_mlo_portal_preset"
-    bl_label = "Apply Portal Preset"
-    bl_description = "Apply a saved portal preset to the active portal"
+    bl_label = "应用 Portal 预设"
+    bl_description = "将已保存的 Portal 预设应用到活动 Portal"
     category = MLO_PORTAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_mlo_portal_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_mlo_portal_preset"
-    bl_label = "Delete Portal Preset"
-    bl_description = "Remove a saved portal preset"
+    bl_label = "删除 Portal 预设"
+    bl_description = "移除已保存的 Portal 预设"
     category = MLO_PORTAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_mlo_portal_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Portal Presets"
+    bl_label = "Portal 预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

@@ -17,9 +17,9 @@ LightFlashinessEnumItems = tuple((enum.name, f"{label} ({enum.value})", desc, en
     (LightFlashiness.CYCLE_3, "Cycle 3", "Cycle 3"),
     (LightFlashiness.DISCO, "Disco", "Flash like a disco light"),
     (LightFlashiness.CANDLE, "Candle", "Flash like a candle flame"),
-    (LightFlashiness.PLANE, "Plane", "Flash like a plane landing strip(?)"),
+    (LightFlashiness.PLANE, "平面", "Flash like a plane landing strip(?)"),
     (LightFlashiness.FIRE, "Fire", "Flash like a flame"),
-    (LightFlashiness.THRESHOLD, "Threshold", "Threshold"),
+    (LightFlashiness.THRESHOLD, "阈值", "阈值"),
     (LightFlashiness.ELECTRIC, "Electric", "Electric"),
     (LightFlashiness.STROBE, "Strobe", "Flash like a strobe light")
 ))

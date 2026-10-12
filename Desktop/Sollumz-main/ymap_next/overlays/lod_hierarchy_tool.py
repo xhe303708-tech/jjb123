@@ -10,8 +10,8 @@ class MapLodHierarchyTool(WorkSpaceTool):
     bl_context_mode = "OBJECT"
 
     bl_idname = "sollumz.map_lod_hierarchy"
-    bl_label = "Map LOD Hierarchy"
-    bl_description = "Display and edit LOD hierarchy connections between map entities"
+    bl_label = "地图 LOD 层级"
+    bl_description = "显示和编辑地图实体之间的 LOD 层级连接"
     bl_icon = ICON_GEOM_TOOL
 
     bl_keymap = (
@@ -37,7 +37,7 @@ class MapLodHierarchyTool(WorkSpaceTool):
 
         # LOD level visibility toggles
         row = layout.row(align=True)
-        row.label(text="Show Levels:")
+        row.label(text="显示级别：")
         for prop_name in LOD_LEVEL_VIS_PROPS.values():
             row.prop(wm, prop_name, toggle=True)
 

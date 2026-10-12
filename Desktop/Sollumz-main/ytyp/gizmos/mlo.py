@@ -95,7 +95,7 @@ class RoomGizmo(bpy.types.Gizmo):
 
 class RoomGizmoGroup(bpy.types.GizmoGroup):
     bl_idname = "OBJECT_GGT_Room"
-    bl_label = "MLO Room"
+    bl_label = "MLO 房间"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
     bl_options = {"3D", "PERSISTENT"}
@@ -317,7 +317,7 @@ class TimecycleModifierGizmo(bpy.types.Gizmo):
 
 class TimecycleModifierGizmoGroup(bpy.types.GizmoGroup):
     bl_idname = "OBJECT_GGT_timecycle_modifier"
-    bl_label = "MLO Timecycle Modifier"
+    bl_label = "MLO 时间周期修改器"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
     bl_options = {"3D", "PERSISTENT", "SELECT"}

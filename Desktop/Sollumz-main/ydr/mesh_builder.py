@@ -14,7 +14,7 @@ class MeshBuilder:
     """Builds a bpy mesh from a structured numpy vertex array"""
 
     def __init__(self, name: str, vertex_arr: NDArray, ind_arr: NDArray[np.uint], mat_inds: NDArray[np.uint], drawable_mats: list[bpy.types.Material]):
-        if "Position" not in vertex_arr.dtype.names:
+        if "位置" not in vertex_arr.dtype.names:
             raise ValueError("Vertex array have a 'Position' field!")
 
         if ind_arr.ndim > 1 or ind_arr.size % 3 != 0:
@@ -39,7 +39,7 @@ class MeshBuilder:
 
         # Cache dtype names and attribute lists to avoid repeated iteration
         dtype_names = vertex_arr.dtype.names
-        self._has_normals = "Normal" in dtype_names
+        self._has_normals = "法线" in dtype_names
         self._uv_attrs = tuple(name for name in dtype_names if name.startswith("TexCoord"))
         self._color_attrs = tuple(name for name in dtype_names if name.startswith("Colour"))
         self._has_uvs = len(self._uv_attrs) > 0
@@ -47,7 +47,7 @@ class MeshBuilder:
 
     def build(self):
         mesh = bpy.data.meshes.new(self.name)
-        vert_pos = self.vertex_arr["Position"]
+        vert_pos = self.vertex_arr["位置"]
         faces = self.ind_arr.reshape((int(self.ind_arr.size / 3), 3))
 
         try:
@@ -89,7 +89,7 @@ class MeshBuilder:
     def set_mesh_normals(self, mesh: bpy.types.Mesh):
         mesh.polygons.foreach_set("use_smooth", np.ones(len(mesh.polygons), dtype=bool))
 
-        normals = self.vertex_arr["Normal"]
+        normals = self.vertex_arr["法线"]
         lengths = np.linalg.norm(normals, axis=1, keepdims=True)
         np.divide(normals, lengths, out=normals, where=lengths != 0)
         mesh.normals_split_custom_set_from_vertices(normals)

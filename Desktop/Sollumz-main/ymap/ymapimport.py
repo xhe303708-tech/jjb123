@@ -54,7 +54,7 @@ def apply_entity_properties(obj, entity):
 
 
 def entity_to_obj(ymap_obj: bpy.types.Object, ymap: CMapData):
-    group_obj = bpy.data.objects.new("Entities", None)
+    group_obj = bpy.data.objects.new("实体", None)
     group_obj.sollum_type = SollumType.DEPRECATED__YMAP_ENTITY_GROUP
     group_obj.parent = ymap_obj
     group_obj.lock_location = (True, True, True)
@@ -83,7 +83,7 @@ def entity_to_obj(ymap_obj: bpy.types.Object, ymap: CMapData):
 
 
 def instanced_entity_to_obj(ymap_obj: bpy.types.Object, ymap: CMapData):
-    group_obj = bpy.data.objects.new("Entities", None)
+    group_obj = bpy.data.objects.new("实体", None)
     group_obj.sollum_type = SollumType.DEPRECATED__YMAP_ENTITY_GROUP
     group_obj.parent = ymap_obj
     group_obj.lock_location = (True, True, True)
@@ -151,7 +151,7 @@ def box_to_obj(obj, ymap: CMapData):
     obj.ymap_properties.content_flags_toggle.has_occl = True
 
     for box in ymap.box_occluders:
-        box_obj = create_blender_object(SollumType.DEPRECATED__YMAP_BOX_OCCLUDER, "Box")
+        box_obj = create_blender_object(SollumType.DEPRECATED__YMAP_BOX_OCCLUDER, "盒")
         box_obj.active_material = add_occluder_material(SollumType.DEPRECATED__YMAP_BOX_OCCLUDER)
         create_box(box_obj.data, 1)
         box_obj.location = Vector([box.center_x, box.center_y, box.center_z]) / 4
@@ -187,7 +187,7 @@ def model_to_obj(obj: bpy.types.Object, ymap: CMapData):
 
 
 def cargen_to_obj(obj: bpy.types.Object, ymap: CMapData):
-    group_obj = bpy.data.objects.new("Car Generators", None)
+    group_obj = bpy.data.objects.new("载具生成器", None)
     group_obj.sollum_type = SollumType.DEPRECATED__YMAP_CAR_GENERATOR_GROUP
     group_obj.parent = obj
     group_obj.lock_location = (True, True, True)
@@ -199,7 +199,7 @@ def cargen_to_obj(obj: bpy.types.Object, ymap: CMapData):
     cargen_ref_mesh = get_cargen_mesh()
 
     for cargen in ymap.car_generators:
-        cargen_obj = bpy.data.objects.new("Car Generator", object_data=cargen_ref_mesh)
+        cargen_obj = bpy.data.objects.new("载具生成器", object_data=cargen_ref_mesh)
         cargen_obj.ymap_cargen_properties.orient_x = cargen.orient_x
         cargen_obj.ymap_cargen_properties.orient_y = cargen.orient_y
         cargen_obj.ymap_cargen_properties.perpendicular_length = cargen.perpendicular_length

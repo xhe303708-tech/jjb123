@@ -69,7 +69,7 @@ def _ensure_auto_partitions_generated(map_group: MapGroup):
     """Generate partitions for any AUTO map datas that have items assigned directly to them.
 
     This handles the case where the user added new items to an AUTO parent but didn't
-    explicitly run "Generate Partitions" before exporting.
+    explicitly run "生成分区" before exporting.
     """
     from .partitioning import PartitioningSettings, generate_partitions
 
@@ -490,10 +490,10 @@ def _export_grass_batch(batch: MapGrassBatch, depsgraph: Depsgraph) -> list[MapG
 
     # Build unpacked instances array
     unpacked = np.empty(num_verts, dtype=MAP_GRASS_INSTANCES_UNPACKED_DTYPE)
-    unpacked["Position"] = positions
-    unpacked["Normal"] = normal_scale[:, :2]
-    unpacked["Color"] = color_ao[:, :3]
-    unpacked["Scale"] = normal_scale[:, 2]
+    unpacked["位置"] = positions
+    unpacked["法线"] = normal_scale[:, :2]
+    unpacked["颜色"] = color_ao[:, :3]
+    unpacked["缩放"] = normal_scale[:, 2]
     unpacked["Ao"] = color_ao[:, 3]
 
     # Group by partition_index and create one MapGrassInstanceList per partition
@@ -712,11 +712,11 @@ def _export_lod_lights(ll: MapLodLights) -> tuple[IOMapLodLights, IOMapDistantLo
     corona_intensity = corona_intensity[sort_order]
 
     distant_lod_lights = np.empty(num_verts, dtype=MAP_DISTANT_LOD_LIGHT_DTYPE)
-    distant_lod_lights["Position"] = positions
+    distant_lod_lights["位置"] = positions
     distant_lod_lights["RGBI"] = rgbi
 
     lod_lights = np.empty(num_verts, dtype=MAP_LOD_LIGHT_DTYPE)
-    lod_lights["Direction"] = direction
+    lod_lights["方向"] = direction
     lod_lights["Falloff"] = falloff
     lod_lights["FalloffExponent"] = falloff_exp
     lod_lights["TimeAndStateFlags"] = flags

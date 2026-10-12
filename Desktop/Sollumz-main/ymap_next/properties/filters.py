@@ -20,21 +20,21 @@ class MapEntityFilterProperties(PropertyGroup):
     """Filter state for the map entities UI list. Read by ``MapEntity.is_filtered``."""
 
     filter_type: EnumProperty(
-        name="Filter By",
+        name="筛选方式",
         items=(
-            ("all", "All", "Show all entities"),
-            ("lod_level", "LOD Level", "Show only entities with the selected LOD level"),
+            ("all", "全部", "Show all entities"),
+            ("lod_level", "LOD 级别", "Show only entities with the selected LOD level"),
             ("kind", "Kind", "Show only entities of the selected kind"),
             ("container", "Container", "Show only entities assigned to the selected container"),
         ),
     )
-    lod_level: EnumProperty(items=MapLodLevelEnumItems, name="LOD Level")
+    lod_level: EnumProperty(items=MapLodLevelEnumItems, name="LOD 级别")
     kind: EnumProperty(
         name="Kind",
         items=(
             ("regular", "Regular", "Regular (non-MLO) entities"),
             ("mlo", "MLO", "MLO instance entities"),
-            ("orphan_hd", "Orphan HD", "Orphan HD entities (HD with no LOD parent)"),
+            ("orphan_hd", "孤立 HD", "Orphan HD entities (HD with no LOD parent)"),
         ),
     )
 

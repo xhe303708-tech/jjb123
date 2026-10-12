@@ -28,7 +28,7 @@ def set_entity_properties_from_filter(entity: MloEntityProperties, context: bpy.
 class SOLLUMZ_OT_create_mlo_entity(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add an entity to the selected MLO archetype"""
     bl_idname = "sollumz.createmloentity"
-    bl_label = "Create Entity"
+    bl_label = "创建实体"
 
     @classmethod
     def poll(cls, context):
@@ -44,8 +44,8 @@ class SOLLUMZ_OT_create_mlo_entity(SOLLUMZ_OT_base, bpy.types.Operator):
 
 class SOLLUMZ_OT_add_obj_as_entity(bpy.types.Operator):
     bl_idname = "sollumz.addobjasentity"
-    bl_label = "Add Object(s) as Entity"
-    bl_description = "Create Entities from selected objects (auto-sets linked object)"
+    bl_label = "将对象添加为实体"
+    bl_description = "从所选对象创建实体（自动设置链接对象）"
 
     @classmethod
     def poll(cls, context):
@@ -90,7 +90,7 @@ class SOLLUMZ_OT_add_obj_as_entity(bpy.types.Operator):
 class SOLLUMZ_OT_set_obj_entity_transforms(bpy.types.Operator):
     """Set the transforms of the selected object(s) to that of the Entity"""
     bl_idname = "sollumz.setobjentitytransforms"
-    bl_label = "Set Object Transforms to Entity"
+    bl_label = "将对象变换设置到实体"
 
     bl_options = {"UNDO"}
 
@@ -122,7 +122,7 @@ class SOLLUMZ_OT_set_obj_entity_transforms(bpy.types.Operator):
 class SOLLUMZ_OT_delete_mlo_entity(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete an entity from the selected mlo archetype"""
     bl_idname = "sollumz.deletemloentity"
-    bl_label = "Delete Entity"
+    bl_label = "删除实体"
 
     @classmethod
     def poll(cls, context):

@@ -34,7 +34,7 @@ class CableMeshBuilder:
     """Builds a bpy mesh from a structured numpy vertex array, representing a cable mesh."""
 
     def __init__(self, name: str, vertex_arr: NDArray, ind_arr: NDArray[np.uint], mat_inds: NDArray[np.uint], drawable_mats: list[bpy.types.Material]):
-        if "Position" not in vertex_arr.dtype.names:
+        if "位置" not in vertex_arr.dtype.names:
             raise ValueError("Vertex array must have a 'Position' field!")
 
         if ind_arr.ndim > 1 or ind_arr.size % 3 != 0:
@@ -118,7 +118,7 @@ class CableMeshBuilder:
         # We also take the tangent into account for the cases where two or more cables share a point. In these cases,
         # the position would be the same but the direction (tangent) would be different, so we want to have different
         # vertices in Blender.
-        _, uniq_index, uniq_inverse_index = np.unique(self.vertex_arr[["Position", "Normal"]],
+        _, uniq_index, uniq_inverse_index = np.unique(self.vertex_arr[["位置", "法线"]],
                                                       return_index=True, return_inverse=True, axis=0)
 
         # Remap index array to indices in the unique vertex positions array
@@ -129,7 +129,7 @@ class CableMeshBuilder:
 
         material_index_per_vert = [0] * num_points
 
-        uniq_pos = self.vertex_arr["Position"][uniq_index]
+        uniq_pos = self.vertex_arr["位置"][uniq_index]
 
 
         # Maximum distance between a neg/pos vertex pair to be considered a corrupted pair rather than

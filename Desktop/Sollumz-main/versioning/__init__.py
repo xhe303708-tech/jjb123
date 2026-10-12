@@ -26,7 +26,7 @@ Version History:
  == v2.4.0 ==
   - 2: LOD system fixes.
   - 3: TimecycleModifierProperties.percentage IntProperty -> FloatProperty
-  - 4: added "Default" light preset.
+  - 4: added "默认" light preset.
   - 5: use COPY_TRANSFORM constraint for bone parent instead of CHILD_OF (broke in Blender 4.2)
  == v2.5.0 ==
   - 6: removed "sollumz_paint_layer" property from Material. Uses 'matDiffuseColor' directly.

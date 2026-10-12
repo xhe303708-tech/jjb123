@@ -24,7 +24,7 @@ def _poll(context):
 
 TIMECYCLE_MODIFIER_PRESET_CATEGORY = PresetCategory(
     id="timecycle_modifier",
-    label="Timecycle Modifier",
+    label="时间周期修改器",
     game="gta5",
     bundled_defaults_path=Path(__file__).parent / "timecycle_modifier_presets.json",
     get_target=active_tcm,
@@ -38,27 +38,27 @@ register_preset_category(TIMECYCLE_MODIFIER_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_timecycle_modifier_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_timecycle_modifier_preset"
-    bl_label = "Save Timecycle Modifier Preset"
-    bl_description = "Save current timecycle modifier properties as a named preset"
+    bl_label = "保存时间周期修改器预设"
+    bl_description = "将当前时间周期修改器属性保存为命名预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_timecycle_modifier_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_timecycle_modifier_preset"
-    bl_label = "Apply Timecycle Modifier Preset"
-    bl_description = "Apply a saved timecycle modifier preset"
+    bl_label = "应用时间周期修改器预设"
+    bl_description = "应用已保存的时间周期修改器预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_timecycle_modifier_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_timecycle_modifier_preset"
-    bl_label = "Delete Timecycle Modifier Preset"
-    bl_description = "Remove a saved timecycle modifier preset"
+    bl_label = "删除时间周期修改器预设"
+    bl_description = "移除已保存的时间周期修改器预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_timecycle_modifier_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Timecycle Modifier Presets"
+    bl_label = "时间周期修改器预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

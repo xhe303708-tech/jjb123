@@ -27,7 +27,7 @@ from ... import logger
 class SOLLUMZ_OT_create_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add a ytyp to the project"""
     bl_idname = "sollumz.createytyp"
-    bl_label = "Create YTYP"
+    bl_label = "创建 YTYP"
 
     def run(self, context):
         item = context.scene.ytyps.add()
@@ -41,7 +41,7 @@ class SOLLUMZ_OT_create_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_delete_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete a ytyp from the project"""
     bl_idname = "sollumz.deleteytyp"
-    bl_label = "Delete YTYP"
+    bl_label = "删除 YTYP"
 
     @classmethod
     def poll(cls, context):
@@ -59,7 +59,7 @@ class SOLLUMZ_OT_delete_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_create_archetype(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add an archetype to the selected ytyp"""
     bl_idname = "sollumz.createarchetype"
-    bl_label = "Create Archetype"
+    bl_label = "创建架构"
 
     @classmethod
     def poll(cls, context):
@@ -74,7 +74,7 @@ class SOLLUMZ_OT_create_archetype(SOLLUMZ_OT_base, bpy.types.Operator):
 
 
 class ArchetypesSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -86,22 +86,22 @@ class ArchetypesSelectMixin:
 
 class SOLLUMZ_OT_ytyp_select_archetype(ArchetypesSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.ytyp_select_archetype"
-    bl_label = "Select Archetype"
+    bl_label = "选择架构"
 
 
 class SOLLUMZ_OT_ytyp_select_all_archetypes(ArchetypesSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.ytyp_select_all_archetypes"
-    bl_label = "Select All Archetypes"
+    bl_label = "全选架构"
 
 
 class SOLLUMZ_OT_ytyp_select_invert_archetypes(ArchetypesSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.ytyp_select_invert_archetypes"
-    bl_label = "Invert Selected Archetypes"
+    bl_label = "反转已选架构"
 
 
 class MloEntitiesSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: IntProperty(name="Archetype Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: IntProperty(name="架构索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -126,22 +126,22 @@ class MloEntitiesSelectMixin:
 
 class SOLLUMZ_OT_archetype_select_mlo_entity(MloEntitiesSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_mlo_entity"
-    bl_label = "Select Entity"
+    bl_label = "选择实体"
 
 
 class SOLLUMZ_OT_archetype_select_all_mlo_entity(MloEntitiesSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_all_mlo_entity"
-    bl_label = "Select All Entities"
+    bl_label = "全选实体"
 
 
 class SOLLUMZ_OT_archetype_select_invert_mlo_entity(MloEntitiesSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_invert_mlo_entity"
-    bl_label = "Invert Selected Entities"
+    bl_label = "反转已选实体"
 
 
 class MloPortalsSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: IntProperty(name="Archetype Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: IntProperty(name="架构索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -157,22 +157,22 @@ class MloPortalsSelectMixin:
 
 class SOLLUMZ_OT_archetype_select_mlo_portal(MloPortalsSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_mlo_portal"
-    bl_label = "Select Portal"
+    bl_label = "选择 Portal"
 
 
 class SOLLUMZ_OT_archetype_select_all_mlo_portal(MloPortalsSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_all_mlo_portal"
-    bl_label = "Select All Portals"
+    bl_label = "全选 Portal"
 
 
 class SOLLUMZ_OT_archetype_select_invert_mlo_portal(MloPortalsSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_invert_mlo_portal"
-    bl_label = "Invert Selected Portals"
+    bl_label = "反转已选 Portal"
 
 
 class MloRoomsSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: IntProperty(name="Archetype Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: IntProperty(name="架构索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -188,22 +188,22 @@ class MloRoomsSelectMixin:
 
 class SOLLUMZ_OT_archetype_select_mlo_room(MloRoomsSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_mlo_room"
-    bl_label = "Select Room"
+    bl_label = "选择房间"
 
 
 class SOLLUMZ_OT_archetype_select_all_mlo_room(MloRoomsSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_all_mlo_room"
-    bl_label = "Select All Rooms"
+    bl_label = "全选房间"
 
 
 class SOLLUMZ_OT_archetype_select_invert_mlo_room(MloRoomsSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_invert_mlo_room"
-    bl_label = "Invert Selected Rooms"
+    bl_label = "反转已选房间"
 
 
 class MloTcmSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: IntProperty(name="Archetype Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: IntProperty(name="架构索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -219,22 +219,22 @@ class MloTcmSelectMixin:
 
 class SOLLUMZ_OT_archetype_select_mlo_tcm(MloTcmSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_mlo_tcm"
-    bl_label = "Select Timecycle Modifiers"
+    bl_label = "选择时间周期修改器"
 
 
 class SOLLUMZ_OT_archetype_select_all_mlo_tcm(MloTcmSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_all_mlo_tcm"
-    bl_label = "Select All Timecycle Modifiers"
+    bl_label = "全选时间周期修改器"
 
 
 class SOLLUMZ_OT_archetype_select_invert_mlo_tcm(MloTcmSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_invert_mlo_tcm"
-    bl_label = "Invert Selected Timecycle Modifiers"
+    bl_label = "反转已选时间周期修改器"
 
 
 class MloEntitySetsSelectMixin:
-    ytyp_index: IntProperty(name="YTYP Index", min=-1, default=-1)
-    archetype_index: IntProperty(name="Archetype Index", min=-1, default=-1)
+    ytyp_index: IntProperty(name="YTYP 索引", min=-1, default=-1)
+    archetype_index: IntProperty(name="架构索引", min=-1, default=-1)
 
     def get_collection(self, context):
         return (
@@ -250,23 +250,23 @@ class MloEntitySetsSelectMixin:
 
 class SOLLUMZ_OT_archetype_select_mlo_entity_set(MloEntitySetsSelectMixin, MultiSelectOneOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_mlo_entity_set"
-    bl_label = "Select Entity Set"
+    bl_label = "选择实体集"
 
 
 class SOLLUMZ_OT_archetype_select_all_mlo_entity_set(MloEntitySetsSelectMixin, MultiSelectAllOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_all_mlo_entity_set"
-    bl_label = "Select All Entity Sets"
+    bl_label = "全选实体集"
 
 
 class SOLLUMZ_OT_archetype_select_invert_mlo_entity_set(MloEntitySetsSelectMixin, MultiSelectInvertOperator, bpy.types.Operator):
     bl_idname = "sollumz.archetype_select_invert_mlo_entity_set"
-    bl_label = "Invert Selected Entity Sets"
+    bl_label = "反转已选实体集"
 
 
 class SOLLUMZ_OT_create_archetype_from_selected(SOLLUMZ_OT_base, bpy.types.Operator):
     """Create archetype from selected"""
     bl_idname = "sollumz.createarchetypefromselected"
-    bl_label = "Auto-Create From Selected"
+    bl_label = "从所选对象自动创建"
 
 
     @classmethod
@@ -341,7 +341,7 @@ class SOLLUMZ_OT_create_archetype_from_selected(SOLLUMZ_OT_base, bpy.types.Opera
 class SOLLUMZ_OT_delete_archetype(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete selected archetype(s)"""
     bl_idname = "sollumz.deletearchetype"
-    bl_label = "Delete Archetype"
+    bl_label = "删除架构"
 
     @classmethod
     def poll(cls, context):
@@ -362,7 +362,7 @@ class SOLLUMZ_OT_delete_archetype(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_create_timecycle_modifier(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add a timecycle modifier to the selected archetype"""
     bl_idname = "sollumz.createtimecyclemodifier"
-    bl_label = "Create Timecycle Modifier"
+    bl_label = "创建时间周期修改器"
 
     @classmethod
     def poll(cls, context):
@@ -376,9 +376,9 @@ class SOLLUMZ_OT_create_timecycle_modifier(SOLLUMZ_OT_base, bpy.types.Operator):
 
 
 class SOLLUMZ_OT_delete_timecycle_modifier(SOLLUMZ_OT_base, bpy.types.Operator):
-    """Delete selected timecycle modifier(s)"""
+    """删除所选时间周期修改器"""
     bl_idname = "sollumz.deletetimecyclemodifier"
-    bl_label = "Delete Timecycle Modifier"
+    bl_label = "删除时间周期修改器"
 
     @classmethod
     def poll(cls, context):
@@ -418,7 +418,7 @@ class SOLLUMZ_OT_YTYP_TIME_FLAGS_clear(ClearTimeFlagsMultiSelect, bpy.types.Oper
 class SOLLUMZ_OT_import_ytyp(SOLLUMZ_OT_base, bpy.types.Operator, ImportHelper):
     """Import a ytyp.xml"""
     bl_idname = "sollumz.importytyp"
-    bl_label = "Import ytyp.xml"
+    bl_label = "导入 ytyp.xml"
     bl_action = "Import a YTYP"
 
     filename_ext = ".ytyp.xml"
@@ -445,7 +445,7 @@ class SOLLUMZ_OT_import_ytyp(SOLLUMZ_OT_base, bpy.types.Operator, ImportHelper):
 class SOLLUMZ_OT_export_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
     """Export the selected YTYP"""
     bl_idname = "sollumz.exportytyp"
-    bl_label = "Export ytyp.xml"
+    bl_label = "导出 ytyp.xml"
     bl_action = "Export a YTYP"
 
     filter_glob: bpy.props.StringProperty(
@@ -455,8 +455,8 @@ class SOLLUMZ_OT_export_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
     )
 
     directory: bpy.props.StringProperty(
-        name="Output directory",
-        description="Select export output directory",
+        name="输出目录",
+        description="选择导出输出目录",
         subtype="DIR_PATH",
     )
 
@@ -492,7 +492,7 @@ class SOLLUMZ_OT_export_ytyp(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_import_ytyp_io(ImportAssetsOperatorImpl, bpy.types.Operator):
     """Import YTYPs"""
     bl_idname = "sollumz.import_ytyp_io"
-    bl_label = "Import YTYP"
+    bl_label = "导入 YTYP"
     bl_options = {"UNDO"}
 
     filter_glob: bpy.props.StringProperty(
@@ -505,7 +505,7 @@ class SOLLUMZ_OT_import_ytyp_io(ImportAssetsOperatorImpl, bpy.types.Operator):
 class SOLLUMZ_OT_export_ytyp_io(ExportAssetsOperatorImpl, bpy.types.Operator):
     """Export the selected YTYP"""
     bl_idname = "sollumz.export_ytyp_io"
-    bl_label = "Export YTYP"
+    bl_label = "导出 YTYP"
     sz_export_types = {"YTYP"}
 
     @classmethod

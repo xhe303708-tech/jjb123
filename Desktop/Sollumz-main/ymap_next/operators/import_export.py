@@ -19,7 +19,7 @@ class SOLLUMZ_OT_import_ymap(ImportAssetsOperatorImpl, Operator):
     """Import YMAPs"""
 
     bl_idname = "sollumz.import_ymap"
-    bl_label = "Import YMAP"
+    bl_label = "导入 YMAP"
     bl_options = {"UNDO"}
 
     filter_glob: StringProperty(
@@ -33,12 +33,12 @@ class SOLLUMZ_OT_import_ymap_from_directory(ImportSettingsBase, Operator):
     """Import all YMAPs found in a directory"""
 
     bl_idname = "sollumz.import_ymap_from_directory"
-    bl_label = "Import YMAP from Directory"
+    bl_label = "从目录导入 YMAP"
     bl_options = {"UNDO"}
 
     directory: StringProperty(
-        name="Input directory",
-        description="Select directory to search for .ymap in",
+        name="输入目录",
+        description="选择要在其中搜索 .ymap 的目录",
         subtype="DIR_PATH",
         options={"HIDDEN", "SKIP_SAVE"},
     )
@@ -51,8 +51,8 @@ class SOLLUMZ_OT_import_ymap_from_directory(ImportSettingsBase, Operator):
 
     # These are for scripts that use these operators to override the settings and avoid messing with the user preferences.
     use_custom_settings: BoolProperty(
-        name="Use Custom Settings",
-        description="Use the settings defined in this operator instead of user preferences",
+        name="使用自定义设置",
+        description="使用本操作符中定义的设置，而不是用户偏好",
         default=False,
         options={"HIDDEN", "SKIP_SAVE"},
     )
@@ -101,7 +101,7 @@ class SOLLUMZ_OT_export_ymap(ExportAssetsOperatorImpl, Operator):
     """Export the selected map groups as YMAPs"""
 
     bl_idname = "sollumz.export_ymap"
-    bl_label = "Export YMAP"
+    bl_label = "导出 YMAP"
     sz_export_types = {"YMAP"}
 
     @classmethod

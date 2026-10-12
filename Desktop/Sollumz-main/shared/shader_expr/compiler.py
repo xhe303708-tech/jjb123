@@ -84,7 +84,7 @@ class Compiler:
         map_range.clamp = e.clamp
 
         for input_socket, src in (
-            ("Value", e.value),
+            ("值", e.value),
             ("From Min", e.from_min),
             ("From Max", e.from_max),
             ("To Min", e.to_min),
@@ -105,7 +105,7 @@ class Compiler:
 
         math = self.node_tree.nodes.new("ShaderNodeMath")
         math.operation = op
-        self.connect_float_input(e.value, math, "Value")
+        self.connect_float_input(e.value, math, "值")
         return CompiledExpr(math, 0)
 
     def visit_VectorMixColorExpr(self, e: expr.VectorMixColorExpr) -> CompiledExpr:
@@ -115,7 +115,7 @@ class Compiler:
         self.connect_vector_input(e.in_a, mix, "A")
         self.connect_vector_input(e.in_b, mix, "B")
         self.connect_float_input(e.factor, mix, "Factor")
-        return CompiledExpr(mix, "Result")
+        return CompiledExpr(mix, "结果")
 
     def visit_VectorDotExpr(self, e: expr.VectorDotExpr) -> CompiledExpr:
         return self.compile_vector_math("DOT_PRODUCT", e.in_a, e.in_b, output_socket=1)
@@ -169,8 +169,8 @@ class Compiler:
         normal_map = self.node_tree.nodes.new("ShaderNodeNormalMap")
         normal_map.space = "TANGENT"
         normal_map.uv_map = get_uv_map_name(e.uv_map_index)
-        self.connect_vector_input(e.color, normal_map, "Color")
-        self.connect_float_input(e.strength, normal_map, "Strength")
+        self.connect_vector_input(e.color, normal_map, "颜色")
+        self.connect_float_input(e.strength, normal_map, "强度")
         return CompiledExpr(normal_map, 0)
 
     def visit_UVMapVectorExpr(self, e: expr.UVMapVectorExpr) -> CompiledExpr:
@@ -239,11 +239,11 @@ class Compiler:
 
     def visit_AttributeVectorExpr(self, e: expr.AttributeVectorExpr) -> CompiledExpr:
         attr_expr = self.visit(e.attribute)
-        return CompiledExpr(attr_expr.node, "Vector")
+        return CompiledExpr(attr_expr.node, "向量")
 
     def visit_AttributeColorExpr(self, e: expr.AttributeColorExpr) -> CompiledExpr:
         attr_expr = self.visit(e.attribute)
-        return CompiledExpr(attr_expr.node, "Color")
+        return CompiledExpr(attr_expr.node, "颜色")
 
     def visit_AttributeFacExpr(self, e: expr.AttributeFacExpr) -> CompiledExpr:
         attr_expr = self.visit(e.attribute)
@@ -255,7 +255,7 @@ class Compiler:
         # vector inputs
         for input_socket, src in (
             ("Base Color", e.base_color),
-            ("Normal", e.normal),
+            ("法线", e.normal),
         ):
             self.connect_vector_input(src, bsdf, input_socket)
 
@@ -276,8 +276,8 @@ class Compiler:
 
         # vector inputs
         for input_socket, src in (
-            ("Color", e.color),
-            ("Normal", e.normal),
+            ("颜色", e.color),
+            ("法线", e.normal),
         ):
             self.connect_vector_input(src, bsdf, input_socket)
 
@@ -291,8 +291,8 @@ class Compiler:
 
     def visit_EmissionExpr(self, e: expr.EmissionExpr) -> CompiledExpr:
         em = self.node_tree.nodes.new("ShaderNodeEmission")
-        self.connect_vector_input(e.color, em, "Color")
-        self.connect_float_input(e.strength, em, "Strength")
+        self.connect_vector_input(e.color, em, "颜色")
+        self.connect_float_input(e.strength, em, "强度")
         return CompiledExpr(em, 0)
 
     def visit_ShaderMixExpr(self, e: expr.ShaderMixExpr) -> CompiledExpr:

@@ -114,12 +114,12 @@ def _poll(context):
 
 LIGHT_PRESET_CATEGORY = PresetCategory(
     id="light",
-    label="Light",
+    label="灯光",
     game="gta5",
     bundled_defaults_path=Path(__file__).parent / "light_presets.json",
     blacklist=frozenset(
         {
-            "Default",
+            "默认",
             "Point: Wall Light 1",
             "Spot: Wall Light 1",
             "Point: Wall Light 2",
@@ -173,7 +173,7 @@ def _convert_legacy_xml(xml_path):
     for item in root.iterfind(".//Item"):
         data = {
             "light": {
-                "color": _vec_elem(item, "Color"),
+                "color": _vec_elem(item, "颜色"),
                 "energy": _value(item, "Energy"),
                 "cutoff_distance": _value(item, "CutoffDistance"),
                 "shadow_soft_size": _value(item, "ShadowSoftSize"),
@@ -183,7 +183,7 @@ def _convert_legacy_xml(xml_path):
                 "spot_blend": _value(item, "SpotBlend"),
             },
             "time_flags": str(int(_value(item, "TimeFlags", 0))),
-            "light_flags": str(int(_value(item, "Flags", 0))),
+            "light_flags": str(int(_value(item, "标记", 0))),
             "light_properties": {
                 "projected_texture_hash": _text(item, "ProjectedTextureHash"),
                 "flashiness": _text(item, "Flashiness"),
@@ -216,27 +216,27 @@ migration.register_legacy_migration(LIGHT_PRESET_CATEGORY, _convert_legacy_xml)
 
 class SOLLUMZ_OT_save_light_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_light_preset"
-    bl_label = "Save Light Preset"
-    bl_description = "Save current light settings as a named preset"
+    bl_label = "保存灯光预设"
+    bl_description = "将当前灯光设置保存为命名预设"
     category = LIGHT_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_light_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_light_preset"
-    bl_label = "Apply Light Preset"
-    bl_description = "Apply a saved light preset to the active light"
+    bl_label = "应用灯光预设"
+    bl_description = "将已保存的灯光预设应用到活动灯光"
     category = LIGHT_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_light_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_light_preset"
-    bl_label = "Delete Light Preset"
-    bl_description = "Remove a saved light preset"
+    bl_label = "删除灯光预设"
+    bl_description = "移除已保存的灯光预设"
     category = LIGHT_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_light_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Light Presets"
+    bl_label = "灯光预设"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_context = "data"

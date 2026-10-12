@@ -38,7 +38,7 @@ from ..properties.map import (
 
 
 class SOLLUMZ_PT_maps_tool_panel(TabbedPanelHelper, Panel):
-    bl_label = "Maps"
+    bl_label = "地图"
     bl_idname = "SOLLUMZ_PT_maps_tool_panel"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -101,8 +101,8 @@ class SOLLUMZ_PT_maps_tool_panel(TabbedPanelHelper, Panel):
                 box = layout.box()
                 box.alert = True
                 col = box.column(align=True)
-                col.label(text="Incomplete LOD hierarchy", icon="ERROR")
-                col.label(text="Some containers were imported without related YMAP")
+                col.label(text="不完整的 LOD 层级", icon="ERROR")
+                col.label(text="某些容器是在没有相关 YMAP 的情况下导入的")
                 col.label(text="files. Their hierarchy values are kept as-is on export")
                 col.label(text="and editing them is limited.")
 
@@ -146,7 +146,7 @@ class SOLLUMZ_PT_maps_tool_panel(TabbedPanelHelper, Panel):
                 if active_locked:
                     col = body.column(align=True)
                     col.alert = True
-                    col.label(text="Incomplete LOD hierarchy (locked)", icon="LOCKED")
+                    col.label(text="不完整的 LOD 层级（已锁定）", icon="LOCKED")
                     body.operator(map_ops.SOLLUMZ_OT_map_data_unlock_lod_hierarchy.bl_idname, icon="UNLOCKED")
                 elif active.is_auto_generated:
                     body.label(text="Auto-generated")
@@ -191,7 +191,7 @@ class SOLLUMZ_PT_maps_tool_panel(TabbedPanelHelper, Panel):
                     desc_header, desc_body = body, body
                 desc_header_row = desc_header.row()
                 desc_header_row.use_property_split = False
-                desc_header_row.prop(selection.owner, selection.propnames.desc_enabled, text="Description")
+                desc_header_row.prop(selection.owner, selection.propnames.desc_enabled, text="描述")
                 if desc_body:
                     desc_body.active = active.desc_enabled
                     desc_body.prop(selection.owner, selection.propnames.desc_name)
@@ -221,7 +221,7 @@ class MapChildTabPanel(TabPanel):
 
 
 class SOLLUMZ_PT_map_tcms(MapChildTabPanel, Panel):
-    bl_label = "Timecycle Modifiers"
+    bl_label = "时间周期修改器"
     bl_idname = "SOLLUMZ_PT_map_tcms"
     bl_order = 2
 
@@ -285,7 +285,7 @@ class SOLLUMZ_PT_map_tcms(MapChildTabPanel, Panel):
 
 
 class SOLLUMZ_PT_map_occluders(MapChildTabPanel, Panel):
-    bl_label = "Occluders"
+    bl_label = "遮挡器"
     bl_idname = "SOLLUMZ_PT_map_occluders"
     bl_order = 4
 
@@ -342,7 +342,7 @@ class SOLLUMZ_PT_map_occluders(MapChildTabPanel, Panel):
 
 
 class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
-    bl_label = "LOD Lights"
+    bl_label = "LOD 灯光"
     bl_idname = "SOLLUMZ_PT_map_lod_lights"
     bl_order = 5
 
@@ -399,7 +399,7 @@ class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
             split = col.split(factor=0.4)
             row = split.row()
             row.alignment = "RIGHT"
-            row.label(text="Small Min Thresholds")
+            row.label(text="小最小阈值")
             row = split.row(align=True)
             row.use_property_split = False
             row.prop(props, "min_falloff_small", text="Falloff")
@@ -408,7 +408,7 @@ class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
             split = col.split(factor=0.4)
             row = split.row()
             row.alignment = "RIGHT"
-            row.label(text="Medium Min Thresholds")
+            row.label(text="中最小阈值")
             row = split.row(align=True)
             row.use_property_split = False
             row.prop(props, "min_falloff_medium", text="Falloff")
@@ -421,7 +421,7 @@ class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
             split.active = props.partition
             row = split.row()
             row.alignment = "RIGHT"
-            row.label(text="Max Lights in Partition")
+            row.label(text="分区中最大灯光数")
             row = split.row(align=True)
             row.use_property_split = False
             row.prop(props, "partition_max_lights_small", text="Small")
@@ -433,7 +433,7 @@ class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
             split = col.split(factor=0.4)
             row = split.row()
             row.alignment = "RIGHT"
-            row.label(text="Visibility Range")
+            row.label(text="可见范围")
             row = split.row(align=True)
             row.use_property_split = False
             row.prop(props, "visibility_range_small", text="Small")
@@ -443,7 +443,7 @@ class SOLLUMZ_PT_map_lod_lights(MapChildTabPanel, Panel):
             split = col.split(factor=0.4)
             row = split.row()
             row.alignment = "RIGHT"
-            row.label(text="Distant Visibility Range")
+            row.label(text="远距可见范围")
             row = split.row(align=True)
             row.use_property_split = False
             row.prop(props, "distant_visibility_range_small", text="Small")
@@ -513,13 +513,13 @@ class SOLLUMZ_UL_maps_group_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_maps_group_list_context_menu(Menu):
-    bl_label = "Map Group Specials"
+    bl_label = "地图组特殊项"
     bl_idname = "SOLLUMZ_MT_maps_group_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_maps_select_all_groups.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_maps_select_invert_groups.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_maps_select_all_groups.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_maps_select_invert_groups.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_maps_group_list.last_filter_options.get("groups_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -550,13 +550,13 @@ class SOLLUMZ_UL_map_group_map_data_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_map_data_list_context_menu(Menu):
-    bl_label = "Map Containers Specials"
+    bl_label = "地图容器特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_map_data_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_maps.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_maps.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_maps.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_maps.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_map_data_list.last_filter_options.get("maps_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -572,13 +572,13 @@ class SOLLUMZ_UL_map_group_tcm_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_tcm_list_context_menu(Menu):
-    bl_label = "Map Timecycle Modifiers Specials"
+    bl_label = "地图时间周期修改器特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_tcm_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_tcms.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_tcms.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_tcms.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_tcms.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_tcm_list.last_filter_options.get("timecycle_modifiers_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -594,13 +594,13 @@ class SOLLUMZ_UL_map_group_occluder_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_occluder_list_context_menu(Menu):
-    bl_label = "Map Occluders Specials"
+    bl_label = "地图遮挡器特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_occluder_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_occluders.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_occluders.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_occluders.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_occluders.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_occluder_list.last_filter_options.get("occluder_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -616,13 +616,13 @@ class SOLLUMZ_UL_map_group_lod_lights_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_lod_lights_list_context_menu(Menu):
-    bl_label = "Map LOD Lights Specials"
+    bl_label = "地图 LOD 灯光特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_lod_lights_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_lod_lights.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_lod_lights.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_lod_lights.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_lod_lights.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_lod_lights_list.last_filter_options.get("lod_lights_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)

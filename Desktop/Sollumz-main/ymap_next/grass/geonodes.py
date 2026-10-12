@@ -45,7 +45,7 @@ def create_grass_batch_geonodes(grass_batch: MapGrassBatch):
     template_selector_ng.asset_clear()
 
     # Setup templates node groups
-    template_object_node_0 = templates_ng.nodes["Object"]
+    template_object_node_0 = templates_ng.nodes["对象"]
     template_object_info_node_0 = templates_ng.nodes["Object Info"]
     template_geo_to_inst_node = templates_ng.nodes["Geometry to Instance"]
     template_geo_to_inst_node_input = template_geo_to_inst_node.inputs["Geometry"]
@@ -65,7 +65,7 @@ def create_grass_batch_geonodes(grass_batch: MapGrassBatch):
             template_object_info_node_i.location = template_object_info_node_0.location + Vector((0, -75 * i))
             template_object_info_node_i.hide = True
 
-            templates_ng.links.new(template_object_info_node_i.inputs["Object"], template_object_node_i.outputs[0])
+            templates_ng.links.new(template_object_info_node_i.inputs["对象"], template_object_node_i.outputs[0])
             templates_ng.links.new(template_geo_to_inst_node_input, template_object_info_node_i.outputs["Geometry"])
         elif i == 0:
             template_object_node_0.label = template.archetype_name
@@ -111,7 +111,7 @@ def create_grass_batch_geonodes(grass_batch: MapGrassBatch):
             template_selector_ng.links.new(selector_cmp_node_i.inputs["A"], selector_group_input_random_value_output)
             template_selector_ng.links.new(selector_cmp_node_i.inputs["B"], selector_threshold_node_i.outputs[0])
             template_selector_ng.links.new(
-                selector_switch_node_i.inputs["Switch"], selector_cmp_node_i.outputs["Result"]
+                selector_switch_node_i.inputs["Switch"], selector_cmp_node_i.outputs["结果"]
             )
             template_selector_ng.links.new(
                 selector_switch_node_iprev.inputs["False"], selector_switch_node_i.outputs["Output"]

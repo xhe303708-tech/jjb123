@@ -11,7 +11,7 @@ from ..utils import get_selected_ytyp, get_selected_archetype
 from .flags import EntityFlags, RoomFlags, PortalFlags
 from .extensions import ExtensionsContainer, ExtensionType
 
-_DEFAULT_EMPTY_ENUM_ITEMS = [("-1", "None", "", -1)]
+_DEFAULT_EMPTY_ENUM_ITEMS = [("-1", "无", "", -1)]
 
 MAX_LIMBO_ROOM_ENTITIES = 12
 
@@ -109,7 +109,7 @@ class MloArchetypeChild:
         ArchetypeProperties.update_cached_entity_set_enum_items(archetype_uuid)
 
     mlo_archetype_id: bpy.props.IntProperty(default=-1)
-    mlo_archetype_uuid: bpy.props.StringProperty(name="Archetype UUID", maxlen=36)
+    mlo_archetype_uuid: bpy.props.StringProperty(name="架构 UUID", maxlen=36)
 
 
 class RoomProperties(bpy.types.PropertyGroup, MloArchetypeChild):
@@ -117,15 +117,15 @@ class RoomProperties(bpy.types.PropertyGroup, MloArchetypeChild):
         "flags", "blend", "timecycle", "secondary_timecycle", "exterior_visibility_depth",
     )
 
-    name: bpy.props.StringProperty(name="Name", update=MloArchetypeChild.update_mlo_archetype_caches)
-    bb_min: bpy.props.FloatVectorProperty(name="Bounds Min", subtype="XYZ")
-    bb_max: bpy.props.FloatVectorProperty(name="Bounds Max", subtype="XYZ")
-    blend: bpy.props.FloatProperty(name="Blend", default=1)
+    name: bpy.props.StringProperty(name="名称", update=MloArchetypeChild.update_mlo_archetype_caches)
+    bb_min: bpy.props.FloatVectorProperty(name="边界最小", subtype="XYZ")
+    bb_max: bpy.props.FloatVectorProperty(name="边界最大", subtype="XYZ")
+    blend: bpy.props.FloatProperty(name="混合", default=1)
     timecycle: bpy.props.StringProperty(name="Timecycle", default="int_gasstation")
-    secondary_timecycle: bpy.props.StringProperty(name="Secondary Timecycle")
-    flags: bpy.props.PointerProperty(type=RoomFlags, name="Flags")
-    floor_id: bpy.props.IntProperty(name="Floor ID")
-    exterior_visibility_depth: bpy.props.IntProperty(name="Exterior Visibility Depth", default=-1)
+    secondary_timecycle: bpy.props.StringProperty(name="次级时间周期")
+    flags: bpy.props.PointerProperty(type=RoomFlags, name="标记")
+    floor_id: bpy.props.IntProperty(name="楼层 ID")
+    exterior_visibility_depth: bpy.props.IntProperty(name="外部可见性深度", default=-1)
 
     # Blender usage only
     id: bpy.props.IntProperty(name="Id")
@@ -232,31 +232,31 @@ class PortalProperties(bpy.types.PropertyGroup, MloArchetypeChild):
         elif value > max_val:
             self.audio_occlusion = "0"
 
-    corner1: bpy.props.FloatVectorProperty(name="Corner 1", subtype="XYZ")
-    corner2: bpy.props.FloatVectorProperty(name="Corner 2", subtype="XYZ")
-    corner3: bpy.props.FloatVectorProperty(name="Corner 3", subtype="XYZ")
-    corner4: bpy.props.FloatVectorProperty(name="Corner 4", subtype="XYZ")
+    corner1: bpy.props.FloatVectorProperty(name="角点 1", subtype="XYZ")
+    corner2: bpy.props.FloatVectorProperty(name="角点 2", subtype="XYZ")
+    corner3: bpy.props.FloatVectorProperty(name="角点 3", subtype="XYZ")
+    corner4: bpy.props.FloatVectorProperty(name="角点 4", subtype="XYZ")
 
     room_from_id: bpy.props.EnumProperty(
-        name="Room From", items=MloArchetypeChild.get_room_items, update=update_room_names, default=-1)
+        name="起始房间", items=MloArchetypeChild.get_room_items, update=update_room_names, default=-1)
     room_from_index: bpy.props.IntProperty(
-        name="Room From Index", get=get_room_from_index)
-    room_from_name: bpy.props.StringProperty(name="Room From")
+        name="起始房间索引", get=get_room_from_index)
+    room_from_name: bpy.props.StringProperty(name="起始房间")
 
     room_to_id: bpy.props.EnumProperty(
-        name="Room To", items=MloArchetypeChild.get_room_items, update=update_room_names, default=-1)
+        name="结束房间", items=MloArchetypeChild.get_room_items, update=update_room_names, default=-1)
     room_to_index: bpy.props.IntProperty(
-        name="Room To Index", get=get_room_to_index)
-    room_to_name: bpy.props.StringProperty(name="Room To")
+        name="结束房间索引", get=get_room_to_index)
+    room_to_name: bpy.props.StringProperty(name="结束房间")
 
-    flags: bpy.props.PointerProperty(type=PortalFlags, name="Flags")
-    mirror_priority: bpy.props.IntProperty(name="Mirror Priority")
+    flags: bpy.props.PointerProperty(type=PortalFlags, name="标记")
+    mirror_priority: bpy.props.IntProperty(name="镜面优先级")
     opacity: bpy.props.IntProperty(name="Opacity")
     audio_occlusion: bpy.props.StringProperty(
-        name="Audio Occlusion", update=update_audio_occlusion, default="0")
+        name="音频遮蔽", update=update_audio_occlusion, default="0")
 
     # Blender use only
-    name: bpy.props.StringProperty(name="Name", default="Portal", get=get_name)
+    name: bpy.props.StringProperty(name="名称", default="Portal", get=get_name)
     id: bpy.props.IntProperty(name="Id")  # unique within the archetype
     uuid: bpy.props.StringProperty(name="UUID", maxlen=36)  # unique within the whole .blend
 
@@ -266,14 +266,14 @@ class TimecycleModifierProperties(bpy.types.PropertyGroup, MloArchetypeChild):
         "name", "percentage", "range", "start_hour", "end_hour",
     )
 
-    name: bpy.props.StringProperty(name="Name")
+    name: bpy.props.StringProperty(name="名称")
     # NOTE: [0] = radius, [1,2,3] = center, changing it would break backwards compatibility or require new versioning.
     # Use the wrapper properties sphere_center and sphere_radius
-    sphere: bpy.props.FloatVectorProperty(name="Sphere", subtype="QUATERNION", size=4)
+    sphere: bpy.props.FloatVectorProperty(name="球", subtype="QUATERNION", size=4)
     percentage: bpy.props.FloatProperty(name="Percentage", min=0.0, max=100.0, step=100)
     range: bpy.props.FloatProperty(name="Range")
-    start_hour: bpy.props.IntProperty(name="Start Hour")
-    end_hour: bpy.props.IntProperty(name="End Hour")
+    start_hour: bpy.props.IntProperty(name="起始小时")
+    end_hour: bpy.props.IntProperty(name="结束小时")
 
     def _sphere_center_getter(self) -> tuple[float, float, float]:
         s = self.sphere
@@ -289,12 +289,12 @@ class TimecycleModifierProperties(bpy.types.PropertyGroup, MloArchetypeChild):
         self.sphere[0] = value
 
     sphere_center: bpy.props.FloatVectorProperty(
-        name="Sphere Center", subtype="XYZ", size=3,
+        name="球心", subtype="XYZ", size=3,
         get=_sphere_center_getter,
         set=_sphere_center_setter,
     )
     sphere_radius: bpy.props.FloatProperty(
-        name="Sphere Radius",
+        name="球半径",
         get=_sphere_radius_getter,
         set=_sphere_radius_setter,
     )
@@ -434,35 +434,35 @@ class MloEntityProperties(bpy.types.PropertyGroup, EntityProperties, MloArchetyp
         return True
 
     # Transforms unused if no linked object
-    position: bpy.props.FloatVectorProperty(name="Position")
+    position: bpy.props.FloatVectorProperty(name="位置")
     rotation: bpy.props.FloatVectorProperty(
-        name="Rotation", subtype="QUATERNION", size=4, default=(1, 0, 0, 0))
-    scale_xy: bpy.props.FloatProperty(name="Scale XY", default=1)
-    scale_z: bpy.props.FloatProperty(name="Scale Z", default=1)
+        name="旋转", subtype="QUATERNION", size=4, default=(1, 0, 0, 0))
+    scale_xy: bpy.props.FloatProperty(name="XY 缩放", default=1)
+    scale_z: bpy.props.FloatProperty(name="Z 缩放", default=1)
 
     attached_portal_id: bpy.props.EnumProperty(
         name="Portal", items=MloArchetypeChild.get_portal_items, default=-1)
     portal_index: bpy.props.IntProperty(
-        name="Attached Portal Index", get=get_portal_index)
+        name="附属 Portal 索引", get=get_portal_index)
     portal_name: bpy.props.StringProperty(
-        name="Attached Portal Name", get=get_portal_name)
+        name="附属 Portal 名称", get=get_portal_name)
 
     attached_room_id: bpy.props.EnumProperty(
-        name="Room", items=MloArchetypeChild.get_room_items, update=update_attached_room_id, default=-1)
+        name="房间", items=MloArchetypeChild.get_room_items, update=update_attached_room_id, default=-1)
     room_index: bpy.props.IntProperty(
-        name="Attached Room Index", get=get_room_index)
+        name="附属房间索引", get=get_room_index)
     room_name: bpy.props.StringProperty(
-        name="Attached Room Name", get=get_room_name)
+        name="附属房间名称", get=get_room_name)
 
     attached_entity_set_id: bpy.props.EnumProperty(
-        name="EntitySet", items=MloArchetypeChild.get_entityset_items, default=-1)
+        name="实体集", items=MloArchetypeChild.get_entityset_items, default=-1)
     entity_set_index: bpy.props.IntProperty(
-        name="Attached EntitySet Index", get=get_entityset_index)
+        name="附属实体集索引", get=get_entityset_index)
 
-    flags: bpy.props.PointerProperty(type=EntityFlags, name="Flags")
+    flags: bpy.props.PointerProperty(type=EntityFlags, name="标记")
 
     linked_object: bpy.props.PointerProperty(
-        type=bpy.types.Object, name="Linked Object")
+        type=bpy.types.Object, name="链接对象")
 
     # Blender usage only
     id: bpy.props.IntProperty(name="Id")
@@ -481,8 +481,8 @@ class EntitySetProperties(bpy.types.PropertyGroup, MloArchetypeChild):
 
         return archetype.entity_sets[0].name
 
-    name: bpy.props.StringProperty(name="Name", update=MloArchetypeChild.update_mlo_archetype_caches)
-    visible: bpy.props.BoolProperty(name="Visible", default=True)
+    name: bpy.props.StringProperty(name="名称", update=MloArchetypeChild.update_mlo_archetype_caches)
+    visible: bpy.props.BoolProperty(name="可见", default=True)
 
     # Blender use obly
     id: bpy.props.IntProperty(name="Id")
@@ -493,32 +493,32 @@ def register():
     bpy.types.Scene.sollumz_add_entity_portal = bpy.props.EnumProperty(
         name="Portal", items=get_portal_items_for_selected_archetype, default=-1)
     bpy.types.Scene.sollumz_add_entity_room = bpy.props.EnumProperty(
-        name="Room", items=get_room_items_for_selected_archetype, default=-1)
+        name="房间", items=get_room_items_for_selected_archetype, default=-1)
     bpy.types.Scene.sollumz_add_entity_entityset = bpy.props.EnumProperty(
-        name="EntitySet", items=get_entityset_items_for_selected_archetype, default=-1)
+        name="实体集", items=get_entityset_items_for_selected_archetype, default=-1)
 
     bpy.types.Scene.sollumz_add_portal_room_from = bpy.props.EnumProperty(
-        name="Room From", description="Room From", items=get_room_items_for_selected_archetype, default=-1)
+        name="起始房间", description="起始房间", items=get_room_items_for_selected_archetype, default=-1)
     bpy.types.Scene.sollumz_add_portal_room_to = bpy.props.EnumProperty(
-        name="Room To", description="Room To", items=get_room_items_for_selected_archetype, default=-1)
+        name="结束房间", description="结束房间", items=get_room_items_for_selected_archetype, default=-1)
 
-    bpy.types.Scene.sollumz_entity_filter_type = bpy.props.EnumProperty(name="Filter By", items=(
-        ("all", "All", ""),
-        ("room", "Room", ""),
+    bpy.types.Scene.sollumz_entity_filter_type = bpy.props.EnumProperty(name="筛选方式", items=(
+        ("all", "全部", ""),
+        ("room", "房间", ""),
         ("portal", "Portal", ""),
-        ("entity_set", "EntitySet", "")
+        ("entity_set", "实体集", "")
     ))
 
     bpy.types.Scene.sollumz_entity_filter_room = bpy.props.EnumProperty(
-        items=get_room_items_for_selected_archetype, default=-1, description="Room")
+        items=get_room_items_for_selected_archetype, default=-1, description="房间")
     bpy.types.Scene.sollumz_entity_filter_portal = bpy.props.EnumProperty(
         items=get_portal_items_for_selected_archetype, default=-1, description="Portal")
     bpy.types.Scene.sollumz_entity_filter_entity_set = bpy.props.EnumProperty(
-        items=get_entityset_items_for_selected_archetype, default=-1, description="EntitySet")
+        items=get_entityset_items_for_selected_archetype, default=-1, description="实体集")
     bpy.types.Scene.sollumz_entity_filter_entity_set_room = bpy.props.EnumProperty(
-        items=get_room_items_for_selected_archetype, default=-1, description="Room")
+        items=get_room_items_for_selected_archetype, default=-1, description="房间")
     bpy.types.Scene.sollumz_do_entity_filter_entity_set_room = bpy.props.BoolProperty(
-        name="Filter EntitySet Room")
+        name="筛选实体集房间")
 
 
 def unregister():

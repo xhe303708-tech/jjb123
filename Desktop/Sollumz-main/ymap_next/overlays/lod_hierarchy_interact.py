@@ -67,13 +67,13 @@ class SOLLUMZ_OT_map_lod_overlay_interact(Operator):
     """Click to select entities, drag to link child to parent."""
 
     bl_idname = "sollumz.map_lod_overlay_interact"
-    bl_label = "LOD Overlay Interact"
-    bl_description = "Click to select entities, drag to link child to parent"
+    bl_label = "LOD 叠加层交互"
+    bl_description = "单击选择实体，拖动以将子链接到父"
     bl_options = {"UNDO"}
 
     toggle: bpy.props.BoolProperty(
-        name="Toggle",
-        description="Toggle selection instead of replacing it",
+        name="切换",
+        description="切换选择而非替换",
         default=False,
     )
 
@@ -339,8 +339,8 @@ class SOLLUMZ_OT_map_lod_overlay_interact(Operator):
 
 class SOLLUMZ_OT_map_lod_overlay_unlink(Operator):
     bl_idname = "sollumz.map_lod_overlay_unlink"
-    bl_label = "Unlink Entity"
-    bl_description = "Unlink the selected entity from its parent"
+    bl_label = "取消链接实体"
+    bl_description = "从所选实体的父级取消链接"
     bl_options = {"UNDO"}
 
     @classmethod

@@ -212,7 +212,7 @@ def create_tinted_shader_graph(obj: bpy.types.Object):
             for mat in obj.data.materials:
                 tint_node = get_tint_sampler_node(mat)
                 if tint_node is not None:
-                    output_id = mod.node_group.interface.items_tree.get("Tint Color")
+                    output_id = mod.node_group.interface.items_tree.get("色调颜色")
                     if output_id:
                         attr_name = mod[output_id.identifier + "_attribute_name"]
                         if attr_name and attr_name in obj.data.attributes:
@@ -274,7 +274,7 @@ def create_tint_geom_modifier(
     input_palette_id = tnt_ng.interface.items_tree["Palette Texture"].identifier
     mod[input_palette_id] = palette_img
 
-    output_id = tnt_ng.interface.items_tree["Tint Color"].identifier
+    output_id = tnt_ng.interface.items_tree["色调颜色"].identifier
     mod[output_id + "_attribute_name"] = tint_color_attr_name
     mod[output_id + "_use_attribute"] = True
 
@@ -324,12 +324,12 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
     gnt.interface.new_socket("Geometry", socket_type="NodeSocketGeometry", in_out="OUTPUT")
     gnt.interface.new_socket("Color Attribute", socket_type="NodeSocketString", in_out="INPUT")
     in_palette = gnt.interface.new_socket("Palette (Preview)",
-                                          description="Index of the tint palette to preview. Has no effect on export",
+                                          description="要预览的色调调色板索引。对导出无影响",
                                           socket_type="NodeSocketInt", in_out="INPUT")
     in_palette.min_value = 0
-    gnt.interface.new_socket("Palette Texture", description="Should be the same as 'TintPaletteSampler' of the material",
+    gnt.interface.new_socket("Palette Texture", description="应与材质的 'TintPaletteSampler' 相同",
                              socket_type="NodeSocketImage", in_out="INPUT")
-    gnt.interface.new_socket("Tint Color", socket_type="NodeSocketColor", in_out="OUTPUT")
+    gnt.interface.new_socket("色调颜色", socket_type="NodeSocketColor", in_out="OUTPUT")
 
     # link input / output node to create geometry socket
     cptn = gnt.nodes.new("GeometryNodeCaptureAttribute")
@@ -347,19 +347,19 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
     # create and link texture node
     txtn = gnt.nodes.new("GeometryNodeImageTexture")
     txtn.interpolation = "Closest"
-    gnt.links.new(input.outputs["Palette Texture"], txtn.inputs["Image"])
-    gnt.links.new(cptn.outputs[cpt_name], txtn.inputs["Vector"])
-    gnt.links.new(txtn.outputs["Color"], output.inputs["Tint Color"])
+    gnt.links.new(input.outputs["Palette Texture"], txtn.inputs["图像"])
+    gnt.links.new(cptn.outputs[cpt_name], txtn.inputs["向量"])
+    gnt.links.new(txtn.outputs["颜色"], output.inputs["色调颜色"])
 
     pal_img_info = gnt.nodes.new("GeometryNodeImageInfo")
-    gnt.links.new(input.outputs["Palette Texture"], pal_img_info.inputs["Image"])
+    gnt.links.new(input.outputs["Palette Texture"], pal_img_info.inputs["图像"])
 
     # Read color attribute. We check if there is an isolated attribute for the input color attribute. If so, we
     # read from the isolated attribute instead of the input, so the tint updates as the user paints.
     from ..editor_tools.vertex_paint.isolate import ISOLATED_ATTR_FORMAT
     color_attr = gnt.nodes.new("GeometryNodeInputNamedAttribute")
     color_attr.data_type = "FLOAT_COLOR"
-    gnt.links.new(input.outputs["Color Attribute"], color_attr.inputs["Name"])
+    gnt.links.new(input.outputs["Color Attribute"], color_attr.inputs["名称"])
     last_color_output = color_attr.outputs["Attribute"]
     for r, g, b in (
         # All possible isolation states with blue channel. Note: alpha cannot be isolated along with RGB, we can ignore it
@@ -377,7 +377,7 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
         switch.input_type = "RGBA"
         gnt.links.new(input.outputs["Color Attribute"], str_join.inputs["Strings"])
         gnt.links.new(isolated_attr_prefix.outputs["String"], str_join.inputs["Strings"])
-        gnt.links.new(str_join.outputs["String"], isolated_attr.inputs["Name"])
+        gnt.links.new(str_join.outputs["String"], isolated_attr.inputs["名称"])
         gnt.links.new(isolated_attr.outputs["Exists"], switch.inputs["Switch"])
         gnt.links.new(isolated_attr.outputs["Attribute"], switch.inputs["True"])
         gnt.links.new(last_color_output, switch.inputs["False"])
@@ -385,7 +385,7 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
 
     # separate colour0
     sepn = gnt.nodes.new("ShaderNodeSeparateXYZ")
-    gnt.links.new(last_color_output, sepn.inputs["Vector"])
+    gnt.links.new(last_color_output, sepn.inputs["向量"])
 
     # create math nodes
     mathns = []
@@ -449,7 +449,7 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
 
     gnt.links.new(input.outputs["Palette (Preview)"], pal_add.inputs[1])
     gnt.links.new(pal_add.outputs[0], pal_div.inputs[0])
-    gnt.links.new(pal_img_info.outputs["Height"], pal_div.inputs[1])
+    gnt.links.new(pal_img_info.outputs["高度"], pal_div.inputs[1])
     gnt.links.new(pal_div.outputs[0], pal_flip_uv_sub.inputs[0])
     gnt.links.new(pal_flip_uv_sub.outputs[0], pal_flip_uv_mult.inputs[0])
 
@@ -457,7 +457,7 @@ def create_tinted_geometry_graph():  # move to blenderhelper.py?
     comb = gnt.nodes.new("ShaderNodeCombineXYZ")
     gnt.links.new(mathns[8].outputs[0], comb.inputs[0])
     gnt.links.new(pal_flip_uv_mult.outputs[0], comb.inputs[1])
-    gnt.links.new(comb.outputs[0], cptn.inputs["Value"])
+    gnt.links.new(comb.outputs[0], cptn.inputs["值"])
 
     return gnt
 
@@ -523,7 +523,7 @@ def link_diffuse(b: ShaderBuilder, imgnode):
     node_tree = b.node_tree
     bsdf = b.bsdf
     links = node_tree.links
-    links.new(imgnode.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(imgnode.outputs["颜色"], bsdf.inputs["Base Color"])
     links.new(imgnode.outputs["Alpha"], bsdf.inputs["Alpha"])
 
 
@@ -532,10 +532,10 @@ def link_diffuses(b: ShaderBuilder, tex1, tex2):
     bsdf = b.bsdf
     links = node_tree.links
     rgb = node_tree.nodes.new("ShaderNodeMixRGB")
-    links.new(tex1.outputs["Color"], rgb.inputs["Color1"])
-    links.new(tex2.outputs["Color"], rgb.inputs["Color2"])
+    links.new(tex1.outputs["颜色"], rgb.inputs["Color1"])
+    links.new(tex2.outputs["颜色"], rgb.inputs["Color2"])
     links.new(tex2.outputs["Alpha"], rgb.inputs["Fac"])
-    links.new(rgb.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(rgb.outputs["颜色"], bsdf.inputs["Base Color"])
     return rgb
 
 
@@ -603,7 +603,7 @@ def link_detailed_normal(b: ShaderBuilder, bumptex, dtltex, spectex):
     links.new(bumptex.outputs[0], mathns[8].inputs[1])
 
     links.new(mathns[8].outputs[0], nrm.inputs[1])
-    links.new(nrm.outputs[0], bsdf.inputs["Normal"])
+    links.new(nrm.outputs[0], bsdf.inputs["法线"])
 
 
 def link_normal(b: ShaderBuilder, nrmtex):
@@ -614,9 +614,9 @@ def link_normal(b: ShaderBuilder, nrmtex):
 
     rgb_curves = create_normal_invert_node(node_tree)
 
-    links.new(nrmtex.outputs["Color"], rgb_curves.inputs["Color"])
-    links.new(rgb_curves.outputs["Color"], normalmap.inputs["Color"])
-    links.new(normalmap.outputs["Normal"], bsdf.inputs["Normal"])
+    links.new(nrmtex.outputs["颜色"], rgb_curves.inputs["颜色"])
+    links.new(rgb_curves.outputs["颜色"], normalmap.inputs["颜色"])
+    links.new(normalmap.outputs["法线"], bsdf.inputs["法线"])
 
 
 def create_normal_invert_node(node_tree: bpy.types.NodeTree):
@@ -635,7 +635,7 @@ def link_specular(b: ShaderBuilder, spctex):
     node_tree = b.node_tree
     bsdf = b.bsdf
     links = node_tree.links
-    links.new(spctex.outputs["Color"], bsdf.inputs["Specular IOR Level"])
+    links.new(spctex.outputs["颜色"], bsdf.inputs["Specular IOR Level"])
 
 
 def create_diff_palette_nodes(
@@ -701,7 +701,7 @@ def create_tint_nodes(
     mix = node_tree.nodes.new("ShaderNodeMixRGB")
     mix.inputs["Fac"].default_value = 0.95
     mix.blend_type = "MULTIPLY"
-    links.new(attr.outputs["Color"], mix.inputs[2])
+    links.new(attr.outputs["颜色"], mix.inputs[2])
     links.new(diffuse_tex.outputs[0], mix.inputs[1])
     links.new(mix.outputs[0], bsdf.inputs["Base Color"])
 
@@ -713,7 +713,7 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
     links = node_tree.links
     mix = node_tree.nodes.new("ShaderNodeMixShader")
     trans = node_tree.nodes.new("ShaderNodeBsdfTransparent")
-    links.new(texture.outputs["Color"], bsdf.inputs["Base Color"])
+    links.new(texture.outputs["颜色"], bsdf.inputs["Base Color"])
 
     if decalflag == 0:  # cutout
         # Handle alpha test logic for cutout shaders.
@@ -747,14 +747,14 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
             mul_alpha_test.operation = "MULTIPLY"
 
             links.new(texture.outputs["Alpha"], sub.inputs[0])
-            links.new(sub.outputs["Value"], div.inputs[0])
-            links.new(hard_alpha_blend.outputs["X"], map_alpha_blend.inputs["Value"])
+            links.new(sub.outputs["值"], div.inputs[0])
+            links.new(hard_alpha_blend.outputs["X"], map_alpha_blend.inputs["值"])
             links.new(texture.outputs["Alpha"], map_alpha_blend.inputs["To Min"])
-            links.new(div.outputs["Value"], map_alpha_blend.inputs["To Max"])
-            links.new(map_alpha_blend.outputs["Result"], alpha_gt.inputs[0])
-            links.new(map_alpha_blend.outputs["Result"], mul_alpha_test.inputs[0])
-            links.new(alpha_gt.outputs["Value"], mul_alpha_test.inputs[1])
-            links.new(mul_alpha_test.outputs["Value"], mix.inputs["Fac"])
+            links.new(div.outputs["值"], map_alpha_blend.inputs["To Max"])
+            links.new(map_alpha_blend.outputs["结果"], alpha_gt.inputs[0])
+            links.new(map_alpha_blend.outputs["结果"], mul_alpha_test.inputs[0])
+            links.new(alpha_gt.outputs["值"], mul_alpha_test.inputs[1])
+            links.new(mul_alpha_test.outputs["值"], mix.inputs["Fac"])
         else:
             # Fallback to simple alpha test
             # discard if alpha <= 0.5, else opaque
@@ -762,7 +762,7 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
             alpha_gt.operation = "GREATER_THAN"
             alpha_gt.inputs[1].default_value = 0.5
             links.new(texture.outputs["Alpha"], alpha_gt.inputs[0])
-            links.new(alpha_gt.outputs["Value"], mix.inputs["Fac"])
+            links.new(alpha_gt.outputs["值"], mix.inputs["Fac"])
     elif decalflag == 1:
         vcs = node_tree.nodes.new("ShaderNodeVertexColor")
         vcs.layer_name = get_color_attr_name(0)
@@ -770,7 +770,7 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
         multi.operation = "MULTIPLY"
         links.new(vcs.outputs["Alpha"], multi.inputs[0])
         links.new(texture.outputs["Alpha"], multi.inputs[1])
-        links.new(multi.outputs["Value"], mix.inputs["Fac"])
+        links.new(multi.outputs["值"], mix.inputs["Fac"])
     elif decalflag == 2:  # decal_dirt.sps
         # Here, the diffuse sampler represents an alpha map. DirtDecalMask indicates which channels to consider. Actual
         # color stored in the color0 attribute.
@@ -790,15 +790,15 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
         links.new(dirt_decal_mask.outputs["Y"], dirt_decal_mask_xyz.inputs["Y"])
         links.new(dirt_decal_mask.outputs["Z"], dirt_decal_mask_xyz.inputs["Z"])
 
-        links.new(texture.outputs["Color"], dot_diffuse_mask.inputs[0])
-        links.new(dirt_decal_mask_xyz.outputs["Vector"], dot_diffuse_mask.inputs[1])
+        links.new(texture.outputs["颜色"], dot_diffuse_mask.inputs[0])
+        links.new(dirt_decal_mask_xyz.outputs["向量"], dot_diffuse_mask.inputs[1])
 
-        links.new(dot_diffuse_mask.outputs["Value"], mult_alpha_color0a.inputs[0])
+        links.new(dot_diffuse_mask.outputs["值"], mult_alpha_color0a.inputs[0])
         links.new(color0_attr.outputs["Alpha"], mult_alpha_color0a.inputs[1])
 
-        links.new(mult_alpha_color0a.outputs["Value"], mix.inputs["Fac"])
+        links.new(mult_alpha_color0a.outputs["值"], mix.inputs["Fac"])
 
-        links.new(color0_attr.outputs["Color"], bsdf.inputs["Base Color"])
+        links.new(color0_attr.outputs["颜色"], bsdf.inputs["Base Color"])
     elif decalflag == 5:  # decal_amb_only.sps
         ambient_decal_mask_xyz = node_tree.nodes.new("ShaderNodeCombineXYZ")
         ambient_decal_mask = node_tree.nodes["AmbientDecalMask"]
@@ -814,21 +814,21 @@ def create_decal_nodes(b: ShaderBuilder, texture, decalflag):
         links.new(ambient_decal_mask.outputs["Y"], ambient_decal_mask_xyz.inputs["Y"])
         links.new(ambient_decal_mask.outputs["Z"], ambient_decal_mask_xyz.inputs["Z"])
 
-        links.new(texture.outputs["Color"], invert_color.inputs[1])
-        links.new(invert_color.outputs["Color"], dot_diffuse_mask.inputs[0])
-        links.new(ambient_decal_mask_xyz.outputs["Vector"], dot_diffuse_mask.inputs[1])
+        links.new(texture.outputs["颜色"], invert_color.inputs[1])
+        links.new(invert_color.outputs["颜色"], dot_diffuse_mask.inputs[0])
+        links.new(ambient_decal_mask_xyz.outputs["向量"], dot_diffuse_mask.inputs[1])
 
-        links.new(dot_diffuse_mask.outputs["Value"], mult_alpha_color0a.inputs[0])
+        links.new(dot_diffuse_mask.outputs["值"], mult_alpha_color0a.inputs[0])
         links.new(color0_attr.outputs["Alpha"], mult_alpha_color0a.inputs[1])
 
-        links.new(mult_alpha_color0a.outputs["Value"], mix.inputs["Fac"])
+        links.new(mult_alpha_color0a.outputs["值"], mix.inputs["Fac"])
 
-        links.new(color0_attr.outputs["Color"], bsdf.inputs["Base Color"])
+        links.new(color0_attr.outputs["颜色"], bsdf.inputs["Base Color"])
 
     links.new(trans.outputs["BSDF"], mix.inputs[1])
     links.remove(bsdf.outputs["BSDF"].links[0])
     links.new(bsdf.outputs["BSDF"], mix.inputs[2])
-    links.new(mix.outputs["Shader"], output.inputs["Surface"])
+    links.new(mix.outputs["着色器"], output.inputs["Surface"])
 
 
 def create_distance_map_nodes(b: ShaderBuilder, distance_map_texture: bpy.types.ShaderNodeTexImage):
@@ -856,24 +856,24 @@ def create_distance_map_nodes(b: ShaderBuilder, distance_map_texture: bpy.types.
     links.new(fill_color.outputs["Z"], fill_color_combine.inputs["Z"])
 
     # extract distance value from texture and check > 0.5
-    links.new(distance_map_texture.outputs["Color"], distance_separate_x.inputs["Vector"])
+    links.new(distance_map_texture.outputs["颜色"], distance_separate_x.inputs["向量"])
     links.remove(distance_map_texture.outputs["Alpha"].links[0])
-    links.new(distance_separate_x.outputs["X"], distance_greater_than.inputs["Value"])
+    links.new(distance_separate_x.outputs["X"], distance_greater_than.inputs["值"])
 
     # multiply color and alpha by distance check result
-    links.new(distance_greater_than.outputs["Value"], multiply_alpha.inputs[0])
-    links.new(distance_greater_than.outputs["Value"], multiply_color.inputs[0])
-    links.new(fill_color_combine.outputs["Vector"], multiply_color.inputs[1])
+    links.new(distance_greater_than.outputs["值"], multiply_alpha.inputs[0])
+    links.new(distance_greater_than.outputs["值"], multiply_color.inputs[0])
+    links.new(fill_color_combine.outputs["向量"], multiply_color.inputs[1])
 
     # connect output color and alpha
-    links.new(multiply_alpha.outputs["Value"], mix.inputs["Fac"])
-    links.new(multiply_color.outputs["Vector"], bsdf.inputs["Base Color"])
+    links.new(multiply_alpha.outputs["值"], mix.inputs["Fac"])
+    links.new(multiply_color.outputs["向量"], bsdf.inputs["Base Color"])
 
     # connect BSDFs and material output
     links.new(trans.outputs["BSDF"], mix.inputs[1])
     links.remove(bsdf.outputs["BSDF"].links[0])
     links.new(bsdf.outputs["BSDF"], mix.inputs[2])
-    links.new(mix.outputs["Shader"], output.inputs["Surface"])
+    links.new(mix.outputs["着色器"], output.inputs["Surface"])
 
 
 def create_emissive_nodes(b: ShaderBuilder):
@@ -938,7 +938,7 @@ def link_value_shader_parameters(b: ShaderBuilder):
                 links.new(spec_mask.outputs["Y"], combine_xyz.inputs["Y"])
                 links.new(spec_mask.outputs["Z"], combine_xyz.inputs["Z"])
                 links.new(combine_xyz.outputs[0], dot_prod.inputs[1])
-                links.new(dot_prod.outputs["Value"], mult.inputs[0])
+                links.new(dot_prod.outputs["值"], mult.inputs[0])
                 links.new(map.outputs[0], mult.inputs[1])
                 links.new(spec_im.outputs["X"], map.inputs[0])
                 links.new(mult.outputs[0], bsdf.inputs["Specular IOR Level"])
@@ -974,17 +974,17 @@ def create_water_nodes(b: ShaderBuilder):
     bsdf.inputs["Transmission Weight"].default_value = 1.0
 
     nm = node_tree.nodes.new("ShaderNodeNormalMap")
-    nm.inputs["Strength"].default_value = 0.2
+    nm.inputs["强度"].default_value = 0.2
     noise = node_tree.nodes.new("ShaderNodeTexNoise")
-    noise.inputs["Scale"].default_value = 5.0
-    noise.inputs["Detail"].default_value = 3.0
+    noise.inputs["缩放"].default_value = 5.0
+    noise.inputs["细节"].default_value = 3.0
     noise.inputs["Roughness"].default_value = 2.0
     layer_weight = node_tree.nodes.new("ShaderNodeLayerWeight")
-    layer_weight.inputs["Blend"].default_value = 0.94
+    layer_weight.inputs["混合"].default_value = 0.94
 
     links.new(layer_weight.outputs["Fresnel"], bsdf.inputs["Alpha"])
-    links.new(noise.outputs["Color"], nm.inputs["Color"])
-    links.new(nm.outputs["Normal"], bsdf.inputs["Normal"])
+    links.new(noise.outputs["颜色"], nm.inputs["颜色"])
+    links.new(nm.outputs["法线"], bsdf.inputs["法线"])
     links.new(bsdf.outputs["BSDF"], output.inputs["Surface"])
 
 
@@ -1182,7 +1182,7 @@ def create_terrain_shader(b: ShaderBuilder):
     seprgb = node_tree.nodes.new("ShaderNodeSeparateColor")
     seprgb.mode = "RGB"
     if shader.is_terrain_mask_only:
-        links.new(tm.outputs[0], seprgb.inputs["Color"])
+        links.new(tm.outputs[0], seprgb.inputs["颜色"])
     else:
         attr_c1 = node_tree.nodes.new("ShaderNodeAttribute")
         attr_c1.attribute_name = get_color_attr_name(1)
@@ -1192,7 +1192,7 @@ def create_terrain_shader(b: ShaderBuilder):
         attr_c0 = node_tree.nodes.new("ShaderNodeAttribute")
         attr_c0.attribute_name = get_color_attr_name(0)
         links.new(attr_c0.outputs[3], mixns[0].inputs[0])
-        links.new(mixns[0].outputs[0], seprgb.inputs["Color"])
+        links.new(mixns[0].outputs[0], seprgb.inputs["颜色"])
 
     # t1 / t2
     links.new(seprgb.outputs["Blue"], mixns[1].inputs[0])
@@ -1225,7 +1225,7 @@ def create_terrain_shader(b: ShaderBuilder):
 
         nrm = node_tree.nodes.new("ShaderNodeNormalMap")
         links.new(mixns[6].outputs[0], nrm.inputs[1])
-        links.new(nrm.outputs[0], bsdf.inputs["Normal"])
+        links.new(nrm.outputs[0], bsdf.inputs["法线"])
 
     # assign lookup sampler last so that it overwrites any socket connections
     if tm:
@@ -1407,7 +1407,7 @@ def add_vehicle_lights_emissive_toggle_nodes(builder: ShaderBuilder):
     shader_expr = vehicle_lights_emissive_toggles()
     compiled_shader_expr = compile_expr(builder.material.node_tree, shader_expr)
 
-    builder.node_tree.links.new(compiled_shader_expr.output, em.inputs["Strength"])
+    builder.node_tree.links.new(compiled_shader_expr.output, em.inputs["强度"])
 
 
 def vehicle_lights_emissive_toggles() -> expr.ShaderExpr:

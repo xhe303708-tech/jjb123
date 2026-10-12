@@ -98,22 +98,22 @@ class DrawableShaderOrder(bpy.types.PropertyGroup):
 
 
 class CharClothProperties(bpy.types.PropertyGroup):
-    weight: FloatProperty(name="Weight", default=1.0)
-    num_pin_radius_sets: IntProperty(name="Number of Pin Radius Sets", min=1, max=4, default=1)
-    pin_radius_scale: FloatProperty(name="Pin Radius Scale", default=1.0)
-    pin_radius_threshold: FloatProperty(name="Pin Radius Threshold", default=0.04)
-    wind_scale: FloatProperty(name="Wind Scale", default=1.0)
+    weight: FloatProperty(name="权重", default=1.0)
+    num_pin_radius_sets: IntProperty(name="固定半径集数", min=1, max=4, default=1)
+    pin_radius_scale: FloatProperty(name="固定半径缩放", default=1.0)
+    pin_radius_threshold: FloatProperty(name="固定半径阈值", default=0.04)
+    wind_scale: FloatProperty(name="风缩放", default=1.0)
 
 
 class DrawableProperties(bpy.types.PropertyGroup):
     lod_dist_high: bpy.props.FloatProperty(
-        min=0, max=10000, default=9998, name="Lod Distance High")
+        min=0, max=10000, default=9998, name="LOD 高距离")
     lod_dist_med: bpy.props.FloatProperty(
-        min=0, max=10000, default=9998, name="Lod Distance Med")
+        min=0, max=10000, default=9998, name="LOD 中距离")
     lod_dist_low: bpy.props.FloatProperty(
-        min=0, max=10000, default=9998, name="Lod Distance Low")
+        min=0, max=10000, default=9998, name="LOD 低距离")
     lod_dist_vlow: bpy.props.FloatProperty(
-        min=0, max=10000, default=9998, name="Lod Distance Vlow")
+        min=0, max=10000, default=9998, name="LOD 极低距离")
 
     shader_order: bpy.props.PointerProperty(type=DrawableShaderOrder)
 
@@ -121,11 +121,11 @@ class DrawableProperties(bpy.types.PropertyGroup):
 
 
 class DrawableModelProperties(bpy.types.PropertyGroup):
-    render_mask: bpy.props.IntProperty(name="Render Mask", default=255)
+    render_mask: bpy.props.IntProperty(name="渲染遮罩", default=255)
     sollum_lod: bpy.props.EnumProperty(
         items=items_from_enums(
             [LODLevel.HIGH, LODLevel.MEDIUM, LODLevel.LOW, LODLevel.VERYLOW]),
-        name="LOD Level",
+        name="LOD 级别",
         default="sollumz_high"
     )
 
@@ -156,17 +156,17 @@ class ShaderProperties(bpy.types.PropertyGroup):
     index: bpy.props.IntProperty(min=0)
 
     renderbucket: bpy.props.EnumProperty(
-        name="Render Bucket", items=RenderBucketEnumItems,
+        name="渲染桶", items=RenderBucketEnumItems,
         default=RenderBucket.OPAQUE.name
     )
-    filename: bpy.props.StringProperty(name="Shader Filename", default="default.sps")
-    name: bpy.props.StringProperty(name="Shader Name", default="default")
+    filename: bpy.props.StringProperty(name="着色器文件名", default="default.sps")
+    name: bpy.props.StringProperty(name="着色器名称", default="default")
 
     def get_ui_name(self) -> str:
         s = shadermats_by_filename.get(self.filename, None)
         return (s and s.ui_name) or ""
 
-    ui_name: bpy.props.StringProperty(name="Shader", get=get_ui_name)
+    ui_name: bpy.props.StringProperty(name="着色器", get=get_ui_name)
 
 
 class TextureProperties(bpy.types.PropertyGroup):
@@ -266,15 +266,15 @@ class BoneProperties(bpy.types.PropertyGroup):
         name="Tag", description="Unique value that identifies this bone in the armature",
         get=get_tag, set=set_tag, default=0, min=0, max=0xFFFF
     )
-    manual_tag: IntProperty(name="Manual Tag", default=0, min=0, max=0xFFFF)
+    manual_tag: IntProperty(name="手动标签", default=0, min=0, max=0xFFFF)
     use_manual_tag: BoolProperty(
-        name="Use Manual Tag", description="Specify a tag instead of auto-calculating it",
+        name="使用手动标签", description="Specify a tag instead of auto-calculating it",
         default=False)
 
     # Just a wrapper around the flags collection property due to backwards compatibility, but it really doesn't make
     # sense to have a collection for this
     flags_enum: EnumProperty(
-        items=BoneFlagEnumItems, name="Flags", options={"ENUM_FLAG"},
+        items=BoneFlagEnumItems, name="标记", options={"ENUM_FLAG"},
         get=get_flags_enum, set=set_flags_enum
     )
     flags: CollectionProperty(type=BoneFlag)
@@ -292,9 +292,9 @@ class ShaderMaterial(bpy.types.PropertyGroup):
         preferences = get_addon_preferences(bpy.context)
         preferences.toggle_favorite_shader(self.name, value)
 
-    index: bpy.props.IntProperty(name="Index")
-    name: bpy.props.StringProperty(name="Name")
-    search_name: bpy.props.StringProperty(name="Name")  # name without '_' or spaces used by list search filter
+    index: bpy.props.IntProperty(name="索引")
+    name: bpy.props.StringProperty(name="名称")
+    search_name: bpy.props.StringProperty(name="名称")  # name without '_' or spaces used by list search filter
     favorite: BoolProperty(
         name="Favorite",
         get=_get_favorite,
@@ -309,37 +309,37 @@ class LightProperties(bpy.types.PropertyGroup):
     flashiness: bpy.props.EnumProperty(
         name="Flashiness", items=LightFlashinessEnumItems, default=LightFlashiness.CONSTANT.name
     )
-    group_id: bpy.props.IntProperty(name="Group ID")
-    culling_plane_normal: bpy.props.FloatVectorProperty(name="Culling Plane Normal", subtype="XYZ")
-    culling_plane_offset: bpy.props.FloatProperty(name="Culling Plane Offset", subtype="DISTANCE")
-    shadow_blur: bpy.props.FloatProperty(name="Shadow Blur", min=0.0, max=1.0, subtype="FACTOR")
-    volume_size_scale: bpy.props.FloatProperty(name="Volume Size Scale", default=1.0)
+    group_id: bpy.props.IntProperty(name="组 ID")
+    culling_plane_normal: bpy.props.FloatVectorProperty(name="剔除平面法线", subtype="XYZ")
+    culling_plane_offset: bpy.props.FloatProperty(name="剔除平面偏移", subtype="DISTANCE")
+    shadow_blur: bpy.props.FloatProperty(name="阴影模糊", min=0.0, max=1.0, subtype="FACTOR")
+    volume_size_scale: bpy.props.FloatProperty(name="体积大小缩放", default=1.0)
     volume_outer_color: bpy.props.FloatVectorProperty(
-        name="Volume Outer Color",
+        name="体积外部颜色",
         subtype="COLOR",
         min=0.0,
         max=1.0,
         default=(1.0, 1.0, 1.0)
     )
     light_hash: bpy.props.IntProperty(
-        name="Light ID",
+        name="灯光 ID",
         description=(
             "Identifier used to link the light in the base model with the correct light in a Light Effect entity "
             "extension"
         ),
         min=0, max=255,
     )
-    volume_outer_intensity: bpy.props.FloatProperty(name="Volume Outer Intensity", default=1.0)
-    corona_size: bpy.props.FloatProperty(name="Corona Size")
-    volume_outer_exponent: bpy.props.FloatProperty(name="Volume Outer Exponent", default=1.0)
-    light_fade_distance: bpy.props.FloatProperty(name="Light Fade Distance")
-    shadow_fade_distance: bpy.props.FloatProperty(name="Shadow Fade Distance")
-    specular_fade_distance: bpy.props.FloatProperty(name="Specular Fade Distance")
-    volumetric_fade_distance: bpy.props.FloatProperty(name="Volumetric Fade Distance")
-    corona_intensity: bpy.props.FloatProperty(name="Corona Intensity", default=1.0)
-    corona_z_bias: bpy.props.FloatProperty(name="Corona Z Bias", default=0.1)
+    volume_outer_intensity: bpy.props.FloatProperty(name="体积外部强度", default=1.0)
+    corona_size: bpy.props.FloatProperty(name="光晕大小")
+    volume_outer_exponent: bpy.props.FloatProperty(name="体积外部指数", default=1.0)
+    light_fade_distance: bpy.props.FloatProperty(name="灯光淡出距离")
+    shadow_fade_distance: bpy.props.FloatProperty(name="阴影淡出距离")
+    specular_fade_distance: bpy.props.FloatProperty(name="高光淡出距离")
+    volumetric_fade_distance: bpy.props.FloatProperty(name="体积淡出距离")
+    corona_intensity: bpy.props.FloatProperty(name="光晕强度", default=1.0)
+    corona_z_bias: bpy.props.FloatProperty(name="光晕 Z 偏移", default=0.1)
     extent: bpy.props.FloatVectorProperty(name="Extent", default=(1, 1, 1), subtype="XYZ", soft_min=0.01, unit="LENGTH")
-    projected_texture_hash: bpy.props.StringProperty(name="Projected Texture Hash")
+    projected_texture_hash: bpy.props.StringProperty(name="投影贴图哈希")
 
     # Wrapper properties
     def _get_intensity(self) -> float:
@@ -373,7 +373,7 @@ class LightProperties(bpy.types.PropertyGroup):
         self.id_data.shadow_soft_size = value / 5
 
     falloff_exponent: FloatProperty(
-        name="Falloff Exponent",
+        name="衰减指数",
         get=_get_falloff_exponent, set=_set_falloff_exponent,
         min=0.0,
     )
@@ -385,7 +385,7 @@ class LightProperties(bpy.types.PropertyGroup):
         self.id_data.volume_factor = value
 
     volume_intensity: FloatProperty(
-        name="Volume Intensity",
+        name="体积强度",
         get=_get_volume_intensity, set=_set_volume_intensity,
         min=0.0,
     )
@@ -397,7 +397,7 @@ class LightProperties(bpy.types.PropertyGroup):
         self.id_data.shadow_buffer_clip_start = value
 
     shadow_near_clip: FloatProperty(
-        name="Shadow Near Clip",
+        name="阴影近裁切",
         get=_get_shadow_near_clip, set=_set_shadow_near_clip,
         min=1e-6,
     )
@@ -409,7 +409,7 @@ class LightProperties(bpy.types.PropertyGroup):
         self.id_data.spot_blend = abs((value / math.pi) - 1)
 
     cone_inner_angle: FloatProperty(
-        name="Cone Inner Angle",
+        name="锥体内角",
         get=_get_cone_inner_angle, set=_set_cone_inner_angle,
         subtype="ANGLE",
         min=0.0, max=math.pi / 2,
@@ -422,7 +422,7 @@ class LightProperties(bpy.types.PropertyGroup):
         self.id_data.spot_size = value * 2
 
     cone_outer_angle: FloatProperty(
-        name="Cone Outer Angle",
+        name="锥体外角",
         get=_get_cone_outer_angle, set=_set_cone_outer_angle,
         subtype="ANGLE",
         min=0.0, max=math.pi / 2,
@@ -435,163 +435,163 @@ class LightTimeFlags(TimeFlagsMixin, bpy.types.PropertyGroup):
 
 class LightFlags(FlagPropertyGroup, bpy.types.PropertyGroup):
     interior_only: bpy.props.BoolProperty(
-        name="Interior Only",
-        description="Light will only be rendered when inside an interior",
+        name="仅室内",
+        description="灯光仅在室内时渲染",
         update=FlagPropertyGroup.update_flag)
 
     exterior_only: bpy.props.BoolProperty(
-        name="Exterior Only",
-        description="Light will only be rendered when not inside an interior",
+        name="仅室外",
+        description="灯光仅在非室内时渲染",
         update=FlagPropertyGroup.update_flag)
 
     dont_use_in_cutscene: bpy.props.BoolProperty(
-        name="Dont Use In Cutscene",
-        description="Light will not be rendered in cutscenes",
+        name="过场动画中不使用",
+        description="灯光在过场动画中不渲染",
         update=FlagPropertyGroup.update_flag)
 
     vehicle: bpy.props.BoolProperty(
         name="Vehicle",
-        description="Light will be rendered on vehicles",
+        description="灯光将在载具上渲染",
         update=FlagPropertyGroup.update_flag)
 
     ignore_light_state: bpy.props.BoolProperty(
-        name="Ignore Artificial Lights State",
-        description="Light will ignore SET_ARTIFICIAL_LIGHTS_STATE(FALSE) from scripts and keep rendering",
+        name="忽略人工灯光状态",
+        description="灯光将忽略脚本中的 SET_ARTIFICIAL_LIGHTS_STATE(FALSE) 并继续渲染",
         update=FlagPropertyGroup.update_flag)
 
     texture_projection: bpy.props.BoolProperty(
-        name="Texture Projection",
-        description="Enable texture projection",
+        name="贴图投影",
+        description="启用贴图投影",
         update=FlagPropertyGroup.update_flag)
 
     cast_shadows: bpy.props.BoolProperty(
-        name="Cast Shadows",
-        description="Light will cast shadows",
+        name="投射阴影",
+        description="灯光将投射阴影",
         update=FlagPropertyGroup.update_flag)
 
     static_shadows: bpy.props.BoolProperty(
-        name="Cast Static Shadows",
-        description="Light will cast static shadows",
+        name="投射静态阴影",
+        description="灯光将投射静态阴影",
         update=FlagPropertyGroup.update_flag)
 
     dynamic_shadows: bpy.props.BoolProperty(
-        name="Cast Dynamic Shadows",
-        description="Light will cast dynamic shadows",
+        name="投射动态阴影",
+        description="灯光将投射动态阴影",
         update=FlagPropertyGroup.update_flag)
 
     calc_from_sun: bpy.props.BoolProperty(
-        name="Calculate From Sun",
-        description="Light will be calculated from sun position",
+        name="从太阳计算",
+        description="灯光将从太阳位置计算",
         update=FlagPropertyGroup.update_flag)
 
     enable_buzzing: bpy.props.BoolProperty(
-        name="Enable Buzzing",
-        description="Light will be enabled when buzzing",
+        name="启用闪烁",
+        description="灯光在闪烁时启用",
         update=FlagPropertyGroup.update_flag)
 
     force_buzzing: bpy.props.BoolProperty(
-        name="Force Buzzing",
-        description="Light will be forced to buzz",
+        name="强制闪烁",
+        description="灯光将被强制闪烁",
         update=FlagPropertyGroup.update_flag)
 
     draw_volume: bpy.props.BoolProperty(
-        name="Draw Volume",
-        description="Force enable volume rendering, ignoring timecycle",
+        name="绘制体积",
+        description="强制启用体积渲染，忽略时间周期",
         update=FlagPropertyGroup.update_flag)
 
     no_specular: bpy.props.BoolProperty(
-        name="No Specular",
-        description="Light will not reflect on specular materials",
+        name="无高光",
+        description="灯光不会在高光材质上反射",
         update=FlagPropertyGroup.update_flag)
 
     both_int_and_ext: bpy.props.BoolProperty(
-        name="Both Interior And Exterior",
-        description="Light will be rendered both inside and outside",
+        name="室内和室外",
+        description="灯光将在室内和室外均渲染",
         update=FlagPropertyGroup.update_flag)
 
     corona_only: bpy.props.BoolProperty(
-        name="Corona Only",
-        description="Light will only render the corona",
+        name="仅光晕",
+        description="灯光仅渲染光晕",
         update=FlagPropertyGroup.update_flag)
 
     not_in_reflection: bpy.props.BoolProperty(
-        name="Not In Reflection",
-        description="Light will not be rendered in reflections",
+        name="不在反射中",
+        description="灯光不会在反射中渲染",
         update=FlagPropertyGroup.update_flag)
 
     only_in_reflection: bpy.props.BoolProperty(
-        name="Only In Reflection",
-        description="Light will only be rendered in reflections",
+        name="仅在反射中",
+        description="灯光仅在反射中渲染",
         update=FlagPropertyGroup.update_flag)
 
     enable_culling_plane: bpy.props.BoolProperty(
-        name="Enable Culling Plane",
-        description="Enable the culling plane",
+        name="启用剔除平面",
+        description="启用剔除平面",
         update=FlagPropertyGroup.update_flag)
 
     enable_vol_outer_color: bpy.props.BoolProperty(
-        name="Enable Volume Outer Color",
-        description="Enable the volume outer color",
+        name="启用体积外部颜色",
+        description="启用体积外部颜色",
         update=FlagPropertyGroup.update_flag)
 
     higher_res_shadows: bpy.props.BoolProperty(
-        name="Higher Res Shadows",
-        description="Light will render higher resolution shadows",
+        name="更高分辨率阴影",
+        description="灯光将渲染更高分辨率阴影",
         update=FlagPropertyGroup.update_flag)
 
     only_low_res_shadows: bpy.props.BoolProperty(
-        name="Only Low Res Shadows",
-        description="Light will only render low resolution shadows",
+        name="仅低分辨率阴影",
+        description="灯光仅渲染低分辨率阴影",
         update=FlagPropertyGroup.update_flag)
 
     far_lod_light: bpy.props.BoolProperty(
-        name="Far Lod Light",
-        description="Light will be rendered as a far LOD Light",
+        name="远 LOD 灯光",
+        description="灯光将作为远 LOD 灯光渲染",
         update=FlagPropertyGroup.update_flag)
 
     dont_light_alpha: bpy.props.BoolProperty(
-        name="Don't Light Alpha",
-        description="Light won't affect transparent geometry, such as glass panes",
+        name="不照亮 Alpha",
+        description="灯光不会影响透明几何体（如玻璃板）",
         update=FlagPropertyGroup.update_flag)
 
     cast_shadows_if_possible: bpy.props.BoolProperty(
-        name="Cast Shadows If Possible",
-        description="Light will cast shadows if possible",
+        name="尽可能投射阴影",
+        description="灯光在可能时投射阴影",
         update=FlagPropertyGroup.update_flag)
 
     cutscene: bpy.props.BoolProperty(
         name="Cutscene",
-        description="Light will be rendered in cutscenes",
+        description="灯光将在过场动画中渲染",
         update=FlagPropertyGroup.update_flag)
 
     moving_light_source: bpy.props.BoolProperty(
-        name="Moving light Source",
-        description="Light will be rendered as a moving light source",
+        name="移动光源",
+        description="灯光将作为移动光源渲染",
         update=FlagPropertyGroup.update_flag)
 
     use_vehicle_twin: bpy.props.BoolProperty(
-        name="Use Vehicle Twin",
-        description="Light will use the vehicle twin",
+        name="使用载具双生",
+        description="灯光将使用载具双生",
         update=FlagPropertyGroup.update_flag)
 
     force_medium_lod_light: bpy.props.BoolProperty(
-        name="Force Medium LOD Light",
-        description="Light will be rendered as a medium LOD Light",
+        name="强制中 LOD 灯光",
+        description="灯光将作为中 LOD 灯光渲染",
         update=FlagPropertyGroup.update_flag)
 
     corona_only_lod_light: bpy.props.BoolProperty(
-        name="Corona Only LOD Light",
-        description="Light will be rendered as a corona only LOD Light",
+        name="仅光晕 LOD 灯光",
+        description="灯光将作为仅光晕 LOD 灯光渲染",
         update=FlagPropertyGroup.update_flag)
 
     delayed_render: bpy.props.BoolProperty(
-        name="Delay Render",
-        description="Create Shadow casting light early in the frame to avoid visible shadow pop-in",
+        name="延迟渲染",
+        description="在帧早期创建投射阴影的灯光以避免可见的阴影 pop-in",
         update=FlagPropertyGroup.update_flag)
 
     already_tested_for_occlusion: bpy.props.BoolProperty(
-        name="Already Tested For Occlusion",
-        description="Light has already been tested for occlusion",
+        name="已测试遮挡",
+        description="灯光已测试遮挡",
         update=FlagPropertyGroup.update_flag)
 
 
@@ -655,9 +655,9 @@ def on_blend_file_loaded(_):
 
 def register():
     bpy.types.WindowManager.sz_shader_material_index = bpy.props.IntProperty(
-        name="Shader Material Index", min=0, max=len(shadermats) - 1)
+        name="着色器材质索引", min=0, max=len(shadermats) - 1)
     bpy.types.WindowManager.sz_shader_materials = bpy.props.CollectionProperty(
-        type=ShaderMaterial, name="Shader Materials"
+        type=ShaderMaterial, name="着色器材质"
     )
     bpy.types.Object.drawable_properties = bpy.props.PointerProperty(
         type=DrawableProperties)
@@ -666,7 +666,7 @@ def register():
     bpy.types.ShaderNodeTexImage.texture_properties = bpy.props.PointerProperty(
         type=TextureProperties)
     bpy.types.ShaderNodeTexImage.sollumz_texture_name = bpy.props.StringProperty(
-        name="Texture Name", description="Name of texture", get=get_texture_name)
+        name="贴图名称", description="Name of texture", get=get_texture_name)
 
     # Store properties for the DrawableModel with HasSkin=1. This is so all skinned objects share
     # the same drawable model properties even when split by group. It seems there is only ever 1
@@ -681,17 +681,17 @@ def register():
         type=DrawableModelProperties)
 
     bpy.types.Scene.create_seperate_drawables = bpy.props.BoolProperty(
-        name="Separate Objects", description="Create a separate Drawable for each selected object")
+        name="分离对象", description="Create a separate Drawable for each selected object")
     bpy.types.Scene.auto_create_embedded_col = bpy.props.BoolProperty(
-        name="Auto-Embed Collision", description="Automatically create embedded static collision")
+        name="自动内嵌碰撞", description="Automatically create embedded static collision")
     bpy.types.Scene.center_drawable_to_selection = bpy.props.BoolProperty(
-        name="Center to Selection", description="Center Drawable(s) to selection", default=True)
+        name="居中到所选", description="Center Drawable(s) to selection", default=True)
 
     bpy.types.Bone.bone_properties = bpy.props.PointerProperty(
         type=BoneProperties)
     bpy.types.Light.sollum_type = bpy.props.EnumProperty(
         items=items_from_enums(LightType),
-        name="Light Type",
+        name="灯光类型",
         default=LightType.POINT,
         options={"HIDDEN"},
         get=get_light_type,
@@ -708,7 +708,7 @@ def register():
             (LightType.CAPSULE.value,
              SOLLUMZ_UI_NAMES[LightType.CAPSULE], SOLLUMZ_UI_NAMES[LightType.CAPSULE]),
         ],
-        name="Light Type",
+        name="灯光类型",
         default=LightType.POINT,
         options={"HIDDEN"}
     )
@@ -716,22 +716,22 @@ def register():
     bpy.types.Light.light_flags = bpy.props.PointerProperty(type=LightFlags)
 
     bpy.types.Scene.sollumz_auto_lod_ref_mesh = bpy.props.PointerProperty(
-        type=bpy.types.Mesh, name="Reference Mesh", description="The mesh to copy and decimate for each LOD level. You'd usually want to set this as the highest LOD then run the tool for all lower LODs")
+        type=bpy.types.Mesh, name="参考网格", description="The mesh to copy and decimate for each LOD level. You'd usually want to set this as the highest LOD then run the tool for all lower LODs")
     bpy.types.Scene.sollumz_auto_lod_levels = lod_level_enum_flag_prop_factory()
     bpy.types.Scene.sollumz_auto_lod_decimate_step = bpy.props.FloatProperty(
-        name="Decimate Step", min=0.0, max=0.99, default=0.6)
+        name="减面步长", min=0.0, max=0.99, default=0.6)
 
 
     bpy.types.Scene.sollumz_extract_lods_levels = lod_level_enum_flag_prop_factory()
-    bpy.types.Scene.sollumz_extract_lods_parent_type = bpy.props.EnumProperty(name="Parent Type", items=(
-        ("sollumz_extract_lods_parent_type_object", "Object", "Parent to an Object"),
+    bpy.types.Scene.sollumz_extract_lods_parent_type = bpy.props.EnumProperty(name="父级类型", items=(
+        ("sollumz_extract_lods_parent_type_object", "对象", "Parent to an Object"),
         ("sollumz_extract_lods_parent_type_collection",
          "Collection", "Parent to a Collection")
     ), default=0)
 
     from .cable import CableAttr
     bpy.types.WindowManager.sz_ui_cable_radius_visualize = bpy.props.BoolProperty(
-        name="Show Radius", description="Display the cable radius values on the 3D Viewport",
+        name="显示半径", description="Display the cable radius values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cable_radius = bpy.props.FloatProperty(
@@ -740,7 +740,7 @@ def register():
         subtype="DISTANCE"
     )
     bpy.types.WindowManager.sz_ui_cable_diffuse_factor_visualize = bpy.props.BoolProperty(
-        name="Show Diffuse Factor", description="Display the cable diffuse factor values on the 3D Viewport",
+        name="显示漫反射系数", description="Display the cable diffuse factor values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cable_diffuse_factor = bpy.props.FloatProperty(
@@ -749,7 +749,7 @@ def register():
         subtype="FACTOR"
     )
     bpy.types.WindowManager.sz_ui_cable_um_scale_visualize = bpy.props.BoolProperty(
-        name="Show Micromovements Scale", description="Display the cable micromovements scale values on the 3D Viewport",
+        name="显示微动缩放", description="Display the cable micromovements scale values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cable_um_scale = bpy.props.FloatProperty(
@@ -757,7 +757,7 @@ def register():
         min=0.0, default=CableAttr.UM_SCALE.default_value
     )
     bpy.types.WindowManager.sz_ui_cable_phase_offset_visualize = bpy.props.BoolProperty(
-        name="Show Phase Offset", description="Display the cable phase offset values on the 3D Viewport",
+        name="显示相位偏移", description="Display the cable phase offset values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cable_phase_offset = bpy.props.FloatVectorProperty(
@@ -765,7 +765,7 @@ def register():
         size=2, min=0.0, max=1.0, default=CableAttr.PHASE_OFFSET.default_value[0:2]
     )
     bpy.types.WindowManager.sz_ui_cable_material_index_visualize = bpy.props.BoolProperty(
-        name="Show Material Index", description="Display the cable material indices on the 3D Viewport",
+        name="显示材质索引", description="Display the cable material indices on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cable_material_index = bpy.props.IntProperty(
@@ -776,7 +776,7 @@ def register():
     from .cloth import ClothAttr
 
     bpy.types.WindowManager.sz_ui_cloth_vertex_weight_visualize = bpy.props.BoolProperty(
-        name="Show Weights", description="Display the cloth weight values on the 3D Viewport",
+        name="显示权重", description="Display the cloth weight values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_vertex_weight = bpy.props.FloatProperty(
@@ -785,7 +785,7 @@ def register():
         precision=6, step=1
     )
     bpy.types.WindowManager.sz_ui_cloth_inflation_scale_visualize = bpy.props.BoolProperty(
-        name="Show Inflation Scale", description="Display the cloth inflation scale values on the 3D Viewport",
+        name="显示膨胀缩放", description="Display the cloth inflation scale values on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_inflation_scale = bpy.props.FloatProperty(
@@ -793,11 +793,11 @@ def register():
         min=0.0, max=1.0, default=ClothAttr.INFLATION_SCALE.default_value
     )
     bpy.types.WindowManager.sz_ui_cloth_pinned_visualize = bpy.props.BoolProperty(
-        name="Show Pinned", description="Display the cloth pinned vertices on the 3D Viewport",
+        name="显示已固定", description="Display the cloth pinned vertices on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_pin_radius_set = bpy.props.IntProperty(
-        name="Pin Radius Set",
+        name="固定半径集",
         min=1, max=4, default=1
     )
     bpy.types.WindowManager.sz_ui_cloth_pin_radius = bpy.props.FloatProperty(
@@ -805,19 +805,19 @@ def register():
         min=0.0, max=1.0, default=0.1, step=5,
     )
     bpy.types.WindowManager.sz_ui_cloth_pin_radius_gradient_min = bpy.props.FloatProperty(
-        name="Pin Radius Gradient Minimum",
+        name="固定半径渐变最小值",
         min=0.0, max=1.0, default=0.1, step=5,
     )
     bpy.types.WindowManager.sz_ui_cloth_pin_radius_gradient_max = bpy.props.FloatProperty(
-        name="Pin Radius Gradient Maximum",
+        name="固定半径渐变最大值",
         min=0.0, max=1.0, default=0.8, step=5,
     )
     bpy.types.WindowManager.sz_ui_cloth_pin_radius_visualize = bpy.props.BoolProperty(
-        name="Show Pin Radius", description="Display the cloth pin radius on the 3D Viewport",
+        name="显示固定半径", description="Display the cloth pin radius on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_force_transform_visualize = bpy.props.BoolProperty(
-        name="Show Force Transform", description="Display the cloth force transforms on the 3D Viewport",
+        name="显示力变换", description="Display the cloth force transforms on the 3D Viewport",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_force_transform = bpy.props.IntProperty(
@@ -825,17 +825,17 @@ def register():
         min=0, max=2, default=ClothAttr.FORCE_TRANSFORM.default_value
     )
     bpy.types.WindowManager.sz_ui_cloth_diag_material_errors_visualize = bpy.props.BoolProperty(
-        name="Show Material Errors",
-        description="Display faces that have a non-cloth material on the 3D Viewport",
+        name="显示材质错误",
+        description="在 3D 视口中显示具有非布料材质的面",
         default=False
     )
     bpy.types.WindowManager.sz_ui_cloth_diag_binding_errors_visualize = bpy.props.BoolProperty(
-        name="Show Binding Errors",
-        description="Display vertices of the drawable mesh that failed to bind to the cloth mesh on the 3D Viewport",
+        name="显示绑定错误",
+        description="在 3D 视口中显示未能绑定到布料网格的可绘制网格顶点",
         default=False
     )
     # bpy.types.WindowManager.sz_ui_cloth_diag_bindings_visualize = bpy.props.BoolProperty(
-    #     name="Show Bindings",
+    #     name="显示绑定",
     #     description="",
     #     default=False
     # )

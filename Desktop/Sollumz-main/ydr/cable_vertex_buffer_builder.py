@@ -48,11 +48,11 @@ class CableVertexBufferBuilder:
         #    x = radius (signed)
         #    y = distance from line * micromovement scale (further from the line and larger scale more affected by wind)
         struct_dtype = [VertexBuffer.VERT_ATTR_DTYPES[attr_name]
-                        for attr_name in ("Position", "Normal", "Colour0", "TexCoord0")]
+                        for attr_name in ("位置", "法线", "Colour0", "TexCoord0")]
         output_vertex_arr = np.empty(num_output_verts, dtype=struct_dtype)
         output_vertex_materials_arr = np.empty(num_output_verts, dtype=np.int32)
-        v_pos = output_vertex_arr["Position"]
-        v_tan = output_vertex_arr["Normal"]
+        v_pos = output_vertex_arr["位置"]
+        v_tan = output_vertex_arr["法线"]
         v_col = output_vertex_arr["Colour0"]
         v_tex = output_vertex_arr["TexCoord0"]
 

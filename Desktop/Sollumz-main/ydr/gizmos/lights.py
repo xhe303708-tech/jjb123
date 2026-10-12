@@ -14,7 +14,7 @@ from .light_manipulators import CapsuleLightManipulator, CullingPlaneLightManipu
 
 class SOLLUMZ_OT_object_select(Operator):
     bl_idname = "sollumz.object_select"
-    bl_label = "Select"
+    bl_label = "选择"
     bl_description = bl_label
     bl_options = {"UNDO", "INTERNAL"}
 
@@ -138,8 +138,8 @@ def get_culling_plane_shader() -> tuple[gpu.types.GPUShader, gpu.types.GPUBatch]
     shader_info = gpu.types.GPUShaderCreateInfo()
     # shader_info.define("DEBUG_RENDER", "1")
     shader_info.push_constant("MAT4", "ModelViewProjectionMatrix")
-    shader_info.push_constant("VEC3", "Color")
-    shader_info.push_constant("FLOAT", "Scale")
+    shader_info.push_constant("VEC3", "颜色")
+    shader_info.push_constant("FLOAT", "缩放")
     shader_info.vertex_in(0, "VEC3", "position")
     shader_info.vertex_out(vert_out)
     shader_info.fragment_out(0, "VEC4", "FragColor")
@@ -240,14 +240,14 @@ class SOLLUMZ_GT_culling_plane(Gizmo):
 
             mvp_mat = gpu.matrix.get_projection_matrix() @ gpu.matrix.get_model_view_matrix()
             shader.uniform_float("ModelViewProjectionMatrix", mvp_mat)
-            shader.uniform_float("Color", color)
-            shader.uniform_float("Scale", scale)
+            shader.uniform_float("颜色", color)
+            shader.uniform_float("缩放", scale)
             batch.draw(shader)
 
 
 class SOLLUMZ_GGT_lights(GizmoGroup):
     bl_idname = "SOLLUMZ_GGT_lights"
-    bl_label = "Light Widgets"
+    bl_label = "灯光控件"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
     bl_options = {"3D", "PERSISTENT", "DEPTH_3D", "SCALE", "SHOW_MODAL_ALL"}

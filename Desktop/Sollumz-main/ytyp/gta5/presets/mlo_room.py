@@ -22,7 +22,7 @@ def _poll(context):
 
 MLO_ROOM_PRESET_CATEGORY = PresetCategory(
     id="mlo_room",
-    label="Room",
+    label="房间",
     game="gta5",
     bundled_defaults_path=Path(__file__).parent / "mlo_room_presets.json",
     get_target=get_selected_room,
@@ -36,27 +36,27 @@ register_preset_category(MLO_ROOM_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_mlo_room_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_mlo_room_preset"
-    bl_label = "Save Room Preset"
-    bl_description = "Save current room properties as a named preset"
+    bl_label = "保存房间预设"
+    bl_description = "将当前房间属性保存为命名预设"
     category = MLO_ROOM_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_mlo_room_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_mlo_room_preset"
-    bl_label = "Apply Room Preset"
-    bl_description = "Apply a saved room preset to the active room"
+    bl_label = "应用房间预设"
+    bl_description = "将已保存的房间预设应用到活动房间"
     category = MLO_ROOM_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_mlo_room_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_mlo_room_preset"
-    bl_label = "Delete Room Preset"
-    bl_description = "Remove a saved room preset"
+    bl_label = "删除房间预设"
+    bl_description = "移除已保存的房间预设"
     category = MLO_ROOM_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_mlo_room_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Room Presets"
+    bl_label = "房间预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

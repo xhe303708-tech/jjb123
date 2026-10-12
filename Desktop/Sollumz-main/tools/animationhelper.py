@@ -473,7 +473,7 @@ def add_global_anim_uv_nodes(material: bpy.types.Materia):
     combine_new_uv = nodes.new("ShaderNodeCombineXYZ")
     combine_new_uv.inputs["Z"].default_value = 0.0
 
-    tree.links.new(separate_uv.inputs["Vector"], uv.outputs["UV"])
+    tree.links.new(separate_uv.inputs["向量"], uv.outputs["UV"])
     tree.links.new(flip_v_subtract.inputs[0], separate_uv.outputs["Y"])
     tree.links.new(flip_v_multiply.inputs[0], flip_v_subtract.outputs[0])
     tree.links.new(combine_augmented_uv.inputs["X"], separate_uv.outputs["X"])
@@ -482,12 +482,12 @@ def add_global_anim_uv_nodes(material: bpy.types.Materia):
     tree.links.new(x_dot.inputs[0], combine_augmented_uv.outputs[0])
     tree.links.new(y_dot.inputs[0], combine_augmented_uv.outputs[0])
 
-    tree.links.new(flip_v_back_subtract.inputs[0], y_dot.outputs["Value"])
+    tree.links.new(flip_v_back_subtract.inputs[0], y_dot.outputs["值"])
     tree.links.new(flip_v_back_multiply.inputs[0], flip_v_back_subtract.outputs[0])
-    tree.links.new(combine_new_uv.inputs["X"], x_dot.outputs["Value"])
+    tree.links.new(combine_new_uv.inputs["X"], x_dot.outputs["值"])
     tree.links.new(combine_new_uv.inputs["Y"], flip_v_back_multiply.outputs[0])
 
-    tree.links.new(base_tex_node.inputs["Vector"], combine_new_uv.outputs[0])
+    tree.links.new(base_tex_node.inputs["向量"], combine_new_uv.outputs[0])
 
     add_global_anim_uv_drivers(material, x_dot, y_dot)
 
@@ -526,7 +526,7 @@ def setup_armature_for_animation(armature: bpy.types.Armature):
 
         # Add the constraint
         constraint = thigh_roll_pose_bone.constraints.new("COPY_ROTATION")
-        constraint.name = "Copy Rotation from Thigh"
+        constraint.name = "从大腿骨骼复制旋转"
         constraint.target = armature_obj
         constraint.subtarget = thigh_bone
 

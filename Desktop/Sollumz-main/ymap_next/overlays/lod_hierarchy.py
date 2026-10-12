@@ -91,8 +91,8 @@ def get_outline_shader() -> gpu.types.GPUShader:
     shader_info = gpu.types.GPUShaderCreateInfo()
     shader_info.push_constant("MAT4", "ModelViewProjectionMatrix")
     shader_info.push_constant("VEC2", "ViewportSize")
-    shader_info.push_constant("FLOAT", "Width")
-    shader_info.push_constant("VEC4", "Color")
+    shader_info.push_constant("FLOAT", "宽度")
+    shader_info.push_constant("VEC4", "颜色")
     shader_info.vertex_in(0, "VEC3", "position")
     shader_info.vertex_in(1, "VEC3", "normal")
     shader_info.fragment_out(0, "VEC4", "FragColor")
@@ -537,7 +537,7 @@ class LodHierarchyOverlayDrawHandler:
         shader = get_outline_shader()
         shader.bind()
         shader.uniform_float("ViewportSize", (region.width, region.height))
-        shader.uniform_float("Width", OUTLINE_WIDTH_PX)
+        shader.uniform_float("宽度", OUTLINE_WIDTH_PX)
 
         gpu.state.blend_set("ALPHA")
         gpu.state.face_culling_set("FRONT")
@@ -548,7 +548,7 @@ class LodHierarchyOverlayDrawHandler:
                 gpu.matrix.multiply_matrix(matrix_world)
                 mvp = gpu.matrix.get_projection_matrix() @ gpu.matrix.get_model_view_matrix()
                 shader.uniform_float("ModelViewProjectionMatrix", mvp)
-                shader.uniform_float("Color", color)
+                shader.uniform_float("颜色", color)
                 batch.draw(shader)
 
         gpu.state.face_culling_set("NONE")
@@ -709,98 +709,98 @@ def register():
     WM = bpy.types.WindowManager
 
     WM.sz_ui_map_lod_overlay_show_orphan_hd = bpy.props.BoolProperty(
-        name="Orphan HD",
-        description="Show orphan HD entities (not part of any LOD hierarchy)",
+        name="孤立 HD",
+        description="显示孤立 HD 实体（不属于任何 LOD 层级）",
         default=False,
     )
     WM.sz_ui_map_lod_overlay_show_hd = bpy.props.BoolProperty(
         name="HD",
-        description="Show HD entities that are part of a LOD hierarchy",
+        description="显示属于 LOD 层级一部分的 HD 实体",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_lod = bpy.props.BoolProperty(
         name="LOD",
-        description="Show LOD entities in the overlay",
+        description="在叠加层中显示 LOD 实体",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_slod1 = bpy.props.BoolProperty(
         name="SLOD1",
-        description="Show SLOD1 entities in the overlay",
+        description="在叠加层中显示 SLOD1 实体",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_slod2 = bpy.props.BoolProperty(
         name="SLOD2",
-        description="Show SLOD2 entities in the overlay",
+        description="在叠加层中显示 SLOD2 实体",
         default=False,
     )
     WM.sz_ui_map_lod_overlay_show_slod3 = bpy.props.BoolProperty(
         name="SLOD3",
-        description="Show SLOD3 entities in the overlay",
+        description="在叠加层中显示 SLOD3 实体",
         default=False,
     )
     WM.sz_ui_map_lod_overlay_show_slod4 = bpy.props.BoolProperty(
         name="SLOD4",
-        description="Show SLOD4 entities in the overlay",
+        description="在叠加层中显示 SLOD4 实体",
         default=False,
     )
 
     WM.sz_ui_map_lod_overlay_show_lines = bpy.props.BoolProperty(
-        name="Show Lines",
-        description="Draw connection lines between parent and child entities",
+        name="显示连接线",
+        description="在父实体和子实体之间绘制连接线",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_labels = bpy.props.BoolProperty(
-        name="Show Labels",
-        description="Display entity archetype names in the viewport",
+        name="显示标签",
+        description="在视口中显示实体架构名称",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_lod_dist = bpy.props.BoolProperty(
-        name="Show LOD Distance",
-        description="Draw LOD distance circles around the selected entity",
+        name="显示 LOD 距离",
+        description="在所选实体周围绘制 LOD 距离圆",
         default=True,
     )
     WM.sz_ui_map_lod_overlay_show_outlines = bpy.props.BoolProperty(
-        name="Show Outlines",
-        description="Draw X-ray silhouette outlines around the meshes of highlighted entities",
+        name="显示轮廓",
+        description="在高亮实体的网格周围绘制 X 射线轮廓",
         default=True,
     )
 
     WM.sz_ui_map_lod_overlay_label_mode = bpy.props.EnumProperty(
-        name="Label Mode",
+        name="标签模式",
         items=[
             ("NON_HD", "Non-HD Only", "Show labels only for LOD/SLOD entities (and chain members)"),
-            ("ALL", "All", "Show labels for all visible entities"),
+            ("ALL", "全部", "Show labels for all visible entities"),
             ("CHAIN", "Chain Only", "Show labels only for the selected entity's chain"),
         ],
         default="NON_HD",
     )
 
     WM.sz_ui_map_lod_overlay_marker_size = bpy.props.FloatProperty(
-        name="Marker Size",
-        description="Base size of entity markers in the viewport",
+        name="标记大小",
+        description="视口中实体标记的基本大小",
         default=6.0,
         min=1.0,
         max=20.0,
     )
     WM.sz_ui_map_lod_overlay_marker_alpha = bpy.props.FloatProperty(
-        name="Marker Alpha",
-        description="Opacity of entity markers",
+        name="标记透明度",
+        description="实体标记的不透明度",
         default=0.8,
         min=0.0,
         max=1.0,
         subtype="FACTOR",
     )
     WM.sz_ui_map_lod_overlay_line_alpha = bpy.props.FloatProperty(
-        name="Line Alpha",
-        description="Opacity of connection lines",
+        name="连接线透明度",
+        description="连接线的不透明度",
         default=0.5,
         min=0.0,
         max=1.0,
         subtype="FACTOR",
     )
     WM.sz_ui_map_lod_overlay_outline_alpha = bpy.props.FloatProperty(
-        name="Outline Alpha",
-        description="Opacity of entity mesh outlines",
+        name="轮廓透明度",
+        description="实体网格轮廓的不透明度",
         default=0.35,
         min=0.0,
         max=1.0,

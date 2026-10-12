@@ -82,27 +82,27 @@ register_preset_category(COLLISION_MATERIAL_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_collision_material_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_collision_material_preset"
-    bl_label = "Save Collision Material"
-    bl_description = "Save current material collision properties as a named preset"
+    bl_label = "保存碰撞材质"
+    bl_description = "将当前材质碰撞属性保存为命名预设"
     category = COLLISION_MATERIAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_collision_material_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_collision_material_preset"
-    bl_label = "Apply Collision Material"
-    bl_description = "Apply a saved collision material preset to the active material"
+    bl_label = "应用碰撞材质"
+    bl_description = "将已保存的碰撞材质预设应用到活动材质"
     category = COLLISION_MATERIAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_collision_material_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_collision_material_preset"
-    bl_label = "Delete Collision Material"
-    bl_description = "Remove a saved collision material preset"
+    bl_label = "删除碰撞材质"
+    bl_description = "移除已保存的碰撞材质预设"
     category = COLLISION_MATERIAL_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_collision_material_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Collision Material Presets"
+    bl_label = "碰撞材质预设"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_options = {"INSTANCED"}

@@ -32,7 +32,7 @@ from .map import MapChildTabPanel
 
 
 class SOLLUMZ_PT_map_cargens(MapChildTabPanel, Panel):
-    bl_label = "Car Generators"
+    bl_label = "载具生成器"
     bl_idname = "SOLLUMZ_PT_map_cargens"
     bl_order = 1
 
@@ -102,7 +102,7 @@ class SOLLUMZ_PT_map_cargens(MapChildTabPanel, Panel):
         split = layout.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Flags")
+        row.label(text="标记")
         col = split.column_flow(align=True, columns=2)
         col.use_property_split = False
         for prop_name, _ in MAP_CARGEN_FLAG_PROPS:
@@ -112,7 +112,7 @@ class SOLLUMZ_PT_map_cargens(MapChildTabPanel, Panel):
         split = layout.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Body Color Remap")
+        row.label(text="车身颜色重映射")
         row = split.row(align=True)
         for i in range(4):
             row.prop(selection.owner, selection.propnames.body_color_remap, index=i, text="")
@@ -129,13 +129,13 @@ class SOLLUMZ_UL_map_group_cargen_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_cargen_list_context_menu(Menu):
-    bl_label = "Map Car Generators Specials"
+    bl_label = "地图载具生成器特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_cargen_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_cargens.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_cargens.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_cargens.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_cargens.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_cargen_list.last_filter_options.get("cargens_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -144,7 +144,7 @@ class SOLLUMZ_MT_map_group_cargen_list_context_menu(Menu):
 class SOLLUMZ_PT_map_object_cargen_properties(Panel):
     """Panel in the object properties showing the cargen collection it is linked to"""
 
-    bl_label = "Map Cargen Properties"
+    bl_label = "地图载具生成器属性"
     bl_idname = "SOLLUMZ_PT_map_object_cargen_properties"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
@@ -183,7 +183,7 @@ class SOLLUMZ_PT_map_object_cargen_properties(Panel):
         split = col.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Car Generator")
+        row.label(text="载具生成器")
         split.row().label(text=cargen.ui_label)
 
         split = col.split(factor=0.4)
@@ -204,7 +204,7 @@ class SOLLUMZ_PT_map_object_cargen_properties(Panel):
         split = layout.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Flags")
+        row.label(text="标记")
         col = split.column_flow(align=True, columns=2)
         col.use_property_split = False
         for prop_name, _ in MAP_CARGEN_FLAG_PROPS:
@@ -214,7 +214,7 @@ class SOLLUMZ_PT_map_object_cargen_properties(Panel):
         split = layout.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Body Color Remap")
+        row.label(text="车身颜色重映射")
         row = split.row(align=True)
         for i in range(4):
             row.prop(cargen, "body_color_remap", index=i, text="")

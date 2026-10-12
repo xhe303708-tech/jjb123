@@ -73,7 +73,7 @@ class ClothDiagnostics:
         layout.label(text=f"{self.root_obj_name}  {self.drawable_obj_name}")
 
         if not self.mesh_material_errors and not self.mesh_binding_errors:
-            layout.label(text="No material or binding errors.", icon="BLANK1")
+            layout.label(text="无材质或绑定错误。", icon="BLANK1")
 
         if self.mesh_material_errors:
             row = layout.row(align=True)

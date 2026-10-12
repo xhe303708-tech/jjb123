@@ -16,8 +16,8 @@ from ...utils import get_selected_tcm, get_selected_tcms_collection
 
 class SOLLUMZ_OT_save_mlo_timecycle_modifier_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_mlo_timecycle_modifier_preset"
-    bl_label = "Save Timecycle Modifier Preset"
-    bl_description = "Save current timecycle modifier properties as a named preset"
+    bl_label = "保存时间周期修改器预设"
+    bl_description = "将当前时间周期修改器属性保存为命名预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
     get_target = get_selected_tcm
 
@@ -31,8 +31,8 @@ class SOLLUMZ_OT_save_mlo_timecycle_modifier_preset(PresetSaveOperatorBase, bpy.
 
 class SOLLUMZ_OT_load_mlo_timecycle_modifier_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_mlo_timecycle_modifier_preset"
-    bl_label = "Apply Timecycle Modifier Preset"
-    bl_description = "Apply a saved timecycle modifier preset"
+    bl_label = "应用时间周期修改器预设"
+    bl_description = "应用已保存的时间周期修改器预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
     get_target = get_selected_tcm
     get_targets = make_get_targets_from_collection(get_selected_tcms_collection)
@@ -47,13 +47,13 @@ class SOLLUMZ_OT_load_mlo_timecycle_modifier_preset(PresetLoadOperatorBase, bpy.
 
 class SOLLUMZ_OT_delete_mlo_timecycle_modifier_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_mlo_timecycle_modifier_preset"
-    bl_label = "Delete Timecycle Modifier Preset"
-    bl_description = "Remove a saved timecycle modifier preset"
+    bl_label = "删除时间周期修改器预设"
+    bl_description = "移除已保存的时间周期修改器预设"
     category = TIMECYCLE_MODIFIER_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_mlo_timecycle_modifier_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Timecycle Modifier Presets"
+    bl_label = "时间周期修改器预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}

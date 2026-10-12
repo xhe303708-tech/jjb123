@@ -28,8 +28,8 @@ class LightCullingPlaneTool(WorkSpaceTool):
     bl_context_mode = "OBJECT"
 
     bl_idname = "sollumz.light_culling_planes"
-    bl_label = "Edit Light Culling Planes"
-    bl_description = "Edit culling planes of light objects"
+    bl_label = "编辑灯光剔除平面"
+    bl_description = "编辑灯光对象的剔除平面"
     bl_icon = ICON_GEOM_TOOL
 
     def draw_settings(context, layout, tool):
@@ -41,15 +41,15 @@ class LightCullingPlaneTool(WorkSpaceTool):
         light_flags = light.light_flags
         light_props = light.light_properties
 
-        layout.prop(light_flags, "enable_culling_plane", text="Culling Plane")
+        layout.prop(light_flags, "enable_culling_plane", text="剔除平面")
         row = layout.row()
         row.active = light_flags.enable_culling_plane
 
-        row.prop(light_props, "culling_plane_offset", text="Offset")
+        row.prop(light_props, "culling_plane_offset", text="偏移")
 
         subrow = row.row(align=True)
         subrow.scale_x = 0.8
-        subrow.operator(SOLLUMZ_OT_light_culling_plane_flip.bl_idname, text="Flip")
+        subrow.operator(SOLLUMZ_OT_light_culling_plane_flip.bl_idname, text="翻转")
 
         subrow = row.row(align=True)
         subrow.scale_x = 0.65
@@ -66,10 +66,10 @@ class LightCullingPlaneTool(WorkSpaceTool):
 
 class SOLLUMZ_OT_light_culling_plane_set_normal(Operator):
     bl_idname = "sollumz.light_culling_plane_set_normal"
-    bl_label = "Set Culling Plane Normal"
+    bl_label = "设置剔除平面法线"
     bl_options = {"UNDO"}
 
-    normal: bpy.props.FloatVectorProperty(name="Normal", size=3, subtype="XYZ")
+    normal: bpy.props.FloatVectorProperty(name="法线", size=3, subtype="XYZ")
 
     @classmethod
     def description(cls, context: Context, properties) -> str:
@@ -90,8 +90,8 @@ class SOLLUMZ_OT_light_culling_plane_set_normal(Operator):
 
 class SOLLUMZ_OT_light_culling_plane_flip(Operator):
     bl_idname = "sollumz.light_culling_plane_flip"
-    bl_label = "Flip Culling Plane"
-    bl_description = "Flip the culling plane of the selected lights, changing on which side the light is visible"
+    bl_label = "翻转剔除平面"
+    bl_description = "翻转所选灯光的剔除平面，更改灯光在哪个侧面可见"
     bl_options = {"UNDO"}
 
     def execute(self, context: Context):
@@ -110,11 +110,11 @@ class SOLLUMZ_OT_light_culling_plane_flip(Operator):
 
 class SOLLUMZ_OT_light_culling_plane_translate(Operator):
     bl_idname = "sollumz.light_culling_plane_translate"
-    bl_label = "Light Culling Plane Translate"
+    bl_label = "灯光剔除平面平移"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_offset: bpy.props.FloatProperty(name="Delta Offset")
+    delta_offset: bpy.props.FloatProperty(name="增量偏移")
 
     def execute(self, context: Context):
         light_obj = context.view_layer.objects.active
@@ -125,11 +125,11 @@ class SOLLUMZ_OT_light_culling_plane_translate(Operator):
 
 class SOLLUMZ_OT_light_culling_plane_rotate(Operator):
     bl_idname = "sollumz.light_culling_plane_rotate"
-    bl_label = "Light Culling Plane Rotate"
+    bl_label = "灯光剔除平面旋转"
     bl_description = bl_label
     bl_options = {"UNDO_GROUPED", "INTERNAL"}
 
-    delta_rotation: bpy.props.FloatVectorProperty(name="Delta Rotation", subtype="QUATERNION", size=4)
+    delta_rotation: bpy.props.FloatVectorProperty(name="增量旋转", subtype="QUATERNION", size=4)
 
     def execute(self, context: Context):
         light_obj = context.view_layer.objects.active

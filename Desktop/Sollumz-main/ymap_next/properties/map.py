@@ -121,13 +121,13 @@ class MapData(PropertyGroup):
     """A map."""
 
     uuid: UUIDProperty()
-    map_group_uuid: UUIDProperty(name="Map Group UUID")
-    name: StringProperty(name="Name")
-    parent_uuid: UUIDProperty(name="Parent UUID")
+    map_group_uuid: UUIDProperty(name="地图组 UUID")
+    name: StringProperty(name="名称")
+    parent_uuid: UUIDProperty(name="父级 UUID")
     # Original map header <parent> string, stored at import. When the parent .ymap is not imported
     # (incomplete LOD hierarchy), parent_uuid stays empty, so this preserves the original parent
     # reference for re-export. Only used as a fallback when parent_uuid is empty/unresolvable.
-    orig_parent_name: StringProperty(name="Original Parent Name", default="")
+    orig_parent_name: StringProperty(name="原始父级名称", default="")
     partition_mode: EnumProperty(
         items=MapPartitionModeEnumItems,
         name="Partitioning",
@@ -135,7 +135,7 @@ class MapData(PropertyGroup):
     )
     is_auto_generated: BoolProperty(name="Auto-Generated", default=False)
     incomplete_lod_hierarchy_lock: BoolProperty(
-        name="Incomplete LOD Hierarchy",
+        name="不完整的 LOD 层级",
         description=(
             "This container was imported without some related YMAP files. Its entity list and LOD hierarchy "
             "values are preserved as-is on export and editing is limited"
@@ -143,12 +143,12 @@ class MapData(PropertyGroup):
         default=False,
     )
 
-    streaming_extents_min: FloatVectorProperty(name="Streaming Extents Min", default=(0, 0, 0), size=3, subtype="XYZ")
-    streaming_extents_max: FloatVectorProperty(name="Streaming Extents Max", default=(0, 0, 0), size=3, subtype="XYZ")
-    entities_extents_min: FloatVectorProperty(name="Entities Extents Min", default=(0, 0, 0), size=3, subtype="XYZ")
-    entities_extents_max: FloatVectorProperty(name="Entities Extents Max", default=(0, 0, 0), size=3, subtype="XYZ")
+    streaming_extents_min: FloatVectorProperty(name="流送范围最小", default=(0, 0, 0), size=3, subtype="XYZ")
+    streaming_extents_max: FloatVectorProperty(name="流送范围最大", default=(0, 0, 0), size=3, subtype="XYZ")
+    entities_extents_min: FloatVectorProperty(name="实体范围最小", default=(0, 0, 0), size=3, subtype="XYZ")
+    entities_extents_max: FloatVectorProperty(name="实体范围最大", default=(0, 0, 0), size=3, subtype="XYZ")
     extents_manual: BoolProperty(
-        name="Manual Extents",
+        name="手动范围",
         description=(
             "Keep the stored extents as-is. When disabled, extents are recalculated from the items assigned "
             "to this container during export"
@@ -157,18 +157,18 @@ class MapData(PropertyGroup):
     )
 
     desc_enabled: BoolProperty(
-        name="Has Description",
-        description="Write a block description when exporting this map",
+        name="有描述",
+        description="导出此地图时写入块描述",
         default=False,
     )
-    desc_name: StringProperty(name="Name")
-    desc_exported_by: StringProperty(name="Exported By")
+    desc_name: StringProperty(name="名称")
+    desc_exported_by: StringProperty(name="导出者")
     desc_owner: StringProperty(name="Owner")
-    desc_time: StringProperty(name="Time")
+    desc_time: StringProperty(name="时间")
     # Version and flags as strings because they are 32-bit unsigned integers, which can end up out of range since
     # IntProperty only supports 32-bit signed integers
-    desc_version: StringProperty(name="Version", default="0")
-    desc_flags: StringProperty(name="Flags", default="0")
+    desc_version: StringProperty(name="版本", default="0")
+    desc_flags: StringProperty(name="标记", default="0")
 
     def get_uuid_str(self) -> str:
         return self.uuid.hex()
@@ -276,8 +276,8 @@ class MapDataSelectionAccess(MultiSelectAccess):
 
 class MapItemMixin:
     uuid: UUIDProperty()
-    map_data_uuid: UUIDProperty(name="Map Data UUID")
-    map_group_uuid: UUIDProperty(name="Map Group UUID")
+    map_data_uuid: UUIDProperty(name="地图数据 UUID")
+    map_group_uuid: UUIDProperty(name="地图组 UUID")
 
     def get_uuid_str(self) -> str:
         return self.uuid.hex()
@@ -332,9 +332,9 @@ class MapItemMixin:
 
 
 class MapGrassTemplate(PropertyGroup):
-    archetype_name: StringProperty(name="Archetype Name")
+    archetype_name: StringProperty(name="架构名")
     scale_range: FloatVectorProperty(
-        name="Scale Range",
+        name="缩放范围",
         description=(
             "Defines the minimum and maximum scale applied to instances.\n\n"
             "An instance's scale factor of 0 maps to the Min and 1 maps to the Max, with values in between interpolated. Set both equal to give every instance the same scale."
@@ -345,7 +345,7 @@ class MapGrassTemplate(PropertyGroup):
         subtype="XYZ",
     )
     scale_randomness: FloatProperty(
-        name="Scale Randomness",
+        name="缩放随机性",
         description=(
             "Adds random size variation to each instance on top of the scale range. Each instance is randomly scaled "
             "up or down by up to this fraction of the Scale Range Max (e.g. 0.2 = ±20% of the maximum).\n\n"
@@ -354,12 +354,12 @@ class MapGrassTemplate(PropertyGroup):
         default=0.2,
         min=0.0,
     )
-    lod_dist: IntProperty(name="LOD Distance", default=100, min=0)
-    lod_fade_start_dist: FloatProperty(name="LOD Fade Start Distance", default=20.0, min=0.0)
-    lod_inst_fade_range: FloatProperty(name="LOD Instance Fade Range", default=0.75, min=0.0)
-    orient_to_terrain: FloatProperty(name="Orient To Terrain", default=1.0, min=0.0, max=1.0, subtype="FACTOR")
+    lod_dist: IntProperty(name="LOD 距离", default=100, min=0)
+    lod_fade_start_dist: FloatProperty(name="LOD 淡出起始距离", default=20.0, min=0.0)
+    lod_inst_fade_range: FloatProperty(name="LOD 实例淡出范围", default=0.75, min=0.0)
+    orient_to_terrain: FloatProperty(name="面向地形", default=1.0, min=0.0, max=1.0, subtype="FACTOR")
 
-    spawn_weight: FloatProperty(name="Spawn Weight", default=1.0, min=0.0, soft_max=1.0, subtype="FACTOR")
+    spawn_weight: FloatProperty(name="生成权重", default=1.0, min=0.0, soft_max=1.0, subtype="FACTOR")
 
 
 class MapGrassTemplateSelectionAccess(MultiSelectAccess):
@@ -377,10 +377,10 @@ class MapGrassTemplateSelectionAccess(MultiSelectAccess):
 class MapGrassBatch(MapItemMixin, PropertyGroup):
     __sz_preset_capture__ = ("templates",)
 
-    name: StringProperty(name="Name")
+    name: StringProperty(name="名称")
     templates: MultiSelectCollection[MapGrassTemplate, MapGrassTemplateSelectionAccess]
-    linked_object: PointerProperty(type=Object, name="Linked Object")
-    modifier_ng: PointerProperty(type=GeometryNodeTree, name="Modifier Nodes")
+    linked_object: PointerProperty(type=Object, name="链接对象")
+    modifier_ng: PointerProperty(type=GeometryNodeTree, name="修改器节点")
 
 
 class MapGrassBatchSelectionAccess(MultiSelectAccess):
@@ -388,8 +388,8 @@ class MapGrassBatchSelectionAccess(MultiSelectAccess):
 
 
 class MapOccluder(MapItemMixin, PropertyGroup):
-    name: StringProperty(name="Name")
-    linked_object: PointerProperty(type=Object, name="Linked Object")
+    name: StringProperty(name="名称")
+    linked_object: PointerProperty(type=Object, name="链接对象")
 
 
 class MapOccluderSelectionAccess(MultiSelectAccess):
@@ -397,15 +397,15 @@ class MapOccluderSelectionAccess(MultiSelectAccess):
 
 
 class MapLodLights(MapItemMixin, PropertyGroup):
-    name: StringProperty(name="Name")
-    linked_object: PointerProperty(type=Object, name="Linked Object")
+    name: StringProperty(name="名称")
+    linked_object: PointerProperty(type=Object, name="链接对象")
     category: EnumProperty(
         items=(
             ("SMALL", "Small", "", 0),
             ("MEDIUM", "Medium", "", 1),
             ("LARGE", "Large", "", 2),
         ),
-        name="Category",
+        name="类别",
         default="MEDIUM",
     )
 
@@ -421,114 +421,114 @@ _defaults = LodLightBakeSettings()
 class MapLodLightBakePropertiesBase:
     lod_levels: EnumProperty(
         items=MapLodLevelEnumFlagItems,
-        name="LOD Levels",
-        description="LOD levels of entities to include in LOD lights",
+        name="LOD 级别",
+        description="包含在 LOD 灯光中的实体的 LOD 级别",
         default=_defaults.lod_levels,
         options={"ENUM_FLAG"},
     )
     priority_levels: EnumProperty(
         items=MapPriorityLevelEnumFlagItems,
-        name="Priority Levels",
-        description="Priority levels of entities to include in LOD lights",
+        name="优先级",
+        description="包含在 LOD 灯光中的实体的优先级",
         default=_defaults.priority_levels,
         options={"ENUM_FLAG"},
     )
     is_streetlight_pattern: StringProperty(
         name="'Is Streetlight' Pattern",
-        description="Regular expression to match entities whose lights are considered 'streetlights'",
+        description="用于匹配灯光被视为 '路灯' 的实体的正则表达式",
         default=_defaults.is_streetlight_pattern,
     )
     skip_pattern: StringProperty(
-        name="Skip Pattern",
-        description="Regular expression to match entities whose lights are excluded from LOD lights",
+        name="跳过模式",
+        description="用于匹配灯光从 LOD 灯光中排除的实体的正则表达式",
         default=_defaults.skip_pattern,
     )
     min_falloff_small: FloatProperty(
-        name="Min Falloff (Small)",
-        description="Minimum falloff distance for a light to qualify as Small",
+        name="最小衰减（小）",
+        description="灯光归类为小的最小衰减距离",
         default=_defaults.min_falloff_small,
         min=0.0,
     )
     min_intensity_small: FloatProperty(
-        name="Min Intensity (Small)",
-        description="Minimum intensity for a light to qualify as Small",
+        name="最小强度（小）",
+        description="灯光归类为小的最小强度",
         default=_defaults.min_intensity_small,
         min=0.0,
     )
     min_falloff_medium: FloatProperty(
-        name="Min Falloff (Medium)",
-        description="Minimum falloff distance for a light to qualify as Medium",
+        name="最小衰减（中）",
+        description="灯光归类为中的最小衰减距离",
         default=_defaults.min_falloff_medium,
         min=0.0,
     )
     min_intensity_medium: FloatProperty(
-        name="Min Intensity (Medium)",
-        description="Minimum intensity for a light to qualify as Medium",
+        name="最小强度（中）",
+        description="灯光归类为中的最小强度",
         default=_defaults.min_intensity_medium,
         min=0.0,
     )
     partition: BoolProperty(
         name="Partition",
-        description="Split LOD lights across multiple map containers",
+        description="将 LOD 灯光拆分到多个地图容器",
         default=_defaults.partition,
     )
     partition_max_lights_small: IntProperty(
-        name="Partition Max Lights (Small)",
-        description="Maximum Small LOD lights per partition",
+        name="分区最大灯光数（小）",
+        description="每个分区的最大小 LOD 灯光数",
         default=_defaults.partition_max_lights_small,
         min=1,
     )
     partition_max_lights_medium: IntProperty(
-        name="Partition Max Lights (Medium)",
-        description="Maximum Medium LOD lights per partition",
+        name="分区最大灯光数（中）",
+        description="每个分区的最大中 LOD 灯光数",
         default=_defaults.partition_max_lights_medium,
         min=1,
     )
     partition_max_lights_large: IntProperty(
-        name="Partition Max Lights (Large)",
-        description="Maximum Large LOD lights per partition",
+        name="分区最大灯光数（大）",
+        description="每个分区的最大大 LOD 灯光数",
         default=_defaults.partition_max_lights_large,
         min=1,
     )
     visibility_range_small: FloatProperty(
-        name="Visibility Range (Small)",
-        description="Extra distance added to the streaming extents of Small LOD lights",
+        name="可见范围（小）",
+        description="添加到小 LOD 灯光流送范围的额外距离",
         default=_defaults.visibility_range_small,
         min=0.0,
     )
     visibility_range_medium: FloatProperty(
-        name="Visibility Range (Medium)",
-        description="Extra distance added to the streaming extents of Medium LOD lights",
+        name="可见范围（中）",
+        description="添加到中 LOD 灯光流送范围的额外距离",
         default=_defaults.visibility_range_medium,
         min=0.0,
     )
     visibility_range_large: FloatProperty(
-        name="Visibility Range (Large)",
-        description="Extra distance added to the streaming extents of Large LOD lights",
+        name="可见范围（大）",
+        description="添加到大 LOD 灯光流送范围的额外距离",
         default=_defaults.visibility_range_large,
         min=0.0,
     )
     distant_visibility_range_small: FloatProperty(
-        name="Distant Visibility Range (Small)",
-        description="Extra distance added to the streaming extents of Small distant LOD lights",
+        name="远距可见范围（小）",
+        description="添加到小远距 LOD 灯光流送范围的额外距离",
         default=_defaults.distant_visibility_range_small,
         min=0.0,
     )
     distant_visibility_range_medium: FloatProperty(
-        name="Distant Visibility Range (Medium)",
-        description="Extra distance added to the streaming extents of Medium distant LOD lights",
+        name="远距可见范围（中）",
+        description="添加到中远距 LOD 灯光流送范围的额外距离",
         default=_defaults.distant_visibility_range_medium,
         min=0.0,
     )
     distant_visibility_range_large: FloatProperty(
-        name="Distant Visibility Range (Large)",
-        description="Extra distance added to the streaming extents of Large distant LOD lights",
+        name="远距可见范围（大）",
+        description="添加到大远距 LOD 灯光流送范围的额外距离",
         default=_defaults.distant_visibility_range_large,
         min=0.0,
     )
     name_prefix: StringProperty(
-        name="Name Prefix",
-        description="Name prefix for new map containers",
+        name="名称前缀",
+        description="新地图容器的名称前缀",
         default=_defaults.name_prefix,
     )
 
@@ -572,13 +572,13 @@ class MapTimecycleModifier(MapItemMixin, PropertyGroup):
         "end_hour",
     )
 
-    name: StringProperty(name="Name")
+    name: StringProperty(name="名称")
     location: FloatVectorProperty(name="Location", default=(0, 0, 0), size=3, subtype="XYZ")
     size: FloatVectorProperty(name="Size", default=(0, 0, 0), size=3, min=0.0, subtype="XYZ")
     percentage: FloatProperty(name="Percentage", default=100.0, min=0.0, max=100.0, step=100)
     range: FloatProperty(name="Range", default=1.0, min=0.0)
-    start_hour: IntProperty(name="Start Hour", default=0, min=0, max=23)
-    end_hour: IntProperty(name="End Hour", default=23, min=0, max=23)
+    start_hour: IntProperty(name="起始小时", default=0, min=0, max=23)
+    end_hour: IntProperty(name="结束小时", default=23, min=0, max=23)
 
     @property
     def extents(self) -> tuple[Vector, Vector]:
@@ -606,7 +606,7 @@ class MapTimecycleModifierSelectionAccess(MultiSelectAccess):
 CARGEN_MESH_NAME = ".sz.cargen_mesh"
 
 MapCarGenCreationRuleEnumItems = (
-    (MapCarGeneratorCreationRule.ALL.name, "All", ""),
+    (MapCarGeneratorCreationRule.ALL.name, "全部", ""),
     (MapCarGeneratorCreationRule.ONLY_SPORTS.name, "Only Sports", ""),
     (MapCarGeneratorCreationRule.NO_SPORTS.name, "No Sports", ""),
     (MapCarGeneratorCreationRule.ONLY_BIG.name, "Only Big", ""),
@@ -645,37 +645,37 @@ _CARGEN_UI_LABEL_FLAGS: tuple[tuple[str, str], ...] = (
     ("flag_police", "Police"),
     ("flag_firetruck", "Firetruck"),
     ("flag_ambulance", "Ambulance"),
-    ("flag_force_spawn", "Force Spawn"),
+    ("flag_force_spawn", "强制生成"),
     ("flag_during_day", "Day"),
     ("flag_at_night", "Night"),
 )
 
 
 class MapCarGen(MapItemMixin, PropertyGroup):
-    name: StringProperty(name="Name")
-    linked_collection: PointerProperty(type=Collection, name="Linked Collection")
+    name: StringProperty(name="名称")
+    linked_collection: PointerProperty(type=Collection, name="链接集合")
     model: StringProperty(name="Model", description="Use a specific vehicle model.")
     model_set: StringProperty(
-        name="Model Set",
-        description="Use any vehicle model found in the specified model set. Model sets are defined in vehiclemodelsets.meta",
+        name="模型集",
+        description="使用指定模型集中找到的任何载具模型。模型集在 vehiclemodelsets.meta 中定义",
     )
-    body_color_remap: IntVectorProperty(name="Body Color Remap", size=4, default=(-1, -1, -1, -1))
+    body_color_remap: IntVectorProperty(name="车身颜色重映射", size=4, default=(-1, -1, -1, -1))
     livery: IntProperty(name="Livery", default=-1)
-    flag_force_spawn: BoolProperty(name="Force Spawn")
-    flag_ignore_density: BoolProperty(name="Ignore Density")
+    flag_force_spawn: BoolProperty(name="强制生成")
+    flag_ignore_density: BoolProperty(name="忽略密度")
     flag_police: BoolProperty(name="Police")
     flag_firetruck: BoolProperty(name="Firetruck")
     flag_ambulance: BoolProperty(name="Ambulance")
-    flag_during_day: BoolProperty(name="During Day")
-    flag_at_night: BoolProperty(name="At Night")
-    flag_align_left: BoolProperty(name="Align Left")
-    flag_align_right: BoolProperty(name="Align Right")
+    flag_during_day: BoolProperty(name="白天")
+    flag_at_night: BoolProperty(name="夜晚")
+    flag_align_left: BoolProperty(name="左对齐")
+    flag_align_right: BoolProperty(name="右对齐")
     flag_single_player: BoolProperty(name="SP")
     flag_network_player: BoolProperty(name="MP")
-    flag_low_priority: BoolProperty(name="Low Priority")
-    flag_prevent_entry: BoolProperty(name="Prevent Entry")
+    flag_low_priority: BoolProperty(name="低优先级")
+    flag_prevent_entry: BoolProperty(name="阻止进入")
     creation_rule: EnumProperty(
-        items=MapCarGenCreationRuleEnumItems, name="Creation Rule", default=MapCarGeneratorCreationRule.ALL.name
+        items=MapCarGenCreationRuleEnumItems, name="创建规则", default=MapCarGeneratorCreationRule.ALL.name
     )
 
     def get_ui_label(self):
@@ -760,47 +760,47 @@ class MapEntity(MapItemMixin, PropertyGroup, ExtensionsContainer):
     )
 
     # Transforms unused if linked object
-    position: FloatVectorProperty(name="Position", subtype="XYZ", size=3, default=(0, 0, 0))
-    rotation: FloatVectorProperty(name="Rotation", subtype="QUATERNION", size=4, default=(1, 0, 0, 0))
-    scale_xy: FloatProperty(name="Scale XY", default=1.0)
-    scale_z: FloatProperty(name="Scale Z", default=1.0)
+    position: FloatVectorProperty(name="位置", subtype="XYZ", size=3, default=(0, 0, 0))
+    rotation: FloatVectorProperty(name="旋转", subtype="QUATERNION", size=4, default=(1, 0, 0, 0))
+    scale_xy: FloatProperty(name="XY 缩放", default=1.0)
+    scale_z: FloatProperty(name="Z 缩放", default=1.0)
 
-    archetype_name: StringProperty(name="Archetype Name")
-    lod_dist: FloatProperty(name="LOD Distance", default=-1.0)
-    child_lod_dist: FloatProperty(name="Child LOD Distance", default=0)
-    lod_level: EnumProperty(items=MapLodLevelEnumItems, name="LOD Level", default=MapLodLevel.HD.name)
+    archetype_name: StringProperty(name="架构名")
+    lod_dist: FloatProperty(name="LOD 距离", default=-1.0)
+    child_lod_dist: FloatProperty(name="子级 LOD 距离", default=0)
+    lod_level: EnumProperty(items=MapLodLevelEnumItems, name="LOD 级别", default=MapLodLevel.HD.name)
     priority_level: EnumProperty(
-        items=MapPriorityLevelEnumItems, name="Priority Level", default=MapPriorityLevel.REQUIRED.name
+        items=MapPriorityLevelEnumItems, name="优先级", default=MapPriorityLevel.REQUIRED.name
     )
     ambient_occlusion_multiplier: IntProperty(
-        name="Natural AO Multiplier",
-        description="Natural Ambient Occlusion Multiplier",
+        name="自然 AO 乘数",
+        description="自然环境光遮蔽乘数",
         default=255,
         min=0,
         max=255,
         subtype="FACTOR",
     )
     artificial_ambient_occlusion: IntProperty(
-        name="Artificial AO Multiplier",
-        description="Artificial Ambient Occlusion Multiplier",
+        name="人工 AO 乘数",
+        description="人工环境光遮蔽乘数",
         default=255,
         min=0,
         max=255,
         subtype="FACTOR",
     )
     # TODO(ymap): sync tint_value with tint geonodes
-    tint_value: IntProperty(name="Tint Value", default=0, min=0, max=255)
-    flags: PointerProperty(type=EntityFlags, name="Flags")
+    tint_value: IntProperty(name="色调值", default=0, min=0, max=255)
+    flags: PointerProperty(type=EntityFlags, name="标记")
 
     is_critical: BoolProperty(name="Critical", default=False)
 
-    parent_uuid: UUIDProperty(name="LOD Parent UUID", description="LOD parent of this entity")
+    parent_uuid: UUIDProperty(name="LOD 父级 UUID", description="LOD parent of this entity")
     # Only used with incomplete LOD hierarchies, otherwise, recalculated on export
-    parent_index: IntProperty(name="LOD Parent Index", default=-1)
+    parent_index: IntProperty(name="LOD 父级索引", default=-1)
     # Number of LOD children living in .ymap files that were not imported (incomplete hierarchy).
     # Export computes numChildren = children found via parent_uuid links + this value.
     num_children_missing: IntProperty(
-        name="Number of Missing LOD Children",
+        name="缺失 LOD 子级数",
         description=(
             "Number of LOD children in YMAP files that were not imported. Added to the number of children "
             "found in the imported containers when exporting"
@@ -810,17 +810,17 @@ class MapEntity(MapItemMixin, PropertyGroup, ExtensionsContainer):
     )
 
     is_mlo: BoolProperty(name="MLO", description="This entity is a MLO instance", default=False)
-    mlo_group_id: IntProperty(name="Group ID", default=0, min=0)
-    mlo_floor_id: IntProperty(name="Floor ID", default=0, min=0)  # always 0, hidden from the UI
+    mlo_group_id: IntProperty(name="组 ID", default=0, min=0)
+    mlo_floor_id: IntProperty(name="楼层 ID", default=0, min=0)  # always 0, hidden from the UI
     mlo_default_entity_sets: StringProperty(
-        name="Default Entity Sets", description="Comma-separated list of entity sets enabled by default", default=""
+        name="默认实体集", description="Comma-separated list of entity sets enabled by default", default=""
     )
-    mlo_num_exit_portals: IntProperty(name="Number of Exit Portals", default=0)
-    mlo_turn_on_gps: BoolProperty(name="Turn On GPS", default=False)
-    mlo_cap_entities_alpha: BoolProperty(name="Cap Entities Alpha", default=False)
-    mlo_short_fade_distance: BoolProperty(name="Short Fade Distance", default=False)
+    mlo_num_exit_portals: IntProperty(name="出口 Portal 数", default=0)
+    mlo_turn_on_gps: BoolProperty(name="打开 GPS", default=False)
+    mlo_cap_entities_alpha: BoolProperty(name="限制实体 Alpha", default=False)
+    mlo_short_fade_distance: BoolProperty(name="短淡出距离", default=False)
 
-    linked_object: PointerProperty(type=Object, name="Linked Object")
+    linked_object: PointerProperty(type=Object, name="链接对象")
 
     @property
     def is_orphan_hd(self) -> bool:
@@ -900,7 +900,7 @@ class MapEntity(MapItemMixin, PropertyGroup, ExtensionsContainer):
                 )
 
     parent_name: StringProperty(
-        name="LOD Parent",
+        name="LOD 父级",
         get=get_parent_archetype_name,
         set=set_parent_by_archetype_name,
         search=search_parent_archetype_names,
@@ -971,17 +971,17 @@ class MapEntitySelectionAccess(MultiSelectAccess):
 
 
 @define_multiselect_collection("maps", {"name": "Containers"})
-@define_multiselect_collection("entities", {"name": "Entities"})
-@define_multiselect_collection("cargens", {"name": "Car Generators"})
-@define_multiselect_collection("timecycle_modifiers", {"name": "Timecycle Modifiers"})
-@define_multiselect_collection("grass_batches", {"name": "Grass Batches"})
-@define_multiselect_collection("occluders", {"name": "Occluders"})
-@define_multiselect_collection("lod_lights", {"name": "LOD Lights"})
+@define_multiselect_collection("entities", {"name": "实体"})
+@define_multiselect_collection("cargens", {"name": "载具生成器"})
+@define_multiselect_collection("timecycle_modifiers", {"name": "时间周期修改器"})
+@define_multiselect_collection("grass_batches", {"name": "草批"})
+@define_multiselect_collection("occluders", {"name": "遮挡器"})
+@define_multiselect_collection("lod_lights", {"name": "LOD 灯光"})
 class MapGroup(PropertyGroup):
     """A group of related maps."""
 
     uuid: UUIDProperty()
-    name: StringProperty(name="Name")
+    name: StringProperty(name="名称")
 
     scripted: BoolProperty(name="Scripted", default=False)
 
@@ -1200,7 +1200,7 @@ def get_maps(context: Context | None = None, create_if_missing: bool = False) ->
 
 
 def register():
-    # Scene.sz_maps = PointerProperty(type=MapsProperties, name="Maps")
+    # Scene.sz_maps = PointerProperty(type=MapsProperties, name="地图")
     # NOTE: we do not store the maps directly on the scene because with thousands of items (e.g. in entities collections)
     #       UI interactions start to lag a lot, even on unrelated parts, like the archetypes UI. This might due to
     #       dependency-graph or something iterating all structs in the scene data-block, like `bpy_struct.path_from_id()`
@@ -1211,7 +1211,7 @@ def register():
     #       Text was chosen because it's not as commonly used, so less code or add-ons should be interacting with text
     #       data-blocks.
     #       Use `get_maps()` instead of accessing the properties directly, in case we change how this works in the future.
-    Text.sz_maps = PointerProperty(type=MapsProperties, name="Maps")
+    Text.sz_maps = PointerProperty(type=MapsProperties, name="地图")
     Scene.sz_maps_container = PointerProperty(type=Text)
 
 

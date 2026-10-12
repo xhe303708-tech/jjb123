@@ -289,7 +289,7 @@ def is_non_color_texture(shader_filename: str, param_name: str):
     # TODO: we could specify non-color textures in shaders.xml
     # assign non-color...
     return (
-        "Bump" in param_name or  # ...to normal maps
+        "凹凸" in param_name or  # ...to normal maps
         param_name == "distanceMapSampler" or  # ...to distance maps
         (shader_filename in {"decal_dirt.sps", "decal_amb_only.sps"} and param_name == "DiffuseSampler") # ...to shadow maps
     )
@@ -494,7 +494,7 @@ def create_limit_pos_bone_constraint(trans_limit: BoneLimit, pose_bone: bpy.type
 
 
 def create_embedded_collisions(bounds_xml: Bound, drawable_obj: bpy.types.Object):
-    if bounds_xml.type == "Composite":
+    if bounds_xml.type == "组合体":
         bound_obj = create_bound_composite(bounds_xml)
         bound_obj.name = f"{drawable_obj.name}.col"
     else:

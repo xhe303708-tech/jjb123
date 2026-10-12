@@ -54,8 +54,8 @@ def get_extents_shape(extents: tuple[float, ...]) -> object:
 class SOLLUMZ_GT_map_extents(Gizmo):
     bl_idname = "SOLLUMZ_GT_map_extents"
 
-    extents_min: FloatVectorProperty(name="Extents Min", default=(0, 0, 0), size=3, subtype="XYZ")
-    extents_max: FloatVectorProperty(name="Extents Max", default=(0, 0, 0), size=3, subtype="XYZ")
+    extents_min: FloatVectorProperty(name="范围最小", default=(0, 0, 0), size=3, subtype="XYZ")
+    extents_max: FloatVectorProperty(name="范围最大", default=(0, 0, 0), size=3, subtype="XYZ")
 
     def draw(self, context):
         self.draw_common(context, None)
@@ -72,7 +72,7 @@ class SOLLUMZ_GT_map_extents(Gizmo):
 
 class SOLLUMZ_GGT_maps(GizmoGroup):
     bl_idname = "SOLLUMZ_GGT_maps"
-    bl_label = "Map Widgets"
+    bl_label = "地图控件"
     bl_space_type = "VIEW_3D"
     bl_region_type = "WINDOW"
     bl_options = {"3D", "PERSISTENT", "SCALE", "SHOW_MODAL_ALL"}

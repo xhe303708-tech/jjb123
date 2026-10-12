@@ -103,11 +103,11 @@ def add_new_default_light_preset():
 
     user_path = preset_store.user_preset_path(LIGHT_PRESET_CATEGORY)
     if not user_path.exists():
-        # No user file; bundled defaults are used as-is and already include "Default".
+        # No user file; bundled defaults are used as-is and already include "默认".
         return
 
     presets = preset_store.load_presets(LIGHT_PRESET_CATEGORY)
-    if any(p.get("name") == "Default" for p in presets):
+    if any(p.get("name") == "默认" for p in presets):
         return
 
     bundled_path = LIGHT_PRESET_CATEGORY.bundled_defaults_path
@@ -121,7 +121,7 @@ def add_new_default_light_preset():
         return
 
     default_preset = next(
-        (p for p in bundled.get("presets", []) if p.get("name") == "Default"),
+        (p for p in bundled.get("presets", []) if p.get("name") == "默认"),
         None,
     )
     if default_preset is None:

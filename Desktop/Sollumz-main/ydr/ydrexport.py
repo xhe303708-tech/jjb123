@@ -306,7 +306,7 @@ def create_geometries_xml(
             cable_material_index_in_drawable = materials.index(cable_material)
 
             geom_xml = Geometry()
-            geom_xml.bounding_box_max, geom_xml.bounding_box_min = get_geom_extents(cable_vert_buffer["Position"])
+            geom_xml.bounding_box_max, geom_xml.bounding_box_min = get_geom_extents(cable_vert_buffer["位置"])
             geom_xml.shader_index = cable_material_index_in_drawable
             geom_xml.vertex_buffer.data = cable_vert_buffer
             geom_xml.index_buffer.data = cable_ind_buffer
@@ -385,13 +385,13 @@ def create_geometries_xml(
             vert_buffer = remove_arr_field("Tangent", vert_buffer)
 
         if not normal_required:
-            vert_buffer = remove_arr_field("Normal", vert_buffer)
+            vert_buffer = remove_arr_field("法线", vert_buffer)
 
         vert_buffer, ind_buffer = dedupe_and_get_indices(vert_buffer)
 
         geom_xml = Geometry()
 
-        geom_xml.bounding_box_max, geom_xml.bounding_box_min = get_geom_extents(vert_buffer["Position"])
+        geom_xml.bounding_box_max, geom_xml.bounding_box_min = get_geom_extents(vert_buffer["位置"])
         geom_xml.shader_index = mat_index
 
         if bones and "BlendWeights" in vert_buffer.dtype.names:
@@ -617,7 +617,7 @@ def split_geom_by_vert_count(geom_xml: Geometry):
         new_geom.bone_ids = geom_xml.bone_ids
         new_geom.shader_index = geom_xml.shader_index
         new_geom.bounding_box_max, new_geom.bounding_box_min = get_geom_extents(
-            vert_buffer["Position"])
+            vert_buffer["位置"])
 
         new_geom.vertex_buffer.data = vert_buffer
         new_geom.index_buffer.data = ind_buffer

@@ -11,7 +11,7 @@ from ..properties.mlo import PortalProperties, get_room_items_for_selected_arche
 class SOLLUMZ_OT_create_portal(SOLLUMZ_OT_base, bpy.types.Operator):
     """Add a portal to the selected archetype"""
     bl_idname = "sollumz.createportal"
-    bl_label = "Create Portal"
+    bl_label = "创建 Portal"
 
     @classmethod
     def poll(cls, context):
@@ -67,7 +67,7 @@ class PortalCreatorHelper:
         selected_verts = self.get_selected_portal_verts(context)
 
         if len(selected_verts) != 4:
-            self.report({"INFO"}, "You must select exactly 4 vertices.")
+            self.report({"INFO"}, "必须选择恰好 4 个顶点。")
             return False
 
         sort_order = PortalCreatorHelper.sort_coords_2d_winding(selected_verts)
@@ -112,7 +112,7 @@ class PortalCreatorHelper:
 class SOLLUMZ_OT_create_portal_from_selection(PortalCreatorHelper, bpy.types.Operator):
     """Create a portal from selected verts"""
     bl_idname = "sollumz.createportalfromselection"
-    bl_label = "Create Portal From Verts"
+    bl_label = "从顶点创建 Portal"
     bl_options = {"REGISTER", "UNDO"}
 
     def get_portal(self, context):
@@ -128,7 +128,7 @@ class SOLLUMZ_OT_create_portal_from_selection(PortalCreatorHelper, bpy.types.Ope
 class SOLLUMZ_OT_update_portal_from_selection(PortalCreatorHelper, bpy.types.Operator):
     """Update a portal from selected verts"""
     bl_idname = "sollumz.updateportalfromselection"
-    bl_label = "Update Portal From Verts"
+    bl_label = "从顶点更新 Portal"
     bl_options = {"REGISTER", "UNDO"}
 
     @classmethod
@@ -146,7 +146,7 @@ class SOLLUMZ_OT_update_portal_from_selection(PortalCreatorHelper, bpy.types.Ope
 class SOLLUMZ_OT_delete_portal(SOLLUMZ_OT_base, bpy.types.Operator):
     """Delete selected portal(s)"""
     bl_idname = "sollumz.deleteportal"
-    bl_label = "Delete Portal"
+    bl_label = "删除 Portal"
 
     @classmethod
     def poll(cls, context):
@@ -170,7 +170,7 @@ class SOLLUMZ_OT_delete_portal(SOLLUMZ_OT_base, bpy.types.Operator):
 class SOLLUMZ_OT_flip_portal(bpy.types.Operator):
     """Flip portal direction"""
     bl_idname = "sollumz.flipportal"
-    bl_label = "Change portal direction"
+    bl_label = "更改 Portal 方向"
 
     @classmethod
     def poll(cls, context):

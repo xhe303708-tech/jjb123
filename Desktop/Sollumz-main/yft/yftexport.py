@@ -1228,7 +1228,7 @@ def add_frag_glass_window_xml(
     glass_window_xml = GlassWindow()
     glass_window_xml.flags = glass_type_index & 0xFF
     glass_window_xml.layout = VertexLayoutList(type="GTAV4",
-                                               value=["Position", "Normal", "Colour0", "TexCoord0", "TexCoord1"])
+                                               value=["位置", "法线", "Colour0", "TexCoord0", "TexCoord1"])
 
     glass_windows_xml.append(glass_window_xml)
 

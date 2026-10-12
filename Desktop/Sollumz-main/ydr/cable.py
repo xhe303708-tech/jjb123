@@ -54,7 +54,7 @@ class CableAttr(str, Enum):
     def label(self) -> str:
         match self:
             case CableAttr.RADIUS:
-                return "Radius"
+                return "半径"
             case CableAttr.DIFFUSE_FACTOR:
                 return "Diffuse Factor"
             case CableAttr.UM_SCALE:
@@ -62,7 +62,7 @@ class CableAttr(str, Enum):
             case CableAttr.PHASE_OFFSET:
                 return "Phase Offset"
             case CableAttr.MATERIAL_INDEX:
-                return "Material Index"
+                return "材质索引"
             case _:
                 assert False, f"Label not set for cable attribute '{self}'"
 

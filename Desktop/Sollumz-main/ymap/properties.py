@@ -54,7 +54,7 @@ class ContentFlagPropertyGroup:
 
 class MapFlags(bpy.types.PropertyGroup):
     script_loaded: bpy.props.BoolProperty(
-        name="Script Loaded", update=FlagPropertyGroup.update_flag)
+        name="脚本已加载", update=FlagPropertyGroup.update_flag)
     has_lod: bpy.props.BoolProperty(
         name="LOD", update=FlagPropertyGroup.update_flag)
 
@@ -73,11 +73,11 @@ class ContentFlags(bpy.types.PropertyGroup):
     has_occl: BoolProperty(
         name="Occlusion", update=ContentFlagPropertyGroup.update_flag)
     has_physics: BoolProperty(
-        name="Physics", update=ContentFlagPropertyGroup.update_flag)
+        name="物理", update=ContentFlagPropertyGroup.update_flag)
     has_lod_lights: BoolProperty(
-        name="Lod Lights", update=ContentFlagPropertyGroup.update_flag)
+        name="LOD 灯光", update=ContentFlagPropertyGroup.update_flag)
     has_dis_lod_lights: BoolProperty(
-        name="Distant Lod Lights", update=ContentFlagPropertyGroup.update_flag)
+        name="远距离 LOD 灯光", update=ContentFlagPropertyGroup.update_flag)
     has_critical: BoolProperty(
         name="Critical", update=ContentFlagPropertyGroup.update_flag)
     has_grass: BoolProperty(
@@ -85,28 +85,28 @@ class ContentFlags(bpy.types.PropertyGroup):
 
 
 class YmapBlockProperties(bpy.types.PropertyGroup):
-    version: StringProperty(name="Version", default='0', update=lambda self,
+    version: StringProperty(name="版本", default='0', update=lambda self,
                             context: update_uint_prop(self, context, 'version'))
-    flags: StringProperty(name="Flags", default='0', update=lambda self,
+    flags: StringProperty(name="标记", default='0', update=lambda self,
                           context: update_uint_prop(self, context, 'flags'))
     # TODO: Sync the name input with the object name?
-    name: StringProperty(name="Name")
-    exported_by: StringProperty(name="Exported By", default="Sollumz")
+    name: StringProperty(name="名称")
+    exported_by: StringProperty(name="导出者", default="Sollumz")
     owner: StringProperty(name="Owner")
-    time: StringProperty(name="Time")
+    time: StringProperty(name="时间")
 
 
 class YmapProperties(bpy.types.PropertyGroup):
     parent: StringProperty(name="Parent", default="")
-    flags: IntProperty(name="Flags", default=0, min=0, max=3,
+    flags: IntProperty(name="标记", default=0, min=0, max=3,
                        update=FlagPropertyGroup.update_flags_total)
-    content_flags: IntProperty(name="Content Flags", default=0, min=0, max=(
+    content_flags: IntProperty(name="内容标记", default=0, min=0, max=(
         2**11)-1, update=ContentFlagPropertyGroup.update_flags_total)
 
-    streaming_extents_min: FloatVectorProperty(name="Streaming Extents Min", default=(0, 0, 0), size=3, subtype='XYZ')
-    streaming_extents_max: FloatVectorProperty(name="Streaming Extents Max", default=(0, 0, 0), size=3, subtype='XYZ')
-    entities_extents_min: FloatVectorProperty(name="Entities Extents Min", default=(0, 0, 0), size=3, subtype='XYZ')
-    entities_extents_max: FloatVectorProperty(name="Entities Extents Max", default=(0, 0, 0), size=3, subtype='XYZ')
+    streaming_extents_min: FloatVectorProperty(name="流送范围最小", default=(0, 0, 0), size=3, subtype='XYZ')
+    streaming_extents_max: FloatVectorProperty(name="流送范围最大", default=(0, 0, 0), size=3, subtype='XYZ')
+    entities_extents_min: FloatVectorProperty(name="实体范围最小", default=(0, 0, 0), size=3, subtype='XYZ')
+    entities_extents_max: FloatVectorProperty(name="实体范围最大", default=(0, 0, 0), size=3, subtype='XYZ')
 
     flags_toggle: PointerProperty(type=MapFlags)
     content_flags_toggle: PointerProperty(type=ContentFlags)
@@ -116,7 +116,7 @@ class YmapProperties(bpy.types.PropertyGroup):
 
 
 class YmapModelOccluderProperties(bpy.types.PropertyGroup):
-    model_occl_flags: IntProperty(name="Flags", default=0)
+    model_occl_flags: IntProperty(name="标记", default=0)
 
     def _set_is_water_only(self, enable: bool):
         if enable:
@@ -125,7 +125,7 @@ class YmapModelOccluderProperties(bpy.types.PropertyGroup):
             self.model_occl_flags &= ~1
 
     is_water_only: BoolProperty(
-        name="Is Water Only",
+        name="仅水域",
         get=lambda s: (s.model_occl_flags & 1) != 0,
         set=_set_is_water_only
     )
@@ -133,7 +133,7 @@ class YmapModelOccluderProperties(bpy.types.PropertyGroup):
 
 class YmapCarGeneratorProperties(bpy.types.PropertyGroup):
     car_model: StringProperty(name="CarModel", default="panto")
-    cargen_flags: IntProperty(name="Flags", default=0)
+    cargen_flags: IntProperty(name="标记", default=0)
     pop_group: StringProperty(name="PopGroup", default="")
     perpendicular_length: FloatProperty(
         name="PerpendicularLength", default=2.3)

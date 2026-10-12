@@ -24,7 +24,7 @@ class CollisionMaterialDef(NamedTuple):
 
 collisionmats = [
     # fmt: off
-    CollisionMaterialDef("DEFAULT",                    "Default",                    (255,   0, 255),  1750.0),
+    CollisionMaterialDef("DEFAULT",                    "默认",                    (255,   0, 255),  1750.0),
     CollisionMaterialDef("CONCRETE",                   "Concrete",                   (145, 145, 145),  7850.5),
     CollisionMaterialDef("CONCRETE_POTHOLE",           "Concrete Pothole",           (145, 145, 145),  4900.0),
     CollisionMaterialDef("CONCRETE_DUSTY",             "Concrete Dusty",             (145, 140, 130),  7850.5),
@@ -124,7 +124,7 @@ collisionmats = [
     CollisionMaterialDef("CARPET_SOLID",               "Carpet Solid",               (250, 100, 100),  1050.0),
     CollisionMaterialDef("CARPET_SOLID_DUSTY",         "Carpet Solid Dusty",         (255, 135, 135),  1050.0),
     CollisionMaterialDef("CARPET_FLOORBOARD",          "Carpet Floorboard",          (250, 100, 100),  1750.0),
-    CollisionMaterialDef("CLOTH",                      "Cloth",                      (250, 100, 100),   875.0),
+    CollisionMaterialDef("CLOTH",                      "布料",                      (250, 100, 100),   875.0),
     CollisionMaterialDef("PLASTER_SOLID",              "Plaster Solid",              (145, 145, 145),  2971.5),
     CollisionMaterialDef("PLASTER_BRITTLE",            "Plaster Brittle",            (225, 225, 225),  2971.5),
     CollisionMaterialDef("CARDBOARD_SHEET",            "Cardboard Sheet",            (120, 115,  95),   400.0),

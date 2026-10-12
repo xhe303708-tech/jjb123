@@ -16,7 +16,7 @@ def _active_group(context):
 
 class SOLLUMZ_OT_map_bake_lod_lights(MapLodLightBakePropertiesBase, Operator):
     bl_idname = "sollumz.map_bake_lod_lights"
-    bl_label = "Bake LOD Lights"
+    bl_label = "烘焙 LOD 灯光"
     bl_options = {"UNDO"}
 
     @classmethod

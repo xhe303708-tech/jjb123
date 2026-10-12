@@ -25,7 +25,7 @@ from .map import MapChildTabPanel
 
 
 class SOLLUMZ_PT_map_grass_batches(MapChildTabPanel, Panel):
-    bl_label = "Grass Batches"
+    bl_label = "草批"
     bl_idname = "SOLLUMZ_PT_map_grass_batches"
     bl_order = 3
 
@@ -80,11 +80,11 @@ class SOLLUMZ_PT_map_grass_batches(MapChildTabPanel, Panel):
         split = row.split(factor=0.4)
         subrow = split.row()
         subrow.alignment = "RIGHT"
-        subrow.label(text="Modifier Nodes")
+        subrow.label(text="修改器节点")
         subrow = split.row(align=True)
         if active.modifier_ng is None:
             subrow.operator(
-                map_grass_ops.SOLLUMZ_OT_map_grass_create_geonodes.bl_idname, icon="NODETREE", text="Create"
+                map_grass_ops.SOLLUMZ_OT_map_grass_create_geonodes.bl_idname, icon="NODETREE", text="创建"
             )
         else:
             subrow.prop(active, "modifier_ng", text="")
@@ -99,11 +99,11 @@ class SOLLUMZ_PT_map_grass_batches(MapChildTabPanel, Panel):
         split = row.split(factor=0.4)
         subrow = split.row()
         subrow.alignment = "RIGHT"
-        subrow.label(text="Linked Object")
+        subrow.label(text="链接对象")
         subrow = split.row(align=True)
         if active.linked_object is None:
             subrow.operator(
-                map_grass_ops.SOLLUMZ_OT_map_grass_create_instances_mesh.bl_idname, icon="OBJECT_DATA", text="Create"
+                map_grass_ops.SOLLUMZ_OT_map_grass_create_instances_mesh.bl_idname, icon="OBJECT_DATA", text="创建"
             )
         else:
             subrow.prop(active, "linked_object", text="")
@@ -150,8 +150,8 @@ class SOLLUMZ_PT_map_grass_batches(MapChildTabPanel, Panel):
 
         layout.prop(selection.owner, selection.propnames.archetype_name)
         col = layout.column(align=True)
-        col.prop(selection.owner, selection.propnames.scale_range, index=0, text="Scale Range Min")
-        col.prop(selection.owner, selection.propnames.scale_range, index=1, text="Max")
+        col.prop(selection.owner, selection.propnames.scale_range, index=0, text="缩放范围最小")
+        col.prop(selection.owner, selection.propnames.scale_range, index=1, text="最大")
         layout.prop(selection.owner, selection.propnames.scale_randomness)
         layout.prop(selection.owner, selection.propnames.lod_dist)
         layout.prop(selection.owner, selection.propnames.lod_fade_start_dist)
@@ -172,13 +172,13 @@ class SOLLUMZ_UL_map_group_grass_batch_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_grass_batch_list_context_menu(Menu):
-    bl_label = "Map Grass Batches Specials"
+    bl_label = "地图草批特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_grass_batch_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_grass_batches.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_grass_batches.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_grass_batches.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_grass_batches.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_grass_batch_list.last_filter_options.get(
             "grass_batches_tool_panel", None
         ):
@@ -196,16 +196,16 @@ class SOLLUMZ_UL_map_group_grass_batch_template_list(MultiSelectUIListMixin, UIL
 
 
 class SOLLUMZ_MT_map_group_grass_batch_template_list_context_menu(Menu):
-    bl_label = "Map Grass Templates Specials"
+    bl_label = "地图草模板特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_grass_batch_template_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
         op0 = layout.operator(
-            map_select_ops.SOLLUMZ_OT_map_group_select_all_grass_templates.bl_idname, text="Select All"
+            map_select_ops.SOLLUMZ_OT_map_group_select_all_grass_templates.bl_idname, text="全选"
         )
         op1 = layout.operator(
-            map_select_ops.SOLLUMZ_OT_map_group_select_invert_grass_templates.bl_idname, text="Invert"
+            map_select_ops.SOLLUMZ_OT_map_group_select_invert_grass_templates.bl_idname, text="反转"
         )
         if filter_opts := SOLLUMZ_UL_map_group_grass_batch_template_list.last_filter_options.get(
             "templates_tool_panel", None

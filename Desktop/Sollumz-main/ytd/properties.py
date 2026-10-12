@@ -34,14 +34,14 @@ def get_texture_name(image: Image | None) -> str:
 
 
 class TextureSlot(PropertyGroup):
-    image: PointerProperty(type=Image, name="Image")
+    image: PointerProperty(type=Image, name="图像")
 
     def get_name(self) -> str:
         return get_texture_name(self.image)
 
-    name: StringProperty(name="Name", get=get_name)
+    name: StringProperty(name="名称", get=get_name)
 
-    managed_by_source: BoolProperty(name="Managed by Source", default=False)
+    managed_by_source: BoolProperty(name="由源管理", default=False)
 
 
 class TextureSlotSelectionAccess(MultiSelectAccess):
@@ -49,8 +49,8 @@ class TextureSlotSelectionAccess(MultiSelectAccess):
 
 
 class TextureImageSourceSlot(PropertyGroup):
-    image: PointerProperty(type=Image, name="Image")
-    use: BoolProperty(name="Use Image")
+    image: PointerProperty(type=Image, name="图像")
+    use: BoolProperty(name="使用图像")
 
 
 class TextureImageSourceSlotSelectionAccess(MultiSelectAccess):
@@ -60,8 +60,8 @@ class TextureImageSourceSlotSelectionAccess(MultiSelectAccess):
 @define_multiselect_collection("images", {"name": "Images"})
 class TextureImageSource(PropertyGroup):
     source_type: EnumProperty(
-        name="Source Type",
-        items=(("OBJECT", "Object", ""),),
+        name="源类型",
+        items=(("OBJECT", "对象", ""),),
         default="OBJECT",
     )
     images: MultiSelectCollection[TextureImageSourceSlot, TextureImageSourceSlotSelectionAccess]
@@ -70,8 +70,8 @@ class TextureImageSource(PropertyGroup):
         for obj in context.scene.objects:
             yield obj.name
 
-    object_name: StringProperty(name="Object", search=object_name_search)
-    object_include_children: BoolProperty(name="Include Children", default=True)
+    object_name: StringProperty(name="对象", search=object_name_search)
+    object_include_children: BoolProperty(name="包含子项", default=True)
 
     def refresh(self, context: Context):
         existing_images_use_flags = {s.image: s.use for s in self.images}
@@ -125,10 +125,10 @@ class TextureImageSourceSelectionAccess(MultiSelectAccess):
     object_include_children: MultiSelectProperty()
 
 
-@define_multiselect_collection("textures", {"name": "Textures"})
-@define_multiselect_collection("sources", {"name": "Sources"})
+@define_multiselect_collection("textures", {"name": "贴图"})
+@define_multiselect_collection("sources", {"name": "源"})
 class TextureDictionary(PropertyGroup):
-    name: StringProperty(name="Name", default="")
+    name: StringProperty(name="名称", default="")
     textures: MultiSelectCollection[TextureSlot, TextureSlotSelectionAccess]
     sources: MultiSelectCollection[TextureImageSource, TextureImageSourceSelectionAccess]
 
@@ -176,7 +176,7 @@ class TextureDictionarySelectionAccess(MultiSelectAccess):
     name: MultiSelectProperty()
 
 
-@define_multiselect_collection("texture_dictionaries", {"name": "Texture Dictionaries"})
+@define_multiselect_collection("texture_dictionaries", {"name": "贴图字典"})
 class TextureDictionaries(PropertyGroup):
     texture_dictionaries: MultiSelectCollection[TextureDictionary, TextureDictionarySelectionAccess]
 
@@ -194,7 +194,7 @@ class TextureDictionaries(PropertyGroup):
 def register():
     Scene.sz_txds = PointerProperty(
         type=TextureDictionaries,
-        name="Texture Dictionaries",
+        name="贴图字典",
     )
 
 

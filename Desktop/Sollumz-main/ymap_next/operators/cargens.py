@@ -34,7 +34,7 @@ def _find_cargen_from_object(obj):
 
 class SOLLUMZ_OT_map_cargen_create_object(Operator):
     bl_idname = "sollumz.map_cargen_create_object"
-    bl_label = "Create Car Generator Object"
+    bl_label = "创建载具生成器对象"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -77,7 +77,7 @@ class SOLLUMZ_OT_map_cargen_create_object(Operator):
 
 class SOLLUMZ_OT_map_cargen_select_all_objects(Operator):
     bl_idname = "sollumz.map_cargen_select_all_objects"
-    bl_label = "Select All Car Generator Objects"
+    bl_label = "全选载具生成器对象"
     bl_options = {"UNDO"}
 
     @classmethod
@@ -104,7 +104,7 @@ class SOLLUMZ_OT_map_cargen_select_all_objects(Operator):
 
 class SOLLUMZ_OT_map_cargen_move_to_new_collection(Operator):
     bl_idname = "sollumz.map_cargen_move_to_new_collection"
-    bl_label = "Move to New Collection"
+    bl_label = "移动到新集合"
     bl_description = (
         "Split the selected cargen objects off into a new car generator entry with its own collection. "
         "The new entry copies all settings from the source car generator"

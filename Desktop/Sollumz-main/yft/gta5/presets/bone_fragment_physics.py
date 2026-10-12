@@ -75,27 +75,27 @@ register_preset_category(BONE_FRAGMENT_PHYSICS_PRESET_CATEGORY)
 
 class SOLLUMZ_OT_save_bone_fragment_physics_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_bone_fragment_physics_preset"
-    bl_label = "Save Bone Physics Preset"
-    bl_description = "Save current bone group physics properties as a named preset"
+    bl_label = "保存骨骼物理预设"
+    bl_description = "将当前骨骼组物理属性保存为命名预设"
     category = BONE_FRAGMENT_PHYSICS_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_load_bone_fragment_physics_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_bone_fragment_physics_preset"
-    bl_label = "Apply Bone Physics Preset"
-    bl_description = "Apply a saved bone physics preset to the active bone"
+    bl_label = "应用骨骼物理预设"
+    bl_description = "将已保存的骨骼物理预设应用到活动骨骼"
     category = BONE_FRAGMENT_PHYSICS_PRESET_CATEGORY
 
 
 class SOLLUMZ_OT_delete_bone_fragment_physics_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_bone_fragment_physics_preset"
-    bl_label = "Delete Bone Physics Preset"
-    bl_description = "Remove a saved bone physics preset"
+    bl_label = "删除骨骼物理预设"
+    bl_description = "移除已保存的骨骼物理预设"
     category = BONE_FRAGMENT_PHYSICS_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_bone_fragment_physics_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Bone Physics Presets"
+    bl_label = "骨骼物理预设"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
     bl_options = {"INSTANCED"}

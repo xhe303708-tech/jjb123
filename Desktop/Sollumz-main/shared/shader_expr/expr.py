@@ -621,7 +621,7 @@ class TextureExpr(Expr):
 
     def dump(self, ctx: ExprDumpContext) -> str:
         def g():
-            uv_id = self.uv.dump(ctx) if self.uv is not None else "None"
+            uv_id = self.uv.dump(ctx) if self.uv is not None else "无"
             return f"tex('{self.texture_name}', {uv_id})"
         var_id = ctx.get_var_id(self, g)
         return var_id

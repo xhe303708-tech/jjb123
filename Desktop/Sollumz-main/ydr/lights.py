@@ -61,7 +61,7 @@ def get_light_type(light_xml: Light):
         return LightType.POINT
     if light_xml.type == "Spot":
         return LightType.SPOT
-    if light_xml.type == "Capsule":
+    if light_xml.type == "胶囊体":
         return LightType.CAPSULE
 
 
@@ -269,7 +269,7 @@ def convert_light_instance_to_light_xml(li: LightInstance) -> Light:
     elif li.light_type == 2:
         light.type = "Spot"
     elif li.light_type == 4:
-        light.type = "Capsule"
+        light.type = "胶囊体"
     light.group_id = li.group_id
     light.time_flags = li.time_flags
     light.falloff = li.falloff
@@ -319,7 +319,7 @@ def convert_light_to_light_instance_xml(light: Light) -> LightInstance:
         li.light_type = 1
     elif light.type == "Spot":
         li.light_type = 2
-    elif light.type == "Capsule":
+    elif light.type == "胶囊体":
         li.light_type = 4
     li.group_id = light.group_id
     li.time_flags = light.time_flags

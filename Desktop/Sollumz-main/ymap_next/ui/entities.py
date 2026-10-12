@@ -41,7 +41,7 @@ from .map import MapChildTabPanel
 
 
 class SOLLUMZ_PT_map_entities(MapChildTabPanel, Panel):
-    bl_label = "Entities"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_map_entities"
     bl_order = 0
 
@@ -84,7 +84,7 @@ class SOLLUMZ_PT_map_entities(MapChildTabPanel, Panel):
         row = list_col.row()
         col = row.column()
         col_row = col.row()
-        col_row.label(text="Filter By", icon="FILTER")
+        col_row.label(text="筛选方式", icon="FILTER")
         col_row.prop(flt, "filter_type", text="")
         if flt.filter_type == "lod_level":
             row.prop(flt, "lod_level", text="")
@@ -106,7 +106,7 @@ class SOLLUMZ_PT_map_entities(MapChildTabPanel, Panel):
 
 
 class SOLLUMZ_PT_map_entity_tabs(TabbedPanelHelper, Panel):
-    bl_label = "Entities"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_map_entity_tabs"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
@@ -140,7 +140,7 @@ class MapEntityChildTabPanel(TabPanel):
 
 
 class SOLLUMZ_PT_map_entity_properties(MapEntityChildTabPanel, Panel):
-    bl_label = "Entity"
+    bl_label = "实体"
     bl_idname = "SOLLUMZ_PT_map_entity_properties"
 
     icon = "OBJECT_DATA"
@@ -201,7 +201,7 @@ class SOLLUMZ_PT_map_entity_properties(MapEntityChildTabPanel, Panel):
 
             layout.prop(selection.owner, selection.propnames.mlo_group_id)
             layout.prop(selection.owner, selection.propnames.mlo_default_entity_sets)
-            col = layout.column(heading="Flags")
+            col = layout.column(heading="标记")
             col.prop(selection.owner, selection.propnames.mlo_turn_on_gps)
             col.prop(selection.owner, selection.propnames.mlo_cap_entities_alpha)
             col.prop(selection.owner, selection.propnames.mlo_short_fade_distance)
@@ -243,7 +243,7 @@ class SOLLUMZ_UL_map_entity_extensions(ExtensionsListHelper, UIList):
 
 
 class SOLLUMZ_PT_map_entity_extensions(MapEntityChildTabPanel, ExtensionsPanelHelper, Panel):
-    bl_label = "Entity Extensions"
+    bl_label = "实体扩展"
     bl_idname = "SOLLUMZ_PT_map_entity_extensions"
 
     icon = "CON_TRACKTO"
@@ -273,7 +273,7 @@ class SOLLUMZ_PT_map_entity_extensions(MapEntityChildTabPanel, ExtensionsPanelHe
 
 class SOLLUMZ_PT_map_entity_flags(MapEntityChildTabPanel, MultiSelectUIFlagsPanel, Panel):
     bl_idname = "SOLLUMZ_PT_map_entity_flags"
-    bl_label = "Entity Flags"
+    bl_label = "实体标记"
 
     icon = "BOOKMARKS"
 
@@ -346,13 +346,13 @@ class SOLLUMZ_UL_map_group_entity_list(MultiSelectUIListMixin, UIList):
 
 
 class SOLLUMZ_MT_map_group_entity_list_context_menu(Menu):
-    bl_label = "Map Entities Specials"
+    bl_label = "地图实体特殊项"
     bl_idname = "SOLLUMZ_MT_map_group_entity_list_context_menu"
 
     def draw(self, _context):
         layout = self.layout
-        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_entities.bl_idname, text="Select All")
-        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_entities.bl_idname, text="Invert")
+        op0 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_all_entities.bl_idname, text="全选")
+        op1 = layout.operator(map_select_ops.SOLLUMZ_OT_map_group_select_invert_entities.bl_idname, text="反转")
         if filter_opts := SOLLUMZ_UL_map_group_entity_list.last_filter_options.get("entities_tool_panel", None):
             filter_opts.apply_to_operator(op0)
             filter_opts.apply_to_operator(op1)
@@ -361,7 +361,7 @@ class SOLLUMZ_MT_map_group_entity_list_context_menu(Menu):
 class SOLLUMZ_PT_map_object_entity_properties(Panel):
     """Panel in the object properties showing the entity it is linked to"""
 
-    bl_label = "Map Entity Properties"
+    bl_label = "地图实体属性"
     bl_idname = "SOLLUMZ_PT_map_object_entity_properties"
     bl_space_type = "PROPERTIES"
     bl_region_type = "WINDOW"
@@ -397,7 +397,7 @@ class SOLLUMZ_PT_map_object_entity_properties(Panel):
         split = col.split(factor=0.4)
         row = split.row()
         row.alignment = "RIGHT"
-        row.label(text="Archetype Name")
+        row.label(text="架构名")
         split.row().label(text=entity.archetype_name)
 
         layout.separator()
@@ -414,7 +414,7 @@ class SOLLUMZ_PT_map_object_entity_properties(Panel):
 
             layout.prop(entity, "mlo_group_id")
             layout.prop(entity, "mlo_default_entity_sets")
-            col = layout.column(heading="Flags")
+            col = layout.column(heading="标记")
             col.prop(entity, "mlo_turn_on_gps")
             col.prop(entity, "mlo_cap_entities_alpha")
             col.prop(entity, "mlo_short_fade_distance")

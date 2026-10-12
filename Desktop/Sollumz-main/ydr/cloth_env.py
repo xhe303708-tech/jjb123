@@ -400,7 +400,7 @@ def _cloth_env_export(frag_obj: Object, cloth_obj: Object, drawable_xml: Drawabl
     geom_to_mesh_map = [-1] * len(geom.vertex_buffer.data)
     mesh_to_geom_map = [-1] * len(geom.vertex_buffer.data)
     num_extra_matches_per_cloth_vertex = [0] * len(verlet.vertex_positions)
-    for geom_vertex_index, geom_vertex in enumerate(geom.vertex_buffer.data["Position"]):
+    for geom_vertex_index, geom_vertex in enumerate(geom.vertex_buffer.data["位置"]):
         matching_cloth_vertex_index = None
         for cloth_vertex_index, cloth_vertex in enumerate(verlet.vertex_positions):
             if np.allclose(geom_vertex, cloth_vertex, atol=1e-5):

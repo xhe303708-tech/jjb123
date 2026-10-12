@@ -16,8 +16,8 @@ from ...utils import get_selected_entity, get_selected_mlo_entities_collection
 
 class SOLLUMZ_OT_save_mlo_entity_preset(PresetSaveOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.save_mlo_entity_preset"
-    bl_label = "Save Entity Preset"
-    bl_description = "Save current MLO entity properties as a named preset"
+    bl_label = "保存实体预设"
+    bl_description = "将当前 MLO 实体属性保存为命名预设"
     category = ENTITY_PRESET_CATEGORY
     get_target = get_selected_entity
 
@@ -31,8 +31,8 @@ class SOLLUMZ_OT_save_mlo_entity_preset(PresetSaveOperatorBase, bpy.types.Operat
 
 class SOLLUMZ_OT_load_mlo_entity_preset(PresetLoadOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.load_mlo_entity_preset"
-    bl_label = "Apply Entity Preset"
-    bl_description = "Apply a saved entity preset to the active MLO entity"
+    bl_label = "应用实体预设"
+    bl_description = "将已保存的实体预设应用到活动 MLO 实体"
     category = ENTITY_PRESET_CATEGORY
     get_target = get_selected_entity
     get_targets = make_get_targets_from_collection(get_selected_mlo_entities_collection)
@@ -47,13 +47,13 @@ class SOLLUMZ_OT_load_mlo_entity_preset(PresetLoadOperatorBase, bpy.types.Operat
 
 class SOLLUMZ_OT_delete_mlo_entity_preset(PresetDeleteOperatorBase, bpy.types.Operator):
     bl_idname = "sollumz.delete_mlo_entity_preset"
-    bl_label = "Delete Entity Preset"
-    bl_description = "Remove a saved entity preset"
+    bl_label = "删除实体预设"
+    bl_description = "移除已保存的实体预设"
     category = ENTITY_PRESET_CATEGORY
 
 
 class SOLLUMZ_PT_mlo_entity_presets(PresetPanel, bpy.types.Panel):
-    bl_label = "Entity Presets"
+    bl_label = "实体预设"
     bl_space_type = "VIEW_3D"
     bl_region_type = "UI"
     bl_options = {"INSTANCED"}
