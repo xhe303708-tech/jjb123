@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>注册 · 课笺</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@500&family=ZCOOL+KuaiLe&display=swap">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="flow">
+  <div class="grain"></div>
+  <main class="gate">
+    <form class="card" id="form">
+      <a class="lbl" href="/">← 课笺</a>
+      <h1>注册</h1>
+      <label>姓名<input name="name" required maxlength="40"></label>
+      <label>邮箱<input name="email" type="email" autocomplete="username" required></label>
+      <label>密码<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+      <p class="err" id="err"></p>
+      <div class="row">
+        <button class="enter" type="submit">创建并进入</button>
+        <a href="/login">已有账号</a>
+      </div>
+    </form>
+  </main>
+  <script type="module">
+    document.querySelector("#form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.target));
+      const res = await fetch("/api/register", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      const body = await res.json();
+      if (!res.ok) { document.querySelector("#err").textContent = body.error || "没有创建"; return; }
+      location.href = "/app/home";
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+  <script>anime({ targets: ".card", translateY: [28, 0], opacity: [0, 1], duration: 640, easing: "easeOutCubic" });</script>
+</body>
+</html>

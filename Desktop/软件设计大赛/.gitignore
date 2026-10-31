@@ -1,0 +1,10 @@
+/target/
+/rust/cardgate/target/
+*.db
+*.db-journal
+go/server/cardgate.exe
+go/server/cardgate
+go/server/kejian.exe
+data/*.png
+data/*.html
+.DS_Store

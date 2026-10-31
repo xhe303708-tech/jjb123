@@ -1,0 +1,10 @@
+[package]
+name = "cardgate"
+version = "0.1.0"
+edition = "2021"
+description = "课笺出处门禁：连续原文、覆盖、复习日期与日记"
+
+[dependencies]
+chrono = { version = "0.4", default-features = false, features = ["serde"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
